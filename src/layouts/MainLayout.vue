@@ -148,11 +148,7 @@
           </div>
 
           <div class="bs-foot-copy">
-<<<<<<< HEAD
             © {{ year }} NovaIndustria, S.A.S. v.1.0.0
-=======
-            © {{ year }} NovaIndustria, S.A.S.
->>>>>>> 6c162ed0958bb257cc52121e7b918d84268aff4d
             <a class="bs-ext" href="#" aria-label="Abrir enlace">
               <svg viewBox="0 0 24 24" class="bs-ico-sm" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M14 3h7v7" />
