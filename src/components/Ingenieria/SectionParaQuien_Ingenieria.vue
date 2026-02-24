@@ -5,7 +5,11 @@
       <!-- Globo absolutamente posicionado DENTRO del bs-wrap,
            detrás del contenido, centrado sobre las cards -->
       <div class="globe-wrap" aria-hidden="true">
+<<<<<<< HEAD
         <img :src="mundoImg" alt="" class="world-img" draggable="false" />
+=======
+        <img src="src/assets/Img/Mundo.avif" alt="" class="world-img" draggable="false" />
+>>>>>>> 6c162ed0958bb257cc52121e7b918d84268aff4d
       </div>
 
       <div class="layout">
@@ -75,7 +79,11 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+<<<<<<< HEAD
 import mundoImg from 'src/assets/Img/Mundo.avif'
+=======
+
+>>>>>>> 6c162ed0958bb257cc52121e7b918d84268aff4d
 const current = ref(0)
 const visibleCount = ref(2)
 
