@@ -1,0 +1,39 @@
+/* Paleta base (según documentos) */
+:root {
+  --lara-black: #1b1b1b;
+  --lara-black-2: #2c2a29;
+  --lara-blue: #0071e3;
+  --lara-yellow: #fdda24;
+}
+
+/* Tipografía y base */
+body {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* Links bonitos */
+a {
+  color: var(--lara-blue);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Utilidad para limitar ancho del contenido */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Sección con padding consistente */
+.section {
+  padding: 72px 24px;
+}
+
+/* Border radius consistente */
+.rounded {
+  border-radius: 16px;
+}
