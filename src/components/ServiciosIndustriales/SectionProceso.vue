@@ -38,7 +38,7 @@
             </li>
           </ul>
 
-          <button class="card-btn" @click="scrollToForm">
+          <button class="card-btn" @click="goToTienda(srv.title)">
             Cotizar servicio
           </button>
         </article>
@@ -47,7 +47,7 @@
       <!-- CTA bottom -->
       <div class="bottom-cta" v-reveal data-delay="0">
         <span>¿Necesitas varios servicios combinados?</span>
-        <button class="btn-full" @click="scrollToForm">
+        <button class="btn-full" @click="router.push('/tienda')">
           Cotización integral
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
@@ -62,9 +62,32 @@
 </template>
 
 <script setup>
-/* ── scroll helper ───────────────────────────────────────── */
-function scrollToForm() {
-  document.getElementById('formulario-proyectos')?.scrollIntoView({ behavior: 'smooth' })
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+/* ── Mapa título → id de ruta ────────────────────────────── */
+const SERVICE_IDS = {
+  'Corte láser y manufactura metálica': 'corte-laser',
+  'Diseño de piezas': 'diseno-piezas',
+  'Diseño industrial': 'diseno-industrial',
+  'CNC mecanizado': 'cnc',
+  'Probetas': 'probetas',
+  'Manejo de fibra de carbono': 'fibra-carbono',
+  'Determinación de masa lineal': 'masa-lineal',
+  'Doblado': 'doblado',
+  'Tracción': 'traccion',
+  'Dimensional': 'dimensional',
+  'Dureza': 'dureza',
+  'Ensayo especializado': 'ensayo-especializado',
+}
+
+/* ── Navega a la tienda del servicio correspondiente ─────── */
+function goToTienda(serviceTitle) {
+  const id = SERVICE_IDS[serviceTitle]
+  if (id) {
+    router.push(`/tienda/${id}`)
+  }
 }
 
 /* ── iconos ───────────────────────────────────────────────── */
@@ -81,7 +104,7 @@ const iconDim = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" str
 const iconDur = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
 const iconEns = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>`
 
-/* ── 12 servicios: fila 1 (1–4) · fila 2 (5–8) · fila 3 (9–12) ── */
+/* ── 12 servicios ─────────────────────────────────────────── */
 const services = [
   /* FILA 1 */
   {
@@ -172,6 +195,7 @@ const services = [
   },
 ]
 
+/* ── Directiva reveal ────────────────────────────────────── */
 const vReveal = {
   mounted(el) {
     el.classList.add('reveal')
@@ -186,7 +210,7 @@ const vReveal = {
     obs.observe(el)
     el.__obs = obs
   },
-  unmounted(el) { el.__obs?.disconnect?.() }
+  unmounted(el) { el.__obs?.disconnect?.() },
 }
 </script>
 

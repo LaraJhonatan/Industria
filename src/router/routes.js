@@ -25,6 +25,20 @@ const routes = [
         path: 'maquinaria/:id',
         component: () => import('pages/MaquinariaDetailPage.vue'),
       },
+
+      // ── Tienda de servicios ──────────────────────────────
+      {
+        path: 'tienda',
+        component: () => import('src/components/views/CatalogView.vue'),
+      },
+      {
+        path: 'tienda/:serviceId',
+        component: () => import('src/components/views/ServiceStoreView.vue'),
+      },
+      {
+        path: 'tienda/:serviceId/:productId',
+        component: () => import('src/components/views/ProductDetailView.vue'),
+      },
     ],
   },
 
