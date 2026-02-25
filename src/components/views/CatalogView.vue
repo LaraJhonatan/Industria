@@ -24,7 +24,7 @@
 
 <script setup>
 import { SERVICES } from '../../data/services.js'
-import CatalogCard from './CatalogCard.vue'
+import CatalogCard from '../tienda/CatalogCard.vue'
 
 
 

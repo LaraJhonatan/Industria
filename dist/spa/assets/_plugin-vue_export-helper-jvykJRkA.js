@@ -1,1 +1,0 @@
-import{a as s}from"./index-CuTWD1V7.js";const u={dark:{type:Boolean,default:null}};function c(t,a){return s(()=>t.dark===null?a.dark.isActive:t.dark)}const k=(t,a)=>{const r=t.__vccOpts||t;for(const[o,e]of a)r[o]=e;return r};export{k as _,c as a,u};
