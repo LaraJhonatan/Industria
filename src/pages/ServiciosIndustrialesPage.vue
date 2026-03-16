@@ -2,18 +2,16 @@
   <q-page class="services-page">
     <div class="services-detailed">
       <WhatWeDoSection />
-      <SectionParaQuien />
       <SectionProceso />
-      <SectionContancto />
+      <!-- <SectionContancto /> -->
     </div>
   </q-page>
 </template>
 
 <script setup>
 import WhatWeDoSection from 'src/components/ServiciosIndustriales/WhatWeDoSection.vue'
-import SectionParaQuien from 'src/components/ServiciosIndustriales/SectionParaQuien.vue'
 import SectionProceso from 'src/components/ServiciosIndustriales/SectionProceso.vue'
-import SectionContancto from 'src/components/ServiciosIndustriales/SectionContancto.vue'
+// import SectionContancto from 'src/components/ServiciosIndustriales/SectionContancto.vue'
 </script>
 
 <style scoped>

@@ -10,14 +10,14 @@
               Desde la selección hasta <span>la máquina operando</span>
             </h2>
 
-            <p class="sub">
+            <!-- <p class="sub">
               Importamos maquinaria industrial de alto desempeño bajo criterios técnicos rigurosos.
               Gestionamos todo el proceso: desde la selección técnica hasta la instalación y puesta en marcha en tu
               planta.
               <br /><br />
               No es solo "traer una máquina": es integrarla inteligentemente a tu operación,
               dejándola funcionando según tus especificaciones productivas.
-            </p>
+            </p> -->
           </div>
 
           <div class="headlineRight">
@@ -50,7 +50,7 @@
         </article>
       </div>
 
-      <div class="note" :class="{ ready }">
+      <!-- <div class="note" :class="{ ready }">
         <div class="noteCard">
           <div class="noteTitle">Tiempos de entrega</div>
           <div class="noteText">
@@ -60,7 +60,7 @@
             y puesta en marcha.
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 </template>

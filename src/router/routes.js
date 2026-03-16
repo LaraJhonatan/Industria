@@ -1,6 +1,7 @@
-// routes.js - ACTUALIZADO CORRECTAMENTE
-
 const routes = [
+  // ══════════════════════════════════════════════════════════
+  //  SITIO PRINCIPAL  →  usa MainLayout (navbar original)
+  // ══════════════════════════════════════════════════════════
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -15,33 +16,75 @@ const routes = [
       },
       {
         path: 'maquinaria',
-        component: () => import('src/pages/MaquinariaIndexpage.vue'),
+        component: () => import('pages/MaquinariaIndexpage.vue'),
       },
       {
-        path: '/ingenieria',
-        component: () => import('src/pages/IndexIngenieria.vue'),
+        path: 'ingenieria',
+        component: () => import('pages/IndexIngenieria.vue'),
       },
       {
         path: 'maquinaria/:id',
         component: () => import('pages/MaquinariaDetailPage.vue'),
       },
+    ],
+  },
 
-      // ── Tienda de servicios ──────────────────────────────
+  // ══════════════════════════════════════════════════════════
+  //  TIENDA  →  usa StoreLayout (navbar propia con carrito)
+  //  Todas las rutas de tienda van anidadas aquí
+  // ══════════════════════════════════════════════════════════
+  {
+    path: '/tienda',
+    component: () => import('layouts/StoreLayout.vue'),
+    children: [
+      // Catálogo principal (pantalla de inicio de la tienda)
       {
-        path: 'tienda',
+        path: '',
         component: () => import('src/components/views/CatalogView.vue'),
       },
+      // Categoría  →  /tienda/drones  o  /tienda/filamentos
       {
-        path: 'tienda/:serviceId',
+        path: ':categoryId',
         component: () => import('src/components/views/ServiceStoreView.vue'),
       },
+      // Detalle de producto  →  /tienda/drones/dr-bat-01
       {
-        path: 'tienda/:serviceId/:productId',
+        path: ':categoryId/:productId',
         component: () => import('src/components/views/ProductDetailView.vue'),
+      },
+      // Carrito
+      {
+        path: '../carrito', // se accede como  /carrito
+        redirect: '/carrito', // redirige a la ruta absoluta de abajo
       },
     ],
   },
 
+  // Carrito y checkout fuera del nested para que la URL sea limpia
+  {
+    path: '/carrito',
+    component: () => import('layouts/StoreLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/components/views/CartView.vue'),
+      },
+    ],
+  },
+  {
+    path: '/checkout',
+    component: () => import('layouts/StoreLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('src/components/views/CheckoutView.vue'),
+      },
+    ],
+  },
+
+  // ══════════════════════════════════════════════════════════
+  //  404
+  // ══════════════════════════════════════════════════════════
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),

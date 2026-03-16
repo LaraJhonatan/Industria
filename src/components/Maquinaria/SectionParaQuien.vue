@@ -7,7 +7,7 @@
       <!-- ========================= -->
       <div class="layout">
         <!-- LEFT CONTENT -->
-        <div class="left">
+        <!-- <div class="left">
           <div class="kicker" v-reveal data-delay="0">
             SUMINISTRO INDUSTRIAL
           </div>
@@ -23,15 +23,12 @@
             integral y respaldo especializado en cada etapa.
           </p>
 
-          <!-- Tags -->
           <div class="tags" v-reveal data-delay="200">
             <span class="tag">Selección técnica personalizada</span>
             <span class="tag">Gestión completa de importación</span>
             <span class="tag">Instalación y puesta en marcha</span>
             <span class="tag">Garantía y soporte post-venta</span>
           </div>
-
-          <!-- Buttons -->
           <div class="cta-group" v-reveal data-delay="260">
             <a href="#formulario-proyectos" class="cta-btn">
               Solicitar cotización
@@ -46,10 +43,10 @@
               Conocer más
             </a>
           </div>
-        </div>
+        </div> -->
 
         <!-- RIGHT VISUAL -->
-        <div class="right" v-reveal data-delay="80">
+        <!-- <div class="right" v-reveal data-delay="80">
           <div class="img-wrap">
             <div class="industrial-visual">
 
@@ -72,7 +69,7 @@
 
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- ========================= -->

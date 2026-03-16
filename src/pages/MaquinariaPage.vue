@@ -20,13 +20,16 @@
         <div class="catalog-header" v-reveal>
           <h2 class="section-title">Catálogo de maquinaria</h2>
           <div class="filters">
-            <q-select v-model="selectedCategory" :options="categories" outlined dense label="Categoría" class="filter-select" />
-            <q-select v-model="selectedSort" :options="sortOptions" outlined dense label="Ordenar por" class="filter-select" />
+            <q-select v-model="selectedCategory" :options="categories" outlined dense label="Categoría"
+              class="filter-select" />
+            <q-select v-model="selectedSort" :options="sortOptions" outlined dense label="Ordenar por"
+              class="filter-select" />
           </div>
         </div>
 
         <div class="machines-grid">
-          <article v-for="machine in filteredMachines" :key="machine.id" class="machine-card" v-reveal :data-delay="machine.id * 60">
+          <article v-for="machine in filteredMachines" :key="machine.id" class="machine-card" v-reveal
+            :data-delay="machine.id * 60">
             <div class="card-image">
               <img :src="machine.image" :alt="machine.name" />
               <div v-if="machine.badge" class="badge">{{ machine.badge }}</div>
@@ -50,7 +53,8 @@
                   <div class="price-label">Precio desde</div>
                 </div>
 
-                <q-btn unelevated class="view-btn" label="Ver más" icon-right="arrow_forward" @click="goToDetail(machine.id)" />
+                <q-btn unelevated class="view-btn" label="Ver más" icon-right="arrow_forward"
+                  @click="goToDetail(machine.id)" />
               </div>
             </div>
           </article>
@@ -68,7 +72,8 @@
               Importamos cualquier equipo industrial bajo especificaciones técnicas.
             </p>
           </div>
-          <q-btn unelevated class="cta-btn" label="Solicitar cotización" icon-right="chat_bubble_outline" @click="goToContact" />
+          <q-btn unelevated class="cta-btn" label="Solicitar cotización" icon-right="chat_bubble_outline"
+            @click="goToContact" />
         </div>
       </div>
     </section>
