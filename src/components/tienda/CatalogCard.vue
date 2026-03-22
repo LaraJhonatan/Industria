@@ -1,15 +1,10 @@
+<!-- ════════════════════════════════════════
+     CatalogCard.vue
+════════════════════════════════════════ -->
 <template>
-  <article
-    class="catalog-card"
-    :style="{ '--color': service.color }"
-    @click="$emit('select')"
-    @mouseenter="hovered = true"
-    @mouseleave="hovered = false"
-    tabindex="0"
-    role="button"
-    :aria-label="`Ver servicios de ${service.title}`"
-    @keydown.enter="$emit('select')"
-  >
+  <article class="catalog-card" :style="{ '--color': service.color }" @click="$emit('select')"
+    @mouseenter="hovered = true" @mouseleave="hovered = false" tabindex="0" role="button"
+    :aria-label="`Ver servicios de ${service.title}`" @keydown.enter="$emit('select')">
     <div class="card-icon" v-html="service.icon" />
     <div class="card-meta">
       <span class="card-kicker">{{ service.kicker }}</span>
@@ -67,7 +62,11 @@ const hovered = ref(false)
   flex-shrink: 0;
 }
 
-.card-meta { display: flex; flex-direction: column; gap: 4px; }
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
 .card-kicker {
   font-size: 10.5px;

@@ -12,9 +12,6 @@
           <div class="sk sk-bc-b" />
         </div>
         <div class="sk sk-hero" />
-        <div class="sk-chips-row">
-          <div v-for="n in 4" :key="n" class="sk sk-chip" :style="{ width: (72 + n * 20) + 'px' }" />
-        </div>
         <div class="sk-subcat-grid">
           <div v-for="n in 6" :key="n" class="sk sk-subcat-card" />
         </div>
@@ -66,19 +63,7 @@
           </div>
         </div>
 
-        <!-- Filter chips (otras categorías) -->
-        <div class="filter-row">
-          <div class="chip chip-active"
-            :style="{ background: category.accentColor, borderColor: category.accentColor }">
-            {{ category.title }}
-          </div>
-          <button v-for="other in otherCategories" :key="other.id" class="chip chip-inactive"
-            @click="router.push(`/tienda/${other.id}`)">
-            {{ other.title }}
-          </button>
-        </div>
-
-        <!-- Subcategorías grid (como en el Word doc pág. 2) -->
+        <!-- Subcategorías grid -->
         <div class="subcat-section">
           <div class="subcat-grid">
             <div v-for="sub in category.subcategories" :key="sub.id" class="subcat-card"
@@ -112,7 +97,7 @@
           <span class="count-badge">{{ filteredProducts.length }} productos</span>
         </div>
 
-        <!-- Breadcrumb subcategoria (Drones > Baterías) -->
+        <!-- Breadcrumb subcategoria -->
         <div v-if="activeSubcat" class="subcat-breadcrumb">
           <button class="sc-bc-btn" @click="activeSubcat = null">{{ category.title }}</button>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -200,7 +185,6 @@ onMounted(() => setTimeout(() => { isLoading.value = false }, 3000))
 
 // ── Data ────────────────────────────────────────────────────────────────────
 const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params.categoryId) ?? null)
-const otherCategories = computed(() => STORE_CATEGORIES.filter(c => c.id !== route.params.categoryId))
 
 // ── Filtro por subcategoría ─────────────────────────────────────────────────
 const activeSubcat = ref(null)
@@ -286,27 +270,15 @@ function quickAdd(product) {
   margin-bottom: 32px;
 }
 
-.sk-chips-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
-}
-
-.sk-chip {
-  height: 34px;
-  border-radius: 999px;
-}
-
 .sk-subcat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 14px;
   margin-bottom: 40px;
 }
 
 .sk-subcat-card {
-  height: 140px;
+  height: 170px;
   border-radius: 14px;
 }
 
@@ -451,7 +423,7 @@ function quickAdd(product) {
   overflow: hidden;
   background-size: cover;
   background-position: center;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 }
 
 .hero-overlay {
@@ -500,55 +472,19 @@ function quickAdd(product) {
   color: rgba(255, 255, 255, .72);
 }
 
-/* chips */
-.filter-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 36px;
-}
-
-.chip {
-  padding: 7px 16px;
-  border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 700;
-  white-space: nowrap;
-  border: 1.5px solid transparent;
-  cursor: pointer;
-  transition: all 180ms;
-}
-
-.chip-active {
-  color: #fff;
-  cursor: default;
-}
-
-.chip-inactive {
-  background: #fff;
-  border-color: rgba(27, 27, 27, .12);
-  color: rgba(27, 27, 27, .6);
-}
-
-.chip-inactive:hover {
-  border-color: #0071e3;
-  color: #0071e3;
-  background: rgba(0, 113, 227, .05);
-}
-
-/* subcategorías grid */
+/* subcategorías grid — más grandes */
 .subcat-section {
-  margin-bottom: 40px;
+  margin-bottom: 44px;
 }
 
 .subcat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
 }
 
 .subcat-card {
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1.5px solid rgba(27, 27, 27, .09);
   overflow: hidden;
   cursor: pointer;
@@ -557,15 +493,13 @@ function quickAdd(product) {
 }
 
 .subcat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, .09);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, .1);
 }
-
-.subcat-active {}
 
 .subcat-img-wrap {
   width: 100%;
-  height: 90px;
+  height: 130px;
   overflow: hidden;
   background: #f0f2f5;
 }
@@ -582,12 +516,12 @@ function quickAdd(product) {
 }
 
 .subcat-info {
-  padding: 10px 12px;
+  padding: 13px 14px 14px;
 }
 
 .subcat-name {
-  margin: 0 0 3px;
-  font-size: 13px;
+  margin: 0 0 4px;
+  font-size: 14px;
   font-weight: 800;
   color: #1b1b1b;
 }
@@ -596,7 +530,7 @@ function quickAdd(product) {
   display: flex;
   align-items: center;
   gap: 3px;
-  font-size: 11.5px;
+  font-size: 12px;
   color: rgba(27, 27, 27, .45);
   font-weight: 600;
 }
@@ -916,6 +850,10 @@ function quickAdd(product) {
     padding: 24px 22px;
   }
 
+  .subcat-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .cta-banner {
     flex-direction: column;
     align-items: flex-start;
@@ -929,10 +867,6 @@ function quickAdd(product) {
 
   .store-header-row {
     flex-direction: column;
-  }
-
-  .subcat-grid {
-    grid-template-columns: repeat(3, 1fr);
   }
 }
 

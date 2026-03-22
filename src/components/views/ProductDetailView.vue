@@ -44,7 +44,7 @@
       ═══════════════════════════════════════════════════════ -->
       <template v-else-if="product && category">
 
-        <!-- Breadcrumb  Catálogo / Drones / Batería Lipo 2200mAh -->
+        <!-- Breadcrumb -->
         <nav class="breadcrumb" aria-label="Ruta de navegación">
           <button class="bc-link" @click="router.push('/tienda')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -81,6 +81,21 @@
                 </transition>
                 <div v-if="isBestSeller" class="img-top-badge" :style="{ background: category.accentColor }">
                   MÁS VENDIDO
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Secondary feature image (fills vertical gap) ── -->
+            <div class="secondary-image-card"
+              :style="{ borderColor: `color-mix(in srgb, ${category.accentColor} 22%, transparent)` }">
+              <div class="sec-img-wrap">
+                <img :src="product.images[1] ?? product.images[0]" :alt="`${product.name} detalle`" class="sec-img" />
+                <div class="sec-img-overlay"
+                  :style="{ background: `linear-gradient(135deg, ${category.accentColor}cc 0%, ${category.accentColor}44 100%)` }" />
+                <div class="sec-img-content">
+                  <span class="sec-badge">{{ category.kicker }}</span>
+                  <p class="sec-title">{{ product.name }}</p>
+                  <p class="sec-sub">Envío a toda Colombia · Garantía 2 años</p>
                 </div>
               </div>
             </div>
@@ -347,7 +362,6 @@ const colorBorder = computed(() => `color-mix(in srgb, ${category.value?.accentC
 
 // ── Badges ───────────────────────────────────────────────────────────────────
 const isBestSeller = computed(() => {
-  // Marca los primeros 2 productos de cada categoría como "más vendido"
   const idx = category.value?.products.findIndex(p => p.id === product.value?.id) ?? -1
   return idx >= 0 && idx < 2
 })
@@ -618,6 +632,12 @@ const vReveal = {
 }
 
 /* gallery */
+.gallery-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .gallery-grid {
   display: grid;
   grid-template-columns: 82px 1fr;
@@ -677,6 +697,70 @@ const vReveal = {
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #fff;
+}
+
+/* ── Secondary feature image ── */
+.secondary-image-card {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 2px solid;
+}
+
+.sec-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+
+.sec-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sec-img-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.sec-img-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px 22px;
+}
+
+.sec-badge {
+  display: inline-flex;
+  padding: 3px 10px;
+  background: rgba(255, 255, 255, .2);
+  border: 1px solid rgba(255, 255, 255, .4);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  width: fit-content;
+  margin-bottom: 8px;
+}
+
+.sec-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.sec-sub {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, .8);
+  font-weight: 600;
 }
 
 /* info section */

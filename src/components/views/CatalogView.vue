@@ -82,70 +82,6 @@
       </div>
 
       <!-- ══════════════════════════════════════════════
-           SUBCATEGORÍAS por categoría
-      ═══════════════════════════════════════════════ -->
-      <div v-for="cat in STORE_CATEGORIES" :key="`sub-${cat.id}`" class="subcat-block" v-reveal>
-        <div class="subcat-block-head">
-          <h2 class="subcat-block-title">{{ cat.title }}</h2>
-          <button class="see-all-btn" @click="router.push(`/tienda/${cat.id}`)">
-            Ver todo →
-          </button>
-        </div>
-
-        <div class="subcat-row">
-          <div v-for="sub in cat.subcategories" :key="sub.id" class="subcat-card"
-            @click="router.push(`/tienda/${cat.id}`)">
-            <div class="subcat-img-wrap">
-              <img :src="sub.img" :alt="sub.name" class="subcat-img" loading="lazy" />
-            </div>
-            <p class="subcat-name">{{ sub.name }}</p>
-            <span class="subcat-count">
-              {{ sub.count }} productos
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════════════════════════════════════════
-           PRODUCTOS DESTACADOS
-      ═══════════════════════════════════════════════ -->
-      <div class="section-head" v-reveal>
-        <h2 class="section-title">Productos destacados</h2>
-        <p class="section-sub">Los más vendidos esta semana</p>
-      </div>
-
-      <div class="featured-grid" v-reveal>
-        <div v-for="item in featuredProducts" :key="item.product.id" class="feat-card"
-          @click="router.push(`/tienda/${item.catId}/${item.product.id}`)">
-          <div class="feat-badges">
-            <span v-if="item.product.discount > 0" class="feat-badge-disc">
-              -{{ item.product.discount }}%
-            </span>
-            <span class="feat-badge-stock">En stock</span>
-          </div>
-          <div class="feat-img-wrap">
-            <img :src="item.product.images[0]" :alt="item.product.name" class="feat-img" loading="lazy" />
-          </div>
-          <div class="feat-body">
-            <p class="feat-kicker" :style="{ color: item.accentColor }">{{ item.kicker }}</p>
-            <h3 class="feat-name">{{ item.product.name }}</h3>
-            <div class="feat-price-row">
-              <span v-if="item.product.discount > 0" class="feat-price-old">
-                {{ formatCOP(item.product.originalPrice) }}
-              </span>
-              <span class="feat-price">{{ formatCOP(item.product.price) }}</span>
-            </div>
-            <button class="feat-btn" :style="{ background: item.accentColor }">
-              Ver Detalles
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════════════════════════════════════════
            CTA
       ═══════════════════════════════════════════════ -->
       <div class="cta-banner" v-reveal>
@@ -164,24 +100,9 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { STORE_CATEGORIES, formatCOP } from '../../data/store-products.js'
+import { STORE_CATEGORIES } from '../../data/store-products.js'
 
 const router = useRouter()
-
-// Productos destacados: los que tienen descuento primero, luego fallback
-const featuredProducts = []
-for (const cat of STORE_CATEGORIES) {
-  const withDiscount = cat.products.filter(p => p.discount > 0).slice(0, 2)
-  const fallback = cat.products.filter(p => p.discount === 0).slice(0, 2 - withDiscount.length)
-  for (const p of [...withDiscount, ...fallback]) {
-    featuredProducts.push({
-      product: p,
-      catId: cat.id,
-      kicker: cat.kicker,
-      accentColor: cat.accentColor,
-    })
-  }
-}
 
 // Reveal directive
 const vReveal = {
@@ -402,7 +323,7 @@ const vReveal = {
   border-radius: 22px;
   overflow: hidden;
   cursor: pointer;
-  min-height: 340px;
+  min-height: 380px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -463,7 +384,7 @@ const vReveal = {
 
 .cat-name {
   margin: 0 0 8px;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   color: #fff;
   letter-spacing: -0.6px;
@@ -519,249 +440,6 @@ const vReveal = {
 .cat-btn:hover {
   filter: brightness(0.88);
   transform: translateY(-1px);
-}
-
-/* ── Subcategorías block ── */
-.subcat-block {
-  margin-bottom: 64px;
-}
-
-.subcat-block-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  gap: 16px;
-}
-
-.subcat-block-title {
-  margin: 0;
-  font-size: clamp(18px, 2.2vw, 22px);
-  font-weight: 900;
-  color: #1b1b1b;
-  letter-spacing: -0.4px;
-}
-
-.see-all-btn {
-  flex-shrink: 0;
-  background: none;
-  border: 1.5px solid rgba(27, 27, 27, 0.14);
-  border-radius: 10px;
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 800;
-  color: rgba(27, 27, 27, 0.65);
-  cursor: pointer;
-  transition: all 160ms;
-  white-space: nowrap;
-}
-
-.see-all-btn:hover {
-  border-color: #0071e3;
-  color: #0071e3;
-  background: rgba(0, 113, 227, 0.05);
-}
-
-.subcat-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 14px;
-}
-
-.subcat-card {
-  background: #fff;
-  border-radius: 14px;
-  border: 1.5px solid rgba(27, 27, 27, 0.08);
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 220ms ease;
-}
-
-.subcat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.09);
-  border-color: rgba(0, 113, 227, 0.18);
-}
-
-.subcat-img-wrap {
-  width: 100%;
-  height: 86px;
-  overflow: hidden;
-  background: #f0f2f5;
-}
-
-.subcat-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 360ms;
-}
-
-.subcat-card:hover .subcat-img {
-  transform: scale(1.07);
-}
-
-.subcat-name {
-  padding: 10px 10px 2px;
-  margin: 0;
-  font-size: 12.5px;
-  font-weight: 800;
-  color: #1b1b1b;
-}
-
-.subcat-count {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 0 10px 10px;
-  font-size: 11px;
-  color: rgba(27, 27, 27, 0.45);
-  font-weight: 600;
-}
-
-/* ── Featured grid ── */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 20px;
-  margin-bottom: 72px;
-}
-
-.feat-card {
-  position: relative;
-  background: #fff;
-  border-radius: 16px;
-  border: 1.5px solid rgba(27, 27, 27, 0.08);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 220ms ease, box-shadow 220ms ease;
-}
-
-.feat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.10);
-}
-
-.feat-badges {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.feat-badge-disc {
-  padding: 3px 9px;
-  background: #ff3b30;
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 900;
-  color: #fff;
-  width: fit-content;
-}
-
-.feat-badge-stock {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
-  background: rgba(46, 204, 113, 0.14);
-  border: 1px solid rgba(46, 204, 113, 0.3);
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 800;
-  color: #1aab5c;
-  width: fit-content;
-}
-
-.feat-badge-stock::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  background: #1aab5c;
-  border-radius: 50%;
-  display: block;
-}
-
-.feat-img-wrap {
-  width: 100%;
-  height: 190px;
-  overflow: hidden;
-  background: #f0f2f5;
-}
-
-.feat-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 380ms;
-}
-
-.feat-card:hover .feat-img {
-  transform: scale(1.05);
-}
-
-.feat-body {
-  padding: 14px 16px 18px;
-}
-
-.feat-kicker {
-  margin: 0 0 4px;
-  font-size: 10.5px;
-  font-weight: 900;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-}
-
-.feat-name {
-  margin: 0 0 10px;
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #1b1b1b;
-  line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.feat-price-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.feat-price-old {
-  font-size: 12px;
-  color: rgba(27, 27, 27, 0.4);
-  text-decoration: line-through;
-  font-weight: 600;
-}
-
-.feat-price {
-  font-size: 16px;
-  font-weight: 900;
-  color: #1b1b1b;
-  letter-spacing: -0.3px;
-}
-
-.feat-btn {
-  width: 100%;
-  height: 38px;
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: filter 160ms;
-}
-
-.feat-btn:hover {
-  filter: brightness(0.88);
 }
 
 /* ── CTA ── */
@@ -840,15 +518,7 @@ const vReveal = {
   }
 
   .cat-card {
-    min-height: 280px;
-  }
-
-  .subcat-row {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .featured-grid {
-    grid-template-columns: repeat(2, 1fr);
+    min-height: 300px;
   }
 
   .cta-banner {
@@ -874,14 +544,6 @@ const vReveal = {
 
   .hero-visual {
     height: 200px;
-  }
-
-  .subcat-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .featured-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>
