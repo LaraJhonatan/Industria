@@ -12,6 +12,14 @@
           <q-btn flat dense label="Servicio técnico" class="bs-link" />
           <q-btn flat dense label="Proyectos" class="bs-link" />
           <q-btn flat dense label="Empresa" class="bs-link" />
+          <router-link to="/tienda" class="bs-tienda-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            Tienda
+          </router-link>
         </nav>
 
         <q-space />
@@ -38,6 +46,16 @@
           <q-item clickable v-ripple><q-item-section>Servicio técnico</q-item-section></q-item>
           <q-item clickable v-ripple><q-item-section>Proyectos</q-item-section></q-item>
           <q-item clickable v-ripple><q-item-section>Empresa</q-item-section></q-item>
+          <q-item clickable v-ripple tag="a" to="/tienda" @click="drawer = false" class="bs-drawer-tienda">
+            <q-item-section avatar>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+            </q-item-section>
+            <q-item-section>Tienda</q-item-section>
+          </q-item>
         </q-list>
 
         <div class="q-mt-md row q-gutter-sm">
@@ -160,6 +178,7 @@
         </div>
       </div>
     </q-footer>
+
     <q-page-sticky position="bottom-right" :offset="[24, 24]" class="z-fab">
       <a href="https://wa.me/573001234567" target="_blank" class="bs-whatsapp-float">
         <div class="bs-whatsapp-pulse"></div>
@@ -263,6 +282,33 @@ onBeforeUnmount(() => {
   line-height: 1;
 }
 
+/* ── Botón Tienda en nav desktop ── */
+.bs-tienda-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #0071e3;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.1px;
+  transition: background 180ms ease, transform 180ms ease;
+  white-space: nowrap;
+}
+
+.bs-tienda-link:hover {
+  background: #0062c8;
+  transform: translateY(-1px);
+}
+
+.bs-tienda-link.router-link-active {
+  background: #004fa3;
+}
+
 .bs-signup {
   background: #0071e3;
   color: #fff;
@@ -295,6 +341,17 @@ onBeforeUnmount(() => {
   background: rgba(255, 255, 255, 0.98);
   color: #0b1220;
   border-left: 1px solid rgba(15, 23, 42, 0.10);
+}
+
+/* Item Tienda en drawer mobile */
+.bs-drawer-tienda {
+  color: #0071e3 !important;
+  font-weight: 800;
+}
+
+.bs-drawer-tienda :deep(.q-item__section--avatar) {
+  color: #0071e3;
+  min-width: 32px;
 }
 
 /* ====== FOOTER (Better Stack vibe - light) ====== */
@@ -562,7 +619,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Botón WhatsApp */
+/* ====== WHATSAPP ====== */
 .bs-whatsapp-float {
   position: relative;
   width: 60px;
@@ -588,7 +645,6 @@ onBeforeUnmount(() => {
   height: 32px;
 }
 
-/* Efecto de pulso */
 .bs-whatsapp-pulse {
   position: absolute;
   width: 100%;
@@ -611,7 +667,6 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Ajuste para móvil */
 @media (max-width: 600px) {
   .bs-whatsapp-float {
     width: 52px;
