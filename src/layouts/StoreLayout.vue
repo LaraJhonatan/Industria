@@ -203,7 +203,7 @@
             </a>
           </div>
           <div class="bs-foot-copy">
-            © {{ year }} NovaIndustria, S.A.S. v.1.0.3
+            © {{ year }} NovaIndustria, S.A.S. v.1.0.4
             <a class="bs-ext" href="#" aria-label="Abrir enlace">
               <svg viewBox="0 0 24 24" class="bs-ico-sm" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M14 3h7v7" />
