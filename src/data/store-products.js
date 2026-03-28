@@ -1,47 +1,39 @@
-// src/data/store-products.js
 // ─────────────────────────────────────────────────────────────
-// Catálogos iniciales: DRONES y FILAMENTOS
+//  IMÁGENES
 // ─────────────────────────────────────────────────────────────
-
-// ── Imágenes DRONES (IDs Unsplash verificados) ────────────────
-// Todos estos IDs están confirmados en el CDN images.unsplash.com
 const D = {
-  // Drone volando al atardecer
   hero: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1400&h=560&fit=crop&q=85',
   fly1: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&h=600&fit=crop&q=80',
-  // Drone DJI en mano / en tierra
   fly2: 'https://images.unsplash.com/photo-1508614999368-9260051292e5?w=800&h=600&fit=crop&q=80',
-  // Hélices / propeller closeup
+  fly3: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop&q=80',
   prop: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=800&h=600&fit=crop&q=80',
-  // Circuito electrónico / PCB
   pcb: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&fit=crop&q=80',
-  // Electrónica general
   elec: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?w=800&h=600&fit=crop&q=80',
-  // Fibra de carbono / industrial
   carbon: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=600&fit=crop&q=80',
+  drone2: 'https://images.unsplash.com/photo-1662867306458-7ea3aece4b8b?w=800&h=600&fit=crop&q=80',
+  cam: 'https://images.unsplash.com/photo-1590418606746-018840f9ced6?w=800&h=600&fit=crop&q=80',
+  gps: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&h=600&fit=crop&q=80',
+  sens: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&fit=crop&q=80',
 }
 
-// ── Imágenes FILAMENTOS (Picsum con seeds fijos) ──────────────
-// Picsum garantiza que cada seed siempre devuelve la misma imagen real.
-// Nota: reemplaza estas por fotos reales de tus proveedores cuando las tengas.
 const F = {
-  // Hero — spool de filamento colorido
-  hero: 'https://picsum.photos/seed/filament-hero/1400/560',
-  // Spool de filamento / carrete
-  spool1: 'https://picsum.photos/seed/filament-spool1/800/600',
-  spool2: 'https://picsum.photos/seed/filament-spool2/800/600',
-  // Impresora 3D imprimiendo
-  print1: 'https://picsum.photos/seed/3dprinter-pla/800/600',
-  print2: 'https://picsum.photos/seed/3dprinter-petg/800/600',
-  // Material plástico / industrial
-  mat1: 'https://picsum.photos/seed/plastic-material/800/600',
-  mat2: 'https://picsum.photos/seed/nylon-material/800/600',
+  hero: 'https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?w=1400&h=560&fit=crop&q=85',
+  spool1: 'https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?w=800&h=600&fit=crop&q=80',
+  spool2: 'https://images.unsplash.com/photo-1565515636069-5d61f2a0a007?w=800&h=600&fit=crop&q=80',
+  print1: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=800&h=600&fit=crop&q=80',
+  print2: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&h=600&fit=crop&q=80',
+  mat1: 'https://images.unsplash.com/photo-1631377819268-d716cd610cd2?w=800&h=600&fit=crop&q=80',
+  mat2: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=800&h=600&fit=crop&q=80',
+  flex: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&h=600&fit=crop&q=80',
 }
 
+// ─────────────────────────────────────────────────────────────
+//  CATEGORÍAS
+// ─────────────────────────────────────────────────────────────
 export const STORE_CATEGORIES = [
-  // ══════════════════════════════════════════════════════════
+  // ════════════════════════════════════════
   //  DRONES
-  // ══════════════════════════════════════════════════════════
+  // ════════════════════════════════════════
   {
     id: 'drones',
     title: 'Drones',
@@ -56,19 +48,19 @@ export const STORE_CATEGORIES = [
       { id: 'estructuras', name: 'Estructuras', count: 18, img: D.fly1 },
       { id: 'baterias', name: 'Baterías', count: 22, img: D.pcb },
       { id: 'controladores', name: 'Controladores', count: 14, img: D.pcb },
-      { id: 'sensores', name: 'Sensores', count: 27, img: D.elec },
-      { id: 'gps', name: 'GPS & Nav', count: 21, img: D.elec },
-      { id: 'camaras', name: 'Cámaras', count: 15, img: D.fly2 },
+      { id: 'sensores', name: 'Sensores', count: 27, img: D.sens },
+      { id: 'gps', name: 'GPS & Nav', count: 21, img: D.gps },
+      { id: 'camaras', name: 'Cámaras', count: 15, img: D.cam },
     ],
     products: [
-      // ── Baterías ─────────────────────────────────────────
+      // ── BATERÍAS ────────────────────────
       {
         id: 'dr-bat-01',
         subcategory: 'baterias',
         name: 'Batería Lipo 2200mAh 3S',
         shortDesc: 'Batería LiPo 3S 2200mAh 25C para drones FPV y fotografía. Conector XT60.',
         longDesc:
-          'Batería LiPo de 3 celdas diseñada para drones FPV y de fotografía. Descarga máxima de 25C continua y 50C de pico. Conector XT60 incluido. Carga de equilibrio integrada. Ideal para vuelos de 10-15 minutos en drones de 250 a 450mm.',
+          'Batería LiPo de 3 celdas diseñada para drones FPV y de fotografía. Descarga máxima de 25C continua y 50C de pico. Conector XT60 incluido. Carga de equilibrio integrada. Ideal para vuelos de 10-15 minutos en drones de 250 a 450mm. Fabricada con celdas Molicel de grado A para mayor ciclo de vida (>300 ciclos).',
         price: 89900,
         originalPrice: null,
         discount: 0,
@@ -77,8 +69,12 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Capacidad', v: '2200mAh' },
           { l: 'Celdas', v: '3S (11.1V)' },
-          { l: 'Descarga', v: '25C / 50C pico' },
+          { l: 'Descarga máx.', v: '25C continua / 50C pico' },
           { l: 'Conector', v: 'XT60' },
+          { l: 'Peso', v: '148g' },
+          { l: 'Ciclos de vida', v: '>300 ciclos' },
+          { l: 'Dimensiones', v: '115 × 35 × 22mm' },
+          { l: 'Balance lead', v: 'JST-XH 4 pines' },
         ],
         images: [D.pcb, D.elec, D.fly1],
       },
@@ -89,7 +85,7 @@ export const STORE_CATEGORIES = [
         shortDesc:
           'LiPo 4S 5800mAh de alta capacidad para drones de carga y fotografía profesional.',
         longDesc:
-          'Batería de alta capacidad para drones de fotografía profesional y carga. Tiempo de vuelo extendido de 25-30 minutos. Protección contra sobrecarga y sobredescarga integrada. Compatible con cargadores iMax B6, B8 y similares.',
+          'Batería de alta capacidad para drones de fotografía profesional y carga. Tiempo de vuelo extendido de 25-30 minutos. Protección contra sobrecarga y sobredescarga integrada. Compatible con cargadores iMax B6, B8 y similares. Celdas de alta densidad energética para máximo rendimiento en plataformas profesionales.',
         price: 245000,
         originalPrice: null,
         discount: 0,
@@ -98,8 +94,12 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Capacidad', v: '5800mAh' },
           { l: 'Celdas', v: '4S (14.8V)' },
-          { l: 'Descarga', v: '20C / 40C pico' },
+          { l: 'Descarga máx.', v: '20C continua / 40C pico' },
           { l: 'Conector', v: 'XT90' },
+          { l: 'Peso', v: '410g' },
+          { l: 'Temperatura uso', v: '-10°C a +45°C' },
+          { l: 'Dimensiones', v: '145 × 52 × 38mm' },
+          { l: 'Balance lead', v: 'JST-XH 5 pines' },
         ],
         images: [D.elec, D.pcb, D.prop],
       },
@@ -110,7 +110,7 @@ export const STORE_CATEGORIES = [
         shortDesc:
           'LiPo 6S 10000mAh para drones industriales de larga duración. Hasta 45 min de vuelo.',
         longDesc:
-          'La solución ideal para drones de inspección industrial y agricultura de precisión. Alta capacidad para vuelos de hasta 45 minutos. Celdas de grado industrial con menos del 2% de variación entre celdas.',
+          'La solución ideal para drones de inspección industrial y agricultura de precisión. Alta capacidad para vuelos de hasta 45 minutos. Celdas de grado industrial con menos del 2% de variación entre celdas. Carcasa semirrígida con protección contra impacto. Compatible con cargadores de carga paralela para ciclos de recarga rápida en campo.',
         price: 485000,
         originalPrice: 562000,
         discount: 15,
@@ -119,19 +119,24 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Capacidad', v: '10000mAh' },
           { l: 'Celdas', v: '6S (22.2V)' },
-          { l: 'Descarga', v: '15C / 30C pico' },
+          { l: 'Descarga máx.', v: '15C continua / 30C pico' },
+          { l: 'Conector', v: 'XT90-S' },
           { l: 'Peso', v: '980g' },
+          { l: 'Autonomía aprox.', v: 'Hasta 45 min' },
+          { l: 'Dimensiones', v: '175 × 72 × 48mm' },
+          { l: 'Carcasa', v: 'Semirrígida anti-impacto' },
         ],
         images: [D.pcb, D.elec, D.fly1],
       },
-      // ── Motores ──────────────────────────────────────────
+
+      // ── MOTORES ─────────────────────────
       {
         id: 'dr-mot-01',
         subcategory: 'motores',
         name: 'Motor Brushless 2306 2450KV',
         shortDesc: 'Motor sin escobillas de alta velocidad para drones FPV de carreras 5".',
         longDesc:
-          'Motor brushless diseñado para drones de carreras FPV 5". Alta eficiencia y bajo calentamiento gracias a su diseño de ventilación optimizada. Compatible con hélices de 5" y 5.1". Viene con tornillería M3 y adaptadores de hélice.',
+          'Motor brushless diseñado para drones de carreras FPV 5". Alta eficiencia y bajo calentamiento gracias a su diseño de ventilación optimizada. Compatible con hélices de 5" y 5.1". Viene con tornillería M3 y adaptadores de hélice. Rodamientos híbridos de cerámica para mayor vida útil a altas RPM.',
         price: 125000,
         originalPrice: null,
         discount: 0,
@@ -142,6 +147,10 @@ export const STORE_CATEGORIES = [
           { l: 'Talla estátor', v: '2306' },
           { l: 'Peso', v: '30g' },
           { l: 'Corriente máx.', v: '35A' },
+          { l: 'Voltaje', v: '3S–6S LiPo' },
+          { l: 'Rodamientos', v: 'Cerámica híbrida' },
+          { l: 'Montaje', v: 'M3 × 4 tornillos' },
+          { l: 'Resistencia', v: '0.06Ω' },
         ],
         images: [D.elec, D.prop, D.fly1],
       },
@@ -152,7 +161,7 @@ export const STORE_CATEGORIES = [
         shortDesc:
           'Motor de baja KV para drones de fotografía y carga. Hexacópteros y octacópteros.',
         longDesc:
-          'Motor de gran formato para hexacópteros y octacópteros de fotografía profesional y carga. Alta eficiencia con cargas pesadas y vuelos estabilizados de larga duración. Resistente al agua y polvo (IP54).',
+          'Motor de gran formato para hexacópteros y octacópteros de fotografía profesional y carga. Alta eficiencia con cargas pesadas y vuelos estabilizados de larga duración. Resistente al agua y polvo (IP54). Devanados de cobre sin oxígeno de baja resistencia para máxima eficiencia.',
         price: 285000,
         originalPrice: 320000,
         discount: 10,
@@ -163,17 +172,46 @@ export const STORE_CATEGORIES = [
           { l: 'Talla estátor', v: '4114' },
           { l: 'Peso', v: '185g' },
           { l: 'Corriente máx.', v: '28A' },
+          { l: 'Voltaje', v: '4S–8S LiPo' },
+          { l: 'Empuje máx.', v: '1350g (hélice 15")' },
+          { l: 'Protección', v: 'IP54' },
+          { l: 'Eficiencia', v: '>87%' },
         ],
-        images: [D.prop, D.elec],
+        images: [D.prop, D.elec, D.fly2],
       },
-      // ── Controladores ────────────────────────────────────
+      {
+        id: 'dr-mot-03',
+        subcategory: 'motores',
+        name: 'Motor Brushless 1404 3800KV Micro',
+        shortDesc: 'Motor ultra ligero para drones micro FPV 2.5" y 3". Solo 9g.',
+        longDesc:
+          'Motor compacto de alto rendimiento para micro drones FPV de 2.5" y 3". Diseño sin escobillas con imanes de neodimio N52 para máximo par de torsión en formatos pequeños. Ideal para vuelos en interiores y freestyle en espacios reducidos.',
+        price: 68000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['3800KV', '4500KV'],
+        specs: [
+          { l: 'KV Rating', v: '3800KV' },
+          { l: 'Talla estátor', v: '1404' },
+          { l: 'Peso', v: '9g' },
+          { l: 'Corriente máx.', v: '12A' },
+          { l: 'Voltaje', v: '2S–4S LiPo' },
+          { l: 'Imanes', v: 'Neodimio N52' },
+          { l: 'Montaje', v: 'M2 × 4' },
+          { l: 'Uso recomendado', v: '2.5" – 3" props' },
+        ],
+        images: [D.elec, D.pcb],
+      },
+
+      // ── CONTROLADORES ───────────────────
       {
         id: 'dr-ctrl-01',
         subcategory: 'controladores',
         name: 'Flight Controller F7 + ESC 4en1',
         shortDesc: 'Stack controladora F7 con ESC 4-en-1 de 45A integrado. Betaflight listo.',
         longDesc:
-          'Stack de controladora F7 con procesador de alta velocidad y ESC 4-en-1 de 45A BLHeli32. Perfecta para builds FPV de 5". Incluye barómetro, giroscopio de 6 ejes ICM42688-P y OSD integrado.',
+          'Stack de controladora F7 con procesador de alta velocidad y ESC 4-en-1 de 45A BLHeli32. Perfecta para builds FPV de 5". Incluye barómetro, giroscopio de 6 ejes ICM42688-P y OSD integrado. Filtros RPM habilitables para reducir ruido y mejorar la respuesta del PID.',
         price: 365000,
         originalPrice: null,
         discount: 0,
@@ -184,17 +222,47 @@ export const STORE_CATEGORIES = [
           { l: 'Giroscopio', v: 'ICM42688-P' },
           { l: 'ESC incluido', v: '4×45A BLHeli32' },
           { l: 'Conexión', v: 'USB-C / UART×6' },
+          { l: 'OSD', v: 'AT7456E integrado' },
+          { l: 'Barómetro', v: 'BMP280' },
+          { l: 'Voltaje entrada', v: '3S–8S' },
+          { l: 'Filtros RPM', v: 'Bidireccional DSHOT' },
         ],
-        images: [D.pcb, D.elec],
+        images: [D.pcb, D.elec, D.drone2],
       },
-      // ── Estructuras ──────────────────────────────────────
+      {
+        id: 'dr-ctrl-02',
+        subcategory: 'controladores',
+        name: 'Controladora H743 + GPS + OSD',
+        shortDesc:
+          'FC H743 de alto rendimiento con GPS integrado para vuelo autónomo y long range.',
+        longDesc:
+          'Controladora de vuelo de gama alta basada en el STM32H743 para aplicaciones long range, mapping y vuelo autónomo. Incluye módulo GPS M10 de alta precisión, magnetómetro QMC5883L y altímetro barométrico de alta resolución. Compatible con ArduPilot, iNav y Betaflight.',
+        price: 520000,
+        originalPrice: 598000,
+        discount: 13,
+        stock: true,
+        normativasOptions: ['Con GPS', 'Sin GPS'],
+        specs: [
+          { l: 'Procesador', v: 'STM32H743 (480MHz)' },
+          { l: 'Giroscopio', v: 'ICM42688-P dual' },
+          { l: 'GPS', v: 'u-blox M10 (incluido)' },
+          { l: 'Magnetómetro', v: 'QMC5883L' },
+          { l: 'Barómetro', v: 'BMP388 doble' },
+          { l: 'Firmware', v: 'ArduPilot / iNav / BF' },
+          { l: 'Puertos UART', v: '8 × UART' },
+          { l: 'Montaje', v: '30.5×30.5mm' },
+        ],
+        images: [D.pcb, D.gps, D.elec],
+      },
+
+      // ── ESTRUCTURAS ─────────────────────
       {
         id: 'dr-str-01',
         subcategory: 'estructuras',
         name: 'Frame FPV 5" Fibra de Carbono 3K',
         shortDesc: 'Chasis de fibra de carbono 3K para drones FPV de 5". Brazos de 4mm.',
         longDesc:
-          'Frame ultraligero de fibra de carbono 3K trenzado. Diseño aerodinámico tipo X con protección de motores integrada. Incluye tornillería de titanio M3, standoffs de aluminio y placas de protección.',
+          'Frame ultraligero de fibra de carbono 3K trenzado. Diseño aerodinámico tipo X con protección de motores integrada. Incluye tornillería de titanio M3, standoffs de aluminio y placas de protección. Brazos intercambiables sin herramientas especiales.',
         price: 198000,
         originalPrice: 248000,
         discount: 20,
@@ -202,11 +270,15 @@ export const STORE_CATEGORIES = [
         normativasOptions: ['220mm', '230mm'],
         specs: [
           { l: 'Wheelbase', v: '220mm' },
-          { l: 'Brazos', v: '4mm fibra de carbono' },
+          { l: 'Brazos', v: '4mm fibra de carbono 3K' },
+          { l: 'Placa base', v: '2mm + 1.5mm' },
           { l: 'Peso', v: '92g' },
           { l: 'Tornillería', v: 'Titanio M3' },
+          { l: 'Montaje motores', v: '16×16mm / 19×19mm' },
+          { l: 'Stack FC', v: '30.5×30.5mm / 20×20mm' },
+          { l: 'Diseño', v: 'Tipo X / True-X' },
         ],
-        images: [D.carbon, D.fly1],
+        images: [D.carbon, D.fly1, D.fly3],
       },
       {
         id: 'dr-str-02',
@@ -214,7 +286,7 @@ export const STORE_CATEGORIES = [
         name: 'Frame Hexacóptero Industrial 1000mm',
         shortDesc: 'Estructura Al6061 + CFRP para hexacóptero de carga. Brazos plegables.',
         longDesc:
-          'Frame industrial de alta resistencia para aplicaciones agrícolas e inspección. Soporte de carga útil hasta 8kg. Brazos plegables para transporte en campo. Sistema anti-vibración en placa central.',
+          'Frame industrial de alta resistencia para aplicaciones agrícolas e inspección. Soporte de carga útil hasta 8kg. Brazos plegables para transporte en campo. Sistema anti-vibración en placa central. Incluye tren de aterrizaje retráctil y plataforma de carga ajustable.',
         price: 1250000,
         originalPrice: null,
         discount: 0,
@@ -223,17 +295,150 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Wheelbase', v: '1000mm' },
           { l: 'Carga útil', v: 'hasta 8kg' },
-          { l: 'Brazos', v: 'Plegables' },
+          { l: 'Brazos', v: 'Plegables (5 seg)' },
           { l: 'Material', v: 'Al6061 + CFRP' },
+          { l: 'Peso estructura', v: '1.8kg' },
+          { l: 'Montaje motor', v: 'φ16mm tubo' },
+          { l: 'Anti-vibración', v: 'Soportes gel silicona' },
+          { l: 'Tren de aterriz.', v: 'Retráctil incluido' },
         ],
-        images: [D.fly2, D.fly1],
+        images: [D.fly2, D.fly1, D.carbon],
+      },
+
+      // ── HÉLICES ─────────────────────────
+      {
+        id: 'dr-hel-01',
+        subcategory: 'helices',
+        name: 'Hélices FPV 5" HQ Props 5145 (4pk)',
+        shortDesc: 'Pack de 4 hélices HQ Props 5145 tri-pala para FPV freestyle y carreras.',
+        longDesc:
+          'Hélices de alta calidad HQ Props 5145 de 3 palas para drones FPV de 5". Óptimas para freestyle y carreras. Material de policarbonato reforzado con fibra de vidrio para mayor resistencia a impactos. Pack de 2CW + 2CCW incluido.',
+        price: 28000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['5145 3-pala', '5148 3-pala', '51466 4-pala'],
+        specs: [
+          { l: 'Diámetro', v: '5.1" (130mm)' },
+          { l: 'Paso', v: '4.5"' },
+          { l: 'Número de palas', v: '3' },
+          { l: 'Material', v: 'PC + fibra de vidrio' },
+          { l: 'Peso c/u', v: '4.5g' },
+          { l: 'Contenido', v: '2×CW + 2×CCW' },
+          { l: 'Adaptador', v: 'M5 incluido' },
+          { l: 'Velocidad max.', v: '35.000 RPM' },
+        ],
+        images: [D.prop, D.fly1],
+      },
+      {
+        id: 'dr-hel-02',
+        subcategory: 'helices',
+        name: 'Hélices Carbono 15" 15×5.5 (par)',
+        shortDesc:
+          'Par de hélices de fibra de carbono de alta eficiencia para multirotores industriales.',
+        longDesc:
+          'Hélices de fibra de carbono premium para multirotores industriales y fotografía profesional. Diseño aerodinámico de alta eficiencia para maximizar el tiempo de vuelo con cargas pesadas. Acabado brillante para fácil detección de microfisuras.',
+        price: 95000,
+        originalPrice: 115000,
+        discount: 17,
+        stock: true,
+        normativasOptions: ['15×5.5', '16×5.4', '18×6.1'],
+        specs: [
+          { l: 'Diámetro', v: '15" (381mm)' },
+          { l: 'Paso', v: '5.5"' },
+          { l: 'Número de palas', v: '2' },
+          { l: 'Material', v: 'Fibra de carbono 3K' },
+          { l: 'Peso c/u', v: '42g' },
+          { l: 'Contenido', v: '1×CW + 1×CCW' },
+          { l: 'Adaptador', v: 'M8 CW + M8 CCW' },
+          { l: 'Empuje máx.', v: '1.8kg @ 400KV' },
+        ],
+        images: [D.prop, D.carbon],
+      },
+
+      // ── SENSORES ────────────────────────
+      {
+        id: 'dr-sen-01',
+        subcategory: 'sensores',
+        name: 'Sensor Lidar TF-Luna 0.2–8m',
+        shortDesc: 'Sensor ToF LiDAR compacto para altímetro de precisión en drones autónomos.',
+        longDesc:
+          'Sensor LiDAR de tiempo de vuelo (ToF) TF-Luna para medición de distancia de alta precisión. Ideal para sistemas de aterrizaje autónomo, evitación de obstáculos y mapping de baja altitud. Interfaz UART y I2C. Compatible con ArduPilot, iNav y ROS.',
+        price: 145000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['UART', 'I2C'],
+        specs: [
+          { l: 'Rango', v: '0.2 – 8m' },
+          { l: 'Precisión', v: '±2cm' },
+          { l: 'Frecuencia', v: 'hasta 250Hz' },
+          { l: 'Interfaz', v: 'UART / I2C' },
+          { l: 'Voltaje', v: '3.3 – 5V' },
+          { l: 'Peso', v: '5g' },
+          { l: 'FOV', v: '2°' },
+          { l: 'Compatible', v: 'ArduPilot / iNav / ROS' },
+        ],
+        images: [D.sens, D.pcb],
+      },
+
+      // ── GPS ─────────────────────────────
+      {
+        id: 'dr-gps-01',
+        subcategory: 'gps',
+        name: 'Módulo GPS M9N + Brújula HMC5883',
+        shortDesc: 'GPS de alta precisión M9N con brújula integrada para drones de misión.',
+        longDesc:
+          'Módulo GPS de última generación basado en el chip u-blox M9N con soporte multi-GNSS (GPS, GLONASS, Galileo, BeiDou). Precisión posicional de 1.5m CEP. Brújula doble HMC5883L integrada. Compatible con Pixhawk, ArduPilot y todos los controladores con protocolo NMEA/UBX.',
+        price: 185000,
+        originalPrice: 215000,
+        discount: 14,
+        stock: true,
+        normativasOptions: ['Con soporte mástil', 'Solo módulo'],
+        specs: [
+          { l: 'Chip GPS', v: 'u-blox M9N' },
+          { l: 'GNSS', v: 'GPS / GLONASS / Galileo / BeiDou' },
+          { l: 'Precisión CEP', v: '1.5m' },
+          { l: 'Frecuencia fix', v: 'hasta 18Hz' },
+          { l: 'Brújula', v: 'HMC5883L doble' },
+          { l: 'Interfaz', v: 'UART + I2C' },
+          { l: 'Voltaje', v: '4.5 – 5.5V' },
+          { l: 'Peso', v: '28g' },
+        ],
+        images: [D.gps, D.pcb, D.elec],
+      },
+
+      // ── CÁMARAS ─────────────────────────
+      {
+        id: 'dr-cam-01',
+        subcategory: 'camaras',
+        name: 'Cámara FPV CMOS 1200TVL 2.1mm',
+        shortDesc: 'Cámara FPV de 1200 líneas de TV con lente de 2.1mm. Bajo ruido nocturno.',
+        longDesc:
+          'Cámara FPV de alto rendimiento con sensor CMOS StarLight de 1/1.8". Resolución de 1200TVL con mínimo ruido en condiciones de baja iluminación. Lente de 2.1mm gran angular para máxima visión en vuelo FPV freestyle. WDR integrado para escenas con alto contraste.',
+        price: 98000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['2.1mm', '2.5mm'],
+        specs: [
+          { l: 'Sensor', v: 'CMOS 1/1.8" StarLight' },
+          { l: 'Resolución', v: '1200 TVL' },
+          { l: 'Lente', v: '2.1mm F/2.0' },
+          { l: 'FOV', v: '165°' },
+          { l: 'WDR', v: 'Integrado' },
+          { l: 'Voltaje', v: '5 – 36V' },
+          { l: 'Peso', v: '18g' },
+          { l: 'Conector video', v: 'RCA / JST' },
+        ],
+        images: [D.cam, D.fly1, D.fly3],
       },
     ],
   },
 
-  // ══════════════════════════════════════════════════════════
+  // ════════════════════════════════════════
   //  FILAMENTOS
-  // ══════════════════════════════════════════════════════════
+  // ════════════════════════════════════════
   {
     id: 'filamentos',
     title: 'Filamentos',
@@ -252,6 +457,7 @@ export const STORE_CATEGORIES = [
       { id: 'especiales', name: 'Especiales', count: 15, img: F.print2 },
     ],
     products: [
+      // ── PLA ─────────────────────────────
       {
         id: 'fil-pla-01',
         subcategory: 'pla',
@@ -259,7 +465,7 @@ export const STORE_CATEGORIES = [
         shortDesc:
           'PLA premium tolerancia ±0.02mm, 20+ colores disponibles. Secado al vacío en fábrica.',
         longDesc:
-          'Filamento PLA premium para impresión FDM. Excelente terminado superficial, mínimo warping y alta compatibilidad con cualquier impresora 3D. Secado en fábrica y sellado al vacío con desecante incluido. Compatible con Ender 3, Prusa, Bambu, Voron y más.',
+          'Filamento PLA premium para impresión FDM. Excelente terminado superficial, mínimo warping y alta compatibilidad con cualquier impresora 3D. Secado en fábrica y sellado al vacío con desecante incluido. Compatible con Ender 3, Prusa, Bambu, Voron y más. Tolerancia dimensional ±0.02mm garantizada por bobina.',
         price: 45900,
         originalPrice: null,
         discount: 0,
@@ -268,8 +474,12 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Diámetro', v: '1.75mm ±0.02mm' },
           { l: 'Peso neto', v: '1kg (carrete incluido)' },
-          { l: 'Temp. impresión', v: '190–220°C' },
-          { l: 'Temp. cama', v: '0–60°C' },
+          { l: 'Temp. impresión', v: '190 – 220°C' },
+          { l: 'Temp. cama', v: '0 – 60°C (opcional)' },
+          { l: 'Densidad', v: '1.24 g/cm³' },
+          { l: 'Resistencia tr.', v: '65 MPa' },
+          { l: 'Temp. deflexión', v: '52°C' },
+          { l: 'Colores disp.', v: '+20 colores' },
         ],
         images: [F.spool1, F.print1, F.spool2],
       },
@@ -288,11 +498,42 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Diámetro', v: '1.75mm ±0.02mm' },
           { l: 'Peso', v: '1kg' },
-          { l: 'Temp. impresión', v: '200–230°C' },
-          { l: 'Resistencia', v: '+30% vs PLA std' },
+          { l: 'Temp. impresión', v: '200 – 230°C' },
+          { l: 'Temp. cama', v: '25 – 60°C' },
+          { l: 'Densidad', v: '1.22 g/cm³' },
+          { l: 'Resistencia tr.', v: '72 MPa (+30% vs PLA)' },
+          { l: 'Temp. deflexión', v: '60°C' },
+          { l: 'Alargamiento', v: '12%' },
         ],
-        images: [F.spool2, F.spool1],
+        images: [F.spool2, F.spool1, F.print1],
       },
+      {
+        id: 'fil-pla-silk',
+        subcategory: 'pla',
+        name: 'Filamento PLA Silk Bicolor 1kg',
+        shortDesc:
+          'PLA Silk con efecto metálico y acabado brillante. Perfecto para maquetas y arte.',
+        longDesc:
+          'Filamento PLA Silk con acabado sedoso y brillante para impresiones decorativas y de diseño. La variante bicolor crea patrones de degradado automáticos durante la impresión. Ideal para figuras, maquetas arquitectónicas, props y arte.',
+        price: 68000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['Oro/Plata', 'Rojo/Dorado', 'Azul/Plata'],
+        specs: [
+          { l: 'Diámetro', v: '1.75mm ±0.02mm' },
+          { l: 'Peso', v: '1kg' },
+          { l: 'Temp. impresión', v: '195 – 225°C' },
+          { l: 'Tipo', v: 'Bicolor Silk' },
+          { l: 'Acabado', v: 'Sedoso brillante' },
+          { l: 'Retracción rec.', v: '4 – 6mm' },
+          { l: 'Velocidad rec.', v: '40 – 80mm/s' },
+          { l: 'Cama', v: 'No necesaria' },
+        ],
+        images: [F.spool1, F.spool2],
+      },
+
+      // ── PETG ────────────────────────────
       {
         id: 'fil-petg-01',
         subcategory: 'petg',
@@ -308,18 +549,48 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Diámetro', v: '1.75mm ±0.02mm' },
           { l: 'Peso', v: '1kg' },
-          { l: 'Temp. impresión', v: '230–250°C' },
-          { l: 'Temp. cama', v: '70–90°C' },
+          { l: 'Temp. impresión', v: '230 – 250°C' },
+          { l: 'Temp. cama', v: '70 – 90°C' },
+          { l: 'Densidad', v: '1.27 g/cm³' },
+          { l: 'Resistencia tr.', v: '50 MPa' },
+          { l: 'Temp. deflexión', v: '72°C' },
+          { l: 'Resistencia quím.', v: 'Alta (ácidos, bases débiles)' },
         ],
-        images: [F.print1, F.spool1],
+        images: [F.print1, F.spool1, F.spool2],
       },
+      {
+        id: 'fil-petg-cf',
+        subcategory: 'petg',
+        name: 'Filamento PETG-CF Fibra de Carbono 0.5kg',
+        shortDesc: 'PETG cargado con fibra de carbono. Rigidez superior para piezas estructurales.',
+        longDesc:
+          'PETG reforzado con fibra de carbono corta para máxima rigidez y resistencia dimensional. Ideal para piezas estructurales, soportes de cámara, brazos de drones y componentes de ingeniería. Requiere boquilla de acero endurecido (0.4mm mínimo).',
+        price: 95000,
+        originalPrice: 110000,
+        discount: 14,
+        stock: true,
+        normativasOptions: ['1.75mm'],
+        specs: [
+          { l: 'Diámetro', v: '1.75mm ±0.03mm' },
+          { l: 'Peso', v: '0.5kg' },
+          { l: 'Temp. impresión', v: '240 – 260°C' },
+          { l: 'Temp. cama', v: '70 – 85°C' },
+          { l: 'Boquilla req.', v: 'Acero endurecido ≥0.4mm' },
+          { l: 'Módulo elástico', v: '7.4 GPa' },
+          { l: 'Rigidez', v: '+120% vs PETG std' },
+          { l: 'Acabado', v: 'Mate negro fibra visible' },
+        ],
+        images: [F.mat1, F.print2],
+      },
+
+      // ── ABS ─────────────────────────────
       {
         id: 'fil-abs-01',
         subcategory: 'abs',
         name: 'Filamento ABS 1.75mm 1kg',
         shortDesc: 'ABS resistente al calor para piezas de alto rendimiento. Temp. deflexión 98°C.',
         longDesc:
-          'ABS premium para piezas que requieren resistencia al calor, impacto y abrasión. Ideal para carcasas, piezas automotrices y aplicaciones industriales. Requiere recinto cerrado para mejores resultados y evitar warping.',
+          'ABS premium para piezas que requieren resistencia al calor, impacto y abrasión. Ideal para carcasas, piezas automotrices y aplicaciones industriales. Requiere recinto cerrado para mejores resultados y evitar warping. Fácilmente post-procesable con acetona para acabado liso.',
         price: 48900,
         originalPrice: null,
         discount: 0,
@@ -328,18 +599,24 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Diámetro', v: '1.75mm ±0.02mm' },
           { l: 'Peso', v: '1kg' },
-          { l: 'Temp. impresión', v: '220–250°C' },
+          { l: 'Temp. impresión', v: '220 – 250°C' },
+          { l: 'Temp. cama', v: '90 – 110°C' },
           { l: 'Temp. deflexión', v: '98°C' },
+          { l: 'Resistencia tr.', v: '43 MPa' },
+          { l: 'Post-proceso', v: 'Acetona (acabado liso)' },
+          { l: 'Recinto', v: 'Recomendado' },
         ],
-        images: [F.print2, F.mat1],
+        images: [F.print2, F.mat1, F.print1],
       },
+
+      // ── TPU ─────────────────────────────
       {
         id: 'fil-tpu-01',
         subcategory: 'tpu',
         name: 'Filamento TPU Flexible 95A 1kg',
         shortDesc: 'TPU Shore 95A para piezas flexibles, protectores de drones, juntas y calzado.',
         longDesc:
-          'TPU flexible de alta calidad para piezas que requieren elasticidad y absorción de vibración. Shore 95A ideal para protectores de drones, fundas, juntas y piezas con absorción de golpes. Elongación a rotura de 580%.',
+          'TPU flexible de alta calidad para piezas que requieren elasticidad y absorción de vibración. Shore 95A ideal para protectores de drones, fundas, juntas y piezas con absorción de golpes. Elongación a rotura de 580%. Resistente a aceites, grasas y combustibles.',
         price: 78900,
         originalPrice: 92000,
         discount: 15,
@@ -348,18 +625,48 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Diámetro', v: '1.75mm ±0.03mm' },
           { l: 'Shore', v: '95A' },
-          { l: 'Temp. impresión', v: '220–240°C' },
-          { l: 'Elongación', v: '580%' },
+          { l: 'Temp. impresión', v: '220 – 240°C' },
+          { l: 'Temp. cama', v: '30 – 60°C' },
+          { l: 'Elongación rotura', v: '580%' },
+          { l: 'Resistencia tr.', v: '32 MPa' },
+          { l: 'Velocidad rec.', v: '20 – 40mm/s' },
+          { l: 'Resistencia', v: 'Aceites, grasas, combustibles' },
         ],
-        images: [F.mat1, F.spool1],
+        images: [F.mat1, F.flex, F.spool1],
       },
+      {
+        id: 'fil-tpu-85',
+        subcategory: 'tpu',
+        name: 'Filamento TPU Ultra Soft 85A 500g',
+        shortDesc: 'TPU Shore 85A ultra suave para fundas, juntas y piezas de tacto ergonómico.',
+        longDesc:
+          'TPU de dureza 85A, más suave que el estándar de 95A. Perfecto para fundas de teléfono, tapones de goma, juntas de alta elasticidad y piezas de agarre ergonómico. Requiere extrusor directo para mejor control del material.',
+        price: 62000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['1.75mm'],
+        specs: [
+          { l: 'Diámetro', v: '1.75mm ±0.03mm' },
+          { l: 'Shore', v: '85A (ultra suave)' },
+          { l: 'Temp. impresión', v: '215 – 235°C' },
+          { l: 'Elongación rotura', v: '650%' },
+          { l: 'Extrusor req.', v: 'Directo recomendado' },
+          { l: 'Velocidad rec.', v: '15 – 30mm/s' },
+          { l: 'Peso', v: '0.5kg' },
+          { l: 'Uso típico', v: 'Fundas, tapones, agarre' },
+        ],
+        images: [F.flex, F.mat1],
+      },
+
+      // ── NYLON ───────────────────────────
       {
         id: 'fil-nylon-01',
         subcategory: 'nylon',
         name: 'Filamento Nylon PA12 500g',
         shortDesc: 'Nylon PA12 para piezas de ingeniería de alta resistencia mecánica y desgaste.',
         longDesc:
-          'Nylon Poliamida 12 para piezas funcionales de ingeniería que requieren resistencia al desgaste, química y fatiga. Requiere impresora con extrusor de temperatura alta (>250°C). Mantener sellado hasta uso inmediato.',
+          'Nylon Poliamida 12 para piezas funcionales de ingeniería que requieren resistencia al desgaste, química y fatiga. Requiere impresora con extrusor de temperatura alta (>250°C). Mantener sellado hasta uso inmediato. Secar 6-8h a 80°C antes de imprimir.',
         price: 125000,
         originalPrice: null,
         discount: 0,
@@ -368,16 +675,72 @@ export const STORE_CATEGORIES = [
         specs: [
           { l: 'Diámetro', v: '1.75mm ±0.02mm' },
           { l: 'Peso', v: '0.5kg' },
-          { l: 'Temp. impresión', v: '250–270°C' },
+          { l: 'Temp. impresión', v: '250 – 270°C' },
+          { l: 'Temp. cama', v: '70 – 90°C + adhesivo' },
+          { l: 'Resistencia tr.', v: '55 MPa' },
+          { l: 'Temp. deflexión', v: '100°C' },
+          { l: 'Secado previo', v: '6–8h a 80°C' },
           { l: 'Uso', v: 'Alta fricción y desgaste' },
         ],
-        images: [F.mat2, F.print2],
+        images: [F.mat2, F.print2, F.mat1],
+      },
+
+      // ── ESPECIALES ──────────────────────
+      {
+        id: 'fil-esp-pla-madera',
+        subcategory: 'especiales',
+        name: 'Filamento PLA Madera 500g',
+        shortDesc: 'PLA con relleno de madera real. Piezas con textura y aroma a madera natural.',
+        longDesc:
+          'Compuesto de PLA con 30% de fibra de madera real (pino o bambú). Produce piezas con textura, acabado y aroma similar a la madera. Se puede lijar, teñir y barnizar igual que la madera real. Compatible con boquillas de 0.4mm o mayor. Post-procesable con lija y tintes para madera.',
+        price: 72000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['Pino claro', 'Bambú oscuro', 'Cerezo medio'],
+        specs: [
+          { l: 'Diámetro', v: '1.75mm ±0.03mm' },
+          { l: 'Peso', v: '0.5kg' },
+          { l: 'Temp. impresión', v: '195 – 220°C' },
+          { l: 'Relleno', v: '30% fibra de madera real' },
+          { l: 'Boquilla rec.', v: '0.4mm o mayor' },
+          { l: 'Post-proceso', v: 'Lija, tinte, barniz, pintura' },
+          { l: 'Cama', v: 'No necesaria / 60°C opc.' },
+          { l: 'Densidad', v: '1.15 g/cm³' },
+        ],
+        images: [F.print1, F.spool1],
+      },
+      {
+        id: 'fil-esp-pla-marmol',
+        subcategory: 'especiales',
+        name: 'Filamento PLA Mármol 500g',
+        shortDesc: 'PLA con efecto mármol. Vetas naturales únicas en cada pieza impresa.',
+        longDesc:
+          'Filamento PLA con partículas de mármol natural suspendidas que crean patrones de vetas únicos e irrepetibles en cada impresión. Sin necesidad de post-procesado para obtener el efecto visual. Ideal para decoración, jarrones, macetas, figuras y elementos arquitectónicos.',
+        price: 65000,
+        originalPrice: 78000,
+        discount: 17,
+        stock: true,
+        normativasOptions: ['Blanco Carrara', 'Negro Marquina', 'Verde Guatemalteco'],
+        specs: [
+          { l: 'Diámetro', v: '1.75mm ±0.03mm' },
+          { l: 'Peso', v: '0.5kg' },
+          { l: 'Temp. impresión', v: '190 – 215°C' },
+          { l: 'Relleno', v: 'Partículas mármol natural' },
+          { l: 'Boquilla rec.', v: '0.4mm o mayor' },
+          { l: 'Post-proceso', v: 'Pulido opcional' },
+          { l: 'Acabado', v: 'Vetas únicas en c/pieza' },
+          { l: 'Densidad', v: '1.32 g/cm³' },
+        ],
+        images: [F.print2, F.spool2],
       },
     ],
   },
 ]
 
-// ── Helpers ───────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────────────────────────
 export function getCategoryById(id) {
   return STORE_CATEGORIES.find((c) => c.id === id) ?? null
 }
@@ -387,7 +750,13 @@ export function getProductById(categoryId, productId) {
   return cat?.products.find((p) => p.id === productId) ?? null
 }
 
+export function getProductsBySubcategory(categoryId, subcategoryId) {
+  const cat = getCategoryById(categoryId)
+  return cat?.products.filter((p) => p.subcategory === subcategoryId) ?? []
+}
+
 export function formatCOP(n) {
+  if (n == null) return ''
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',

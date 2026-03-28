@@ -47,6 +47,11 @@ const routes = [
         path: ':categoryId',
         component: () => import('src/components/views/ServiceStoreView.vue'),
       },
+      // Subcategoría  →  /tienda/drones/sub/baterias
+      {
+        path: ':categoryId/sub/:subcategoryId',
+        component: () => import('src/components/views/Subcategoryview.vue'),
+      },
       // Detalle de producto  →  /tienda/drones/dr-bat-01
       {
         path: ':categoryId/:productId',
@@ -54,8 +59,8 @@ const routes = [
       },
       // Carrito
       {
-        path: '../carrito', // se accede como  /carrito
-        redirect: '/carrito', // redirige a la ruta absoluta de abajo
+        path: '../carrito',
+        redirect: '/carrito',
       },
     ],
   },

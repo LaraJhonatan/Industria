@@ -2,9 +2,7 @@
   <section class="detail-section" aria-label="Detalle del producto">
     <div class="bs-wrap">
 
-      <!-- ══════════════════════════════════════════════════════
-           SKELETON (3 s)
-      ═══════════════════════════════════════════════════════ -->
+      <!-- SKELETON (3 s) -->
       <template v-if="isLoading">
         <div class="sk-breadcrumb">
           <div class="sk sk-bc-a" />
@@ -39,12 +37,10 @@
         <div class="sk sk-tab-content" />
       </template>
 
-      <!-- ══════════════════════════════════════════════════════
-           CONTENIDO REAL
-      ═══════════════════════════════════════════════════════ -->
+      <!-- CONTENIDO REAL -->
       <template v-else-if="product && category">
 
-        <!-- Breadcrumb -->
+        <!-- Breadcrumb — ahora con subcategoría -->
         <nav class="breadcrumb" aria-label="Ruta de navegación">
           <button class="bc-link" @click="router.push('/tienda')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -53,28 +49,33 @@
             Catálogo
           </button>
           <span class="bc-sep">/</span>
-          <button class="bc-link" @click="router.push(`/tienda/${category.id}`)">{{ category.title }}</button>
+          <button class="bc-link" @click="router.push(`/tienda/${category.id}`)">
+            {{ category.title }}
+          </button>
+          <!-- Subcategoría como paso intermedio -->
+          <template v-if="subcategory">
+            <span class="bc-sep">/</span>
+            <button class="bc-link" @click="router.push(`/tienda/${category.id}/sub/${subcategory.id}`)">
+              {{ subcategory.name }}
+            </button>
+          </template>
           <span class="bc-sep">/</span>
           <span class="bc-current">{{ product.name }}</span>
         </nav>
 
-        <!-- ══ MAIN LAYOUT ══ -->
+        <!-- MAIN LAYOUT -->
         <div class="detail-layout">
 
-          <!-- ── Gallery ── -->
+          <!-- Gallery -->
           <div class="gallery-section">
             <div class="gallery-grid">
-              <!-- Thumbnails column -->
               <div class="thumbnails" role="list">
                 <button v-for="(img, i) in product.images" :key="i" class="thumb" :class="{ active: selectedImg === i }"
-                  :style="selectedImg === i
-                    ? { borderColor: category.accentColor, boxShadow: `0 0 0 3px ${category.accentColor}28` }
-                    : {}" @click="selectedImg = i" :aria-label="`Vista ${i + 1}`">
+                  :style="selectedImg === i ? { borderColor: category.accentColor, boxShadow: `0 0 0 3px ${category.accentColor}28` } : {}"
+                  @click="selectedImg = i" :aria-label="`Vista ${i + 1}`">
                   <img :src="img" :alt="`${product.name} vista ${i + 1}`" />
                 </button>
               </div>
-
-              <!-- Main image -->
               <div class="main-image">
                 <transition name="img-fade" mode="out-in">
                   <img :key="selectedImg" :src="product.images[selectedImg]" :alt="product.name" />
@@ -85,7 +86,6 @@
               </div>
             </div>
 
-            <!-- ── Secondary feature image (fills vertical gap) ── -->
             <div class="secondary-image-card"
               :style="{ borderColor: `color-mix(in srgb, ${category.accentColor} 22%, transparent)` }">
               <div class="sec-img-wrap">
@@ -101,10 +101,8 @@
             </div>
           </div>
 
-          <!-- ── Info ── -->
+          <!-- Info -->
           <div class="info-section">
-
-            <!-- Kicker + Nombre -->
             <div>
               <span class="product-kicker"
                 :style="{ background: colorBg, color: category.accentColor, borderColor: colorBorder }">
@@ -113,7 +111,6 @@
               <h1 class="product-name">{{ product.name }}</h1>
             </div>
 
-            <!-- Rating -->
             <div class="rating-row">
               <span class="stars-wrap">
                 <svg v-for="n in 5" :key="n" width="15" height="15" viewBox="0 0 24 24" fill="#f5a623" stroke="none">
@@ -125,18 +122,16 @@
               <span class="rating-count">(127 valoraciones)</span>
             </div>
 
-            <!-- Precio -->
             <div class="price-block">
               <div v-if="product.discount > 0" class="price-old-row">
                 <span class="price-old">{{ formatCOP(product.originalPrice) }}</span>
-                <span class="savings-tag">
-                  Ahorra {{ formatCOP(product.originalPrice - product.price) }} ({{ product.discount }}%)
-                </span>
+                <span class="savings-tag">Ahorra {{ formatCOP(product.originalPrice - product.price) }} ({{
+                  product.discount
+                  }}%)</span>
               </div>
               <span class="price-main">{{ formatCOP(product.price) }}</span>
             </div>
 
-            <!-- Stock -->
             <div class="stock-badge">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1aab5c" stroke-width="2.8">
                 <polyline points="20 6 9 17 4 12" />
@@ -144,12 +139,10 @@
               <span>Disponible</span>
             </div>
 
-            <!-- Short desc -->
             <div class="desc-box">
               <p>{{ product.shortDesc }}</p>
             </div>
 
-            <!-- Quick specs -->
             <div class="quick-specs">
               <div v-for="spec in product.specs" :key="spec.l" class="spec-item">
                 <span class="spec-lbl">{{ spec.l }}</span>
@@ -157,18 +150,16 @@
               </div>
             </div>
 
-            <!-- Variante / opción -->
             <div v-if="product.normativasOptions?.length">
               <p class="sel-label">Especificación:</p>
               <div class="norm-selector">
                 <button v-for="opt in product.normativasOptions" :key="opt" class="norm-btn"
-                  :class="{ 'norm-active': selectedVariant === opt }" :style="selectedVariant === opt
-                    ? { borderColor: category.accentColor, background: colorBg, color: category.accentColor }
-                    : {}" @click="selectedVariant = opt">{{ opt }}</button>
+                  :class="{ 'norm-active': selectedVariant === opt }"
+                  :style="selectedVariant === opt ? { borderColor: category.accentColor, background: colorBg, color: category.accentColor } : {}"
+                  @click="selectedVariant = opt">{{ opt }}</button>
               </div>
             </div>
 
-            <!-- Cantidad -->
             <div class="qty-row">
               <span class="sel-label">Cantidad:</span>
               <div class="qty-ctrl">
@@ -178,9 +169,7 @@
               </div>
             </div>
 
-            <!-- ── Actions ── -->
             <div class="actions">
-              <!-- AGREGAR AL CARRITO -->
               <button class="add-btn" :class="{ 'add-btn-done': addedToCart }"
                 :style="!addedToCart ? { background: category.accentColor, boxShadow: `0 10px 28px ${category.accentColor}40` } : {}"
                 @click="handleAddToCart" :disabled="addedToCart">
@@ -200,7 +189,6 @@
                 </template>
               </button>
 
-              <!-- SOLICITAR COTIZACIÓN -->
               <button class="quote-btn" :style="{ borderColor: category.accentColor, color: category.accentColor }"
                 @click="router.push('/contacto')">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -211,12 +199,10 @@
               </button>
             </div>
 
-            <!-- Ir al carrito si ya añadido -->
             <button v-if="addedToCart" class="go-cart-link" @click="router.push('/carrito')">
               Ver carrito →
             </button>
 
-            <!-- Benefits / Certs box -->
             <div class="cert-box" :style="{ background: colorBg, borderColor: colorBorder }">
               <div v-for="cert in certs" :key="cert.title" class="cert-item">
                 <span class="cert-emoji">{{ cert.emoji }}</span>
@@ -226,11 +212,10 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
-        <!-- ══ TABS ══ -->
+        <!-- TABS -->
         <div class="tabs-section">
           <div class="tab-bar" role="tablist">
             <button v-for="tab in tabs" :key="tab.id" class="tab-btn" :class="{ 'tab-active': activeTab === tab.id }"
@@ -238,7 +223,6 @@
               @click="activeTab = tab.id" role="tab">{{ tab.label }}</button>
           </div>
 
-          <!-- Specs tab -->
           <div v-show="activeTab === 'specs'" class="tab-panel" role="tabpanel">
             <h3 class="panel-title">Especificaciones técnicas completas</h3>
             <div class="specs-table">
@@ -253,7 +237,6 @@
             </div>
           </div>
 
-          <!-- Description tab -->
           <div v-show="activeTab === 'description'" class="tab-panel" role="tabpanel">
             <h3 class="panel-title">Sobre este producto</h3>
             <p class="long-desc">{{ product.longDesc }}</p>
@@ -271,18 +254,23 @@
           </div>
         </div>
 
-        <!-- ══ Información adicional ══ -->
+        <!-- Información adicional -->
         <div class="additional-info" v-reveal>
           <h3 class="ai-title">Información adicional</h3>
           <div class="ai-table">
             <div class="ai-row">
               <span class="ai-lbl">Categoría</span>
               <span class="ai-val ai-link" :style="{ color: category.accentColor }"
-                @click="router.push(`/tienda/${category.id}`)">{{ category.title }}</span>
+                @click="router.push(`/tienda/${category.id}`)">
+                {{ category.title }}
+              </span>
             </div>
             <div class="ai-row">
               <span class="ai-lbl">Subcategoría</span>
-              <span class="ai-val">{{ product.subcategory }}</span>
+              <!-- Si se resolvió la subcategoría, es un link clickeable; si no, texto plano -->
+              <span v-if="subcategory" class="ai-val ai-link" :style="{ color: category.accentColor }"
+                @click="router.push(`/tienda/${category.id}/sub/${subcategory.id}`)">{{ subcategory.name }}</span>
+              <span v-else class="ai-val">{{ product.subcategory }}</span>
             </div>
             <div v-if="product.normativasOptions?.length" class="ai-row">
               <span class="ai-lbl">Variantes</span>
@@ -291,7 +279,7 @@
           </div>
         </div>
 
-        <!-- ══ Productos relacionados ══ -->
+        <!-- Productos relacionados -->
         <div class="related-section" v-reveal>
           <h2 class="related-title">Productos relacionados</h2>
           <div class="related-grid">
@@ -312,7 +300,6 @@
 
       </template>
 
-      <!-- NOT FOUND -->
       <div v-else class="not-found">
         <p>Cargando producto…</p>
       </div>
@@ -331,18 +318,21 @@ const router = useRouter()
 const route = useRoute()
 const cartStore = useCartStore()
 
-// ── Carga simulada 3 s ──────────────────────────────────────────────────────
 const isLoading = ref(true)
 onMounted(() => setTimeout(() => { isLoading.value = false }, 3000))
 
-// ── Data ────────────────────────────────────────────────────────────────────
 const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params.categoryId) ?? null)
 const product = computed(() => category.value?.products.find(p => p.id === route.params.productId) ?? null)
+
 const relatedProducts = computed(() =>
   category.value?.products.filter(p => p.id !== route.params.productId).slice(0, 4) ?? []
 )
 
-// ── UI State ─────────────────────────────────────────────────────────────────
+// Resuelve la subcategoría a partir del campo product.subcategory
+const subcategory = computed(() =>
+  category.value?.subcategories.find(s => s.id === product.value?.subcategory) ?? null
+)
+
 const selectedImg = ref(0)
 const selectedVariant = ref('')
 const qty = ref(1)
@@ -356,17 +346,14 @@ watch(product, p => {
   activeTab.value = 'specs'
 }, { immediate: true })
 
-// ── Colors ───────────────────────────────────────────────────────────────────
 const colorBg = computed(() => `color-mix(in srgb, ${category.value?.accentColor} 8%, transparent)`)
 const colorBorder = computed(() => `color-mix(in srgb, ${category.value?.accentColor} 22%, transparent)`)
 
-// ── Badges ───────────────────────────────────────────────────────────────────
 const isBestSeller = computed(() => {
   const idx = category.value?.products.findIndex(p => p.id === product.value?.id) ?? -1
   return idx >= 0 && idx < 2
 })
 
-// ── Cart ────────────────────────────────────────────────────────────────────
 const addedToCart = computed(() => product.value ? cartStore.isInCart(product.value.id) : false)
 
 function handleAddToCart() {
@@ -383,7 +370,6 @@ function handleAddToCart() {
   })
 }
 
-// ── Static content ───────────────────────────────────────────────────────────
 const tabs = [
   { id: 'specs', label: 'Especificaciones técnicas' },
   { id: 'description', label: 'Descripción detallada' },
@@ -402,7 +388,6 @@ const includes = [
   'Factura electrónica y certificado de importación',
 ]
 
-// ── Reveal directive ─────────────────────────────────────────────────────────
 const vReveal = {
   mounted(el) {
     el.classList.add('reveal')
@@ -417,7 +402,7 @@ const vReveal = {
 </script>
 
 <style scoped>
-/* ═══════════════════ SKELETON ══════════════════════ */
+/* SKELETON */
 @keyframes shimmer {
   0% {
     background-position: -700px 0
@@ -570,7 +555,7 @@ const vReveal = {
   border-radius: 14px;
 }
 
-/* ═══════════════════ PAGE ══════════════════════ */
+/* PAGE */
 .detail-section {
   background: #fafbfc;
   padding: 40px 0 80px;
@@ -583,6 +568,7 @@ const vReveal = {
   padding: 0 32px;
 }
 
+/* breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -699,7 +685,6 @@ const vReveal = {
   color: #fff;
 }
 
-/* ── Secondary feature image ── */
 .secondary-image-card {
   border-radius: 18px;
   overflow: hidden;
@@ -763,7 +748,7 @@ const vReveal = {
   font-weight: 600;
 }
 
-/* info section */
+/* info */
 .info-section {
   display: flex;
   flex-direction: column;
@@ -941,7 +926,6 @@ const vReveal = {
 .qty-ctrl {
   display: flex;
   align-items: center;
-  gap: 0;
   border: 1.5px solid rgba(27, 27, 27, .15);
   border-radius: 10px;
   overflow: hidden;

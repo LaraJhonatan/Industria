@@ -25,29 +25,45 @@
           </div>
         </div>
 
-        <!-- 2 cards visuales -->
-        <div class="hero-visual">
-          <div class="hero-card" @click="router.push('/tienda/drones')">
-            <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600&h=800&fit=crop&q=80"
-              alt="Drones" class="hero-card-img" />
-            <div class="hero-card-label">
-              <span class="hcl-kicker">Categoría</span>
-              <span class="hcl-title">Drones →</span>
-            </div>
-          </div>
-          <div class="hero-card" @click="router.push('/tienda/filamentos')">
-            <img src="https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?w=600&h=800&fit=crop&q=80"
-              alt="Filamentos 3D" class="hero-card-img" />
-            <div class="hero-card-label">
-              <span class="hcl-kicker">Categoría</span>
-              <span class="hcl-title">Filamentos →</span>
-            </div>
-          </div>
+        <!-- Mapa SVG inline — sin fondo -->
+        <div class="hero-map">
+          <svg class="latam-map" viewBox="0 0 400 780" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M 48,18 L 72,14 L 105,18 L 128,22 L 148,16 L 162,24 L 168,38 L 175,52 L 178,66 L 170,76 L 162,88 L 168,100 L 174,112 L 166,120 L 154,126 L 140,132 L 122,138 L 108,136 L 96,130 L 80,128 L 66,118 L 55,108 L 44,94 L 36,78 L 30,62 L 32,46 Z" />
+            <path d="M 30,62 L 36,50 L 40,36 L 34,28 L 24,38 L 18,54 L 20,68 L 28,72 Z" />
+            <path
+              d="M 154,126 L 166,120 L 178,122 L 188,128 L 196,136 L 198,146 L 192,154 L 182,158 L 170,156 L 160,150 L 152,142 Z" />
+            <path d="M 182,158 L 196,154 L 206,158 L 212,168 L 208,178 L 196,184 L 184,180 L 178,170 Z" />
+            <path d="M 196,184 L 208,180 L 216,186 L 218,196 L 212,204 L 202,204 L 194,196 Z" />
+            <path d="M 210,202 L 218,196 L 228,194 L 240,196 L 248,202 L 244,210 L 232,214 L 218,212 Z" />
+            <ellipse cx="205" cy="103" rx="28" ry="9" transform="rotate(-8 205 103)" />
+            <ellipse cx="244" cy="107" rx="10" ry="6" transform="rotate(-5 244 107)" />
+            <path
+              d="M 228,214 L 244,210 L 260,212 L 276,216 L 292,218 L 306,222 L 316,232 L 314,246 L 304,256 L 290,262 L 274,264 L 260,260 L 248,252 L 238,240 L 228,228 Z" />
+            <path
+              d="M 292,218 L 308,222 L 322,218 L 338,216 L 350,220 L 358,230 L 354,242 L 342,250 L 326,252 L 312,248 L 304,256 L 316,232 Z" />
+            <path
+              d="M 342,250 L 358,244 L 372,240 L 386,242 L 396,248 L 394,260 L 380,266 L 364,268 L 350,264 L 340,258 Z" />
+            <path d="M 228,262 L 242,258 L 252,264 L 254,278 L 248,290 L 236,292 L 224,286 L 220,274 Z" />
+            <path
+              d="M 236,292 L 252,288 L 262,296 L 268,312 L 272,328 L 270,346 L 262,360 L 250,368 L 236,368 L 222,360 L 214,344 L 212,326 L 216,308 L 224,296 Z" />
+            <path
+              d="M 262,328 L 278,322 L 294,324 L 306,332 L 308,348 L 302,362 L 288,368 L 272,366 L 264,356 L 262,342 Z" />
+            <path
+              d="M 294,224 L 310,226 L 326,228 L 342,226 L 356,230 L 370,238 L 382,248 L 392,260 L 398,274 L 398,292 L 394,310 L 388,328 L 382,346 L 374,362 L 364,376 L 352,388 L 338,396 L 322,400 L 306,398 L 292,392 L 280,382 L 270,370 L 272,366 L 288,368 L 302,362 L 308,348 L 306,332 L 294,324 L 278,322 L 268,312 L 268,296 L 278,286 L 290,278 L 302,270 L 312,260 L 314,248 L 316,234 L 306,224 Z" />
+            <path d="M 272,368 L 286,370 L 298,374 L 306,384 L 300,394 L 286,396 L 272,390 L 264,380 Z" />
+            <path d="M 298,394 L 314,392 L 322,400 L 320,412 L 308,418 L 294,414 L 288,404 Z" />
+            <path
+              d="M 212,344 L 224,360 L 230,374 L 232,392 L 228,412 L 220,432 L 212,452 L 204,474 L 198,496 L 194,518 L 190,540 L 188,560 L 186,578 L 184,596 L 182,612 L 178,626 L 172,636 L 166,642 L 160,638 L 158,624 L 162,608 L 166,590 L 170,570 L 174,548 L 178,524 L 180,500 L 182,474 L 184,448 L 186,422 L 190,398 L 196,376 L 204,360 Z" />
+            <path
+              d="M 230,374 L 250,372 L 268,372 L 284,374 L 296,380 L 306,388 L 308,402 L 304,418 L 296,432 L 284,444 L 272,456 L 260,468 L 248,482 L 238,498 L 228,514 L 220,530 L 212,548 L 204,564 L 196,578 L 188,590 L 182,604 L 178,616 L 174,628 L 170,638 L 166,642 L 172,636 L 178,626 L 182,612 L 184,596 L 186,578 L 188,560 L 190,540 L 194,518 L 198,496 L 204,474 L 212,452 L 220,432 L 228,412 L 232,392 Z" />
+            <path d="M 196,650 L 210,646 L 222,650 L 226,660 L 220,668 L 206,670 L 194,664 Z" />
+          </svg>
         </div>
       </div>
 
       <!-- ══════════════════════════════════════════════
-           CATEGORÍAS — 2 cards grandes
+           CATEGORÍAS — solo Drones y Filamentos
       ═══════════════════════════════════════════════ -->
       <div class="section-head" v-reveal>
         <h2 class="section-title">Explora nuestros productos</h2>
@@ -55,7 +71,8 @@
       </div>
 
       <div class="categories-grid" v-reveal>
-        <div v-for="cat in STORE_CATEGORIES" :key="cat.id" class="cat-card" @click="router.push(`/tienda/${cat.id}`)">
+        <div v-for="cat in STORE_CATEGORIES.slice(0, 2)" :key="cat.id" class="cat-card"
+          @click="router.push(`/tienda/${cat.id}`)">
           <div class="cat-img-wrap">
             <img :src="cat.heroImg" :alt="cat.title" class="cat-img" />
             <div class="cat-overlay" />
@@ -65,8 +82,9 @@
             <h3 class="cat-name">{{ cat.title }}</h3>
             <p class="cat-desc">{{ cat.description }}</p>
             <div class="cat-subs">
-              <span v-for="sub in cat.subcategories.slice(0, 4)" :key="sub.id" class="cat-sub-chip">{{ sub.name
-                }}</span>
+              <span v-for="sub in cat.subcategories.slice(0, 4)" :key="sub.id" class="cat-sub-chip">
+                {{ sub.name }}
+              </span>
               <span v-if="cat.subcategories.length > 4" class="cat-sub-chip cat-sub-more">
                 +{{ cat.subcategories.length - 4 }} más
               </span>
@@ -232,64 +250,25 @@ const vReveal = {
   background: rgba(0, 113, 227, 0.04);
 }
 
-.hero-visual {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  height: 420px;
-}
-
-.hero-card {
+/* ── Mapa hero ── */
+.hero-map {
   position: relative;
-  border-radius: 18px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 260ms ease, box-shadow 260ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
 }
 
-.hero-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
-}
-
-.hero-card-img {
+.latam-map {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 400ms ease;
+  max-height: 500px;
+  /* SVG inline: fill directo, sin fondo, sin blend */
+  fill: #1b1b1b;
+  transition: fill 200ms;
 }
 
-.hero-card:hover .hero-card-img {
-  transform: scale(1.05);
-}
 
-.hero-card-label {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20px 18px 18px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, transparent 100%);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.hcl-kicker {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.hcl-title {
-  font-size: 18px;
-  font-weight: 900;
-  color: #fff;
-  letter-spacing: -0.3px;
-}
 
 /* ── Section head ── */
 .section-head {
@@ -310,7 +289,7 @@ const vReveal = {
   color: rgba(27, 27, 27, 0.5);
 }
 
-/* ── Categorías grid ── */
+/* ── Categorías grid — 2 columnas ── */
 .categories-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -507,8 +486,8 @@ const vReveal = {
     gap: 36px;
   }
 
-  .hero-visual {
-    height: 280px;
+  .hero-map {
+    height: 340px;
   }
 }
 
@@ -542,8 +521,8 @@ const vReveal = {
     padding: 36px 0 56px;
   }
 
-  .hero-visual {
-    height: 200px;
+  .hero-map {
+    height: 260px;
   }
 }
 </style>

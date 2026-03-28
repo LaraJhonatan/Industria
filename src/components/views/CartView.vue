@@ -23,7 +23,7 @@
         <div class="cart-header">
           <h1 class="cart-title">Carrito de compras</h1>
           <span class="cart-count">{{ cartStore.totalItems }} {{ cartStore.totalItems === 1 ? 'producto' : 'productos'
-            }}</span>
+          }}</span>
         </div>
 
         <!-- Breadcrumb -->

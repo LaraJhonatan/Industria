@@ -1,4 +1,5 @@
 <template>
+
   <article class="product-card" :style="{ '--color': service.color }" @click="$emit('view')"
     @mouseenter="hovered = true" @mouseleave="hovered = false">
     <!-- Image -->

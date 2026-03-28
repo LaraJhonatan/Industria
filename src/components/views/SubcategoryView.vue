@@ -8,11 +8,10 @@
           <div class="sk sk-bc-a" />
           <div class="sk-sep" />
           <div class="sk sk-bc-b" />
+          <div class="sk-sep" />
+          <div class="sk sk-bc-c" />
         </div>
         <div class="sk sk-hero" />
-        <div class="sk-subcat-grid">
-          <div v-for="n in 6" :key="n" class="sk sk-subcat-card" />
-        </div>
         <div class="sk-header-row">
           <div class="sk-hl">
             <div class="sk sk-h-title" />
@@ -31,11 +30,10 @@
             </div>
           </div>
         </div>
-        <div class="sk sk-cta" />
       </template>
 
-      <!-- CONTENIDO REAL -->
-      <template v-else-if="category">
+      <!-- CONTENIDO -->
+      <template v-else-if="category && subcategory">
 
         <!-- Breadcrumb -->
         <nav class="breadcrumb">
@@ -46,49 +44,105 @@
             Catálogo
           </button>
           <span class="bc-sep">/</span>
-          <span class="bc-current" :style="{ color: category.accentColor }">{{ category.title }}</span>
+          <button class="bc-link" @click="router.push(`/tienda/${category.id}`)">
+            {{ category.title }}
+          </button>
+          <span class="bc-sep">/</span>
+          <span class="bc-current" :style="{ color: category.accentColor }">{{ subcategory.name }}</span>
         </nav>
 
-        <!-- Hero banner -->
-        <div class="hero-banner" :style="{ backgroundImage: `url(${category.heroImg})` }">
+        <!-- Mini hero con imagen de la subcategoría -->
+        <div class="hero-banner" :style="{ backgroundImage: `url(${subcategory.img})` }">
           <div class="hero-overlay" />
           <div class="hero-content">
-            <span class="hero-kicker">{{ category.kicker }}</span>
-            <h1 class="hero-title">{{ category.title }}</h1>
-            <p class="hero-sub">{{ category.products.length }} productos disponibles</p>
+            <button class="hero-back" @click="router.push(`/tienda/${category.id}`)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              {{ category.title }}
+            </button>
+            <h1 class="hero-title">{{ subcategory.name }}</h1>
+            <p class="hero-sub">{{ filteredProducts.length }} productos disponibles</p>
           </div>
         </div>
 
-        <!-- Subcategorías — clic navega a nueva página -->
-        <div class="subcat-section">
-          <div class="subcat-grid">
-            <div v-for="sub in category.subcategories" :key="sub.id" class="subcat-card"
-              @click="router.push(`/tienda/${category.id}/sub/${sub.id}`)">
-              <div class="subcat-img-wrap">
-                <img :src="sub.img" :alt="sub.name" class="subcat-img" loading="lazy" />
-                <div class="subcat-hover-arrow">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </div>
+        <!-- Header -->
+        <div class="store-header-row">
+          <div>
+            <h2 class="store-title">{{ subcategory.name }}</h2>
+            <p class="store-sub">
+              <button class="breadcrumb-inline" @click="router.push(`/tienda/${category.id}`)">{{ category.title
+                }}</button>
+              &nbsp;›&nbsp;{{ subcategory.name }}
+            </p>
+          </div>
+          <span class="count-badge">{{ filteredProducts.length }} productos</span>
+        </div>
+
+        <!-- Products grid -->
+        <div class="products-grid" v-if="filteredProducts.length">
+          <div v-for="product in filteredProducts" :key="product.id" class="product-card"
+            @click="router.push(`/tienda/${category.id}/${product.id}`)">
+            <div class="card-badges">
+              <span v-if="product.stock" class="badge-stock">En stock</span>
+              <span v-if="product.discount > 0" class="badge-disc">-{{ product.discount }}%</span>
+            </div>
+            <div class="card-img-wrap">
+              <img :src="product.images[0]" :alt="product.name" class="card-img" loading="lazy" />
+              <button class="quick-add-btn" :style="{ background: category.accentColor }"
+                @click.stop="quickAdd(product)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                {{ cartStore.isInCart(product.id) ? '✓ En carrito' : 'Añadir' }}
+              </button>
+            </div>
+            <div class="card-body">
+              <p class="card-kicker" :style="{ color: category.accentColor }">{{ subcategory.name }}</p>
+              <h3 class="card-name">{{ product.name }}</h3>
+              <p class="card-desc">{{ product.shortDesc }}</p>
+              <div class="card-price-row">
+                <span v-if="product.discount > 0" class="price-old">{{ formatCOP(product.originalPrice) }}</span>
+                <span class="price-main">{{ formatCOP(product.price) }}</span>
               </div>
-              <div class="subcat-info">
-                <p class="subcat-name">{{ sub.name }}</p>
-                <span class="subcat-count">
-                  {{ sub.count }} productos
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </span>
-              </div>
+              <button class="card-btn" :class="{ 'card-btn-added': cartStore.isInCart(product.id) }"
+                :style="!cartStore.isInCart(product.id) ? { background: category.accentColor } : {}"
+                @click.stop="router.push(`/tienda/${category.id}/${product.id}`)">
+                Ver Detalles
+              </button>
             </div>
           </div>
+        </div>
+
+        <!-- Sin productos -->
+        <div v-else class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            opacity=".3">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <p>No hay productos en esta categoría por el momento.</p>
+          <button class="empty-btn" @click="router.push(`/tienda/${category.id}`)">
+            Ver todos los productos de {{ category.title }}
+          </button>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-banner">
+          <div>
+            <p class="cta-title">¿No encuentras lo que necesitas?</p>
+            <p class="cta-sub">Solicítalo y te cotizamos en 24 horas</p>
+          </div>
+          <button class="cta-btn" @click="router.push('/contacto')">Solicitar Producto →</button>
         </div>
 
       </template>
 
       <div v-else class="not-found">
-        <p>Categoría no encontrada.</p>
+        <p>Subcategoría no encontrada.</p>
+        <button class="empty-btn" @click="router.push('/tienda')">Volver al catálogo</button>
       </div>
 
     </div>
@@ -98,15 +152,45 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { STORE_CATEGORIES } from '../../data/store-products.js'
+import { STORE_CATEGORIES, formatCOP } from '../../data/store-products.js'
+import { useCartStore } from '../../stores/cart.js'
 
 const router = useRouter()
 const route = useRoute()
+const cartStore = useCartStore()
 
 const isLoading = ref(true)
-onMounted(() => setTimeout(() => { isLoading.value = false }, 3000))
+onMounted(() => setTimeout(() => { isLoading.value = false }, 1500))
 
-const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params.categoryId) ?? null)
+const category = computed(() =>
+  STORE_CATEGORIES.find(c => c.id === route.params.categoryId) ?? null
+)
+
+const subcategory = computed(() =>
+  category.value?.subcategories.find(s => s.id === route.params.subcategoryId) ?? null
+)
+
+const filteredProducts = computed(() => {
+  if (!category.value || !subcategory.value) return []
+  return category.value.products.filter(p => p.subcategory === subcategory.value.id)
+})
+
+function quickAdd(product) {
+  if (cartStore.isInCart(product.id)) {
+    router.push('/carrito')
+    return
+  }
+  cartStore.addItem({
+    productId: product.id,
+    name: product.name,
+    categoryId: category.value.id,
+    categoryTitle: category.value.title,
+    image: product.images[0],
+    price: product.price,
+    qty: 1,
+    variant: product.normativasOptions?.[0] ?? null,
+  })
+}
 </script>
 
 <style scoped>
@@ -142,6 +226,11 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
 }
 
 .sk-bc-b {
+  width: 100px;
+  height: 14px;
+}
+
+.sk-bc-c {
   width: 140px;
   height: 14px;
 }
@@ -155,21 +244,9 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
 
 .sk-hero {
   width: 100%;
-  height: 340px;
+  height: 280px;
   border-radius: 20px;
   margin-bottom: 32px;
-}
-
-.sk-subcat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 40px;
-}
-
-.sk-subcat-card {
-  height: 170px;
-  border-radius: 14px;
 }
 
 .sk-header-row {
@@ -191,7 +268,7 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
 }
 
 .sk-h-sub {
-  width: 360px;
+  width: 320px;
   height: 15px;
 }
 
@@ -248,12 +325,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   border-radius: 12px;
 }
 
-.sk-cta {
-  height: 96px;
-  border-radius: 18px;
-  margin-bottom: 32px;
-}
-
 /* ── Page ── */
 .store-section {
   background: #fafbfc;
@@ -302,11 +373,11 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   font-weight: 700;
 }
 
-/* hero */
+/* hero banner (más bajo) */
 .hero-banner {
   position: relative;
   width: 100%;
-  height: 340px;
+  height: 280px;
   border-radius: 20px;
   overflow: hidden;
   background-size: cover;
@@ -327,27 +398,33 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 36px 40px;
+  padding: 32px 40px;
 }
 
-.hero-kicker {
+.hero-back {
   display: inline-flex;
-  padding: 5px 14px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  background: rgba(255, 255, 255, .15);
-  border: 1.5px solid rgba(255, 255, 255, .35);
-  color: #fff;
-  width: fit-content;
+  align-items: center;
+  gap: 4px;
   margin-bottom: 12px;
+  background: rgba(255, 255, 255, .15);
+  border: 1.5px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  padding: 5px 14px;
+  color: rgba(255, 255, 255, .85);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  width: fit-content;
+  transition: background 150ms;
+}
+
+.hero-back:hover {
+  background: rgba(255, 255, 255, .25);
 }
 
 .hero-title {
   margin: 0 0 8px;
-  font-size: clamp(28px, 4vw, 52px);
+  font-size: clamp(26px, 3.5vw, 44px);
   font-weight: 900;
   color: #fff;
   letter-spacing: -1px;
@@ -356,94 +433,8 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
 
 .hero-sub {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   color: rgba(255, 255, 255, .72);
-}
-
-.subcat-section {
-  margin-bottom: 44px;
-}
-
-.subcat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.subcat-card {
-  border-radius: 18px;
-  border: 1.5px solid rgba(27, 27, 27, .09);
-  overflow: hidden;
-  cursor: pointer;
-  background: #fff;
-  transition: all 220ms ease;
-}
-
-.subcat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, .1);
-  border-color: rgba(0, 113, 227, .3);
-}
-
-.subcat-img-wrap {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  overflow: hidden;
-  background: #f0f2f5;
-}
-
-.subcat-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 380ms;
-}
-
-.subcat-card:hover .subcat-img {
-  transform: scale(1.06);
-}
-
-.subcat-hover-arrow {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 28px;
-  height: 28px;
-  background: rgba(255, 255, 255, .9);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 220ms ease;
-  color: #0071e3;
-}
-
-.subcat-card:hover .subcat-hover-arrow {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.subcat-info {
-  padding: 16px 16px 18px;
-}
-
-.subcat-name {
-  margin: 0 0 5px;
-  font-size: 15px;
-  font-weight: 800;
-  color: #1b1b1b;
-}
-
-.subcat-count {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 12.5px;
-  color: rgba(27, 27, 27, .45);
-  font-weight: 600;
 }
 
 /* header row */
@@ -467,6 +458,23 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   margin: 0;
   font-size: 14px;
   color: rgba(27, 27, 27, .5);
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb-inline {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #0071e3;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0;
+  transition: opacity 150ms;
+}
+
+.breadcrumb-inline:hover {
+  opacity: .7;
 }
 
 .count-badge {
@@ -480,7 +488,7 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   white-space: nowrap;
 }
 
-/* products grid — MÁS GRANDES */
+/* products grid */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -503,7 +511,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   box-shadow: 0 20px 48px rgba(0, 0, 0, .11);
 }
 
-/* badges */
 .card-badges {
   position: absolute;
   top: 14px;
@@ -547,7 +554,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   width: fit-content;
 }
 
-/* image — MÁS ALTO */
 .card-img-wrap {
   position: relative;
   width: 100%;
@@ -590,7 +596,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   bottom: 0;
 }
 
-/* body */
 .card-body {
   padding: 16px 20px 22px;
   display: flex;
@@ -671,6 +676,36 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   color: #1aab5c;
 }
 
+/* empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 80px 0;
+  text-align: center;
+  color: rgba(27, 27, 27, .45);
+  font-size: 15px;
+  margin-bottom: 56px;
+}
+
+.empty-btn {
+  padding: 11px 24px;
+  background: #0071e3;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 160ms;
+}
+
+.empty-btn:hover {
+  background: #005fcd;
+}
+
 /* cta */
 .cta-banner {
   display: flex;
@@ -716,6 +751,10 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
 }
 
 .not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
   padding: 100px 0;
   text-align: center;
   color: rgba(27, 27, 27, .4);
@@ -733,16 +772,12 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   }
 
   .hero-banner {
-    height: 240px;
+    height: 220px;
     border-radius: 14px;
   }
 
   .hero-content {
     padding: 24px 22px;
-  }
-
-  .subcat-grid {
-    grid-template-columns: repeat(3, 1fr);
   }
 
   .products-grid {
@@ -773,10 +808,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
 
   .card-img-wrap {
     height: 200px;
-  }
-
-  .subcat-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 </style>
