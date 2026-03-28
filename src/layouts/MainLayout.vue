@@ -40,7 +40,6 @@
 
         <!-- Acciones desktop -->
         <div class="row items-center no-wrap q-gutter-sm gt-sm">
-          <!-- Carrito -->
           <button class="bs-cart-btn" @click="router.push('/carrito')" aria-label="Ver carrito">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -93,7 +92,7 @@
         </div>
 
         <!-- Buscador mobile -->
-        <div class="drawer-search">
+        <div class="drawer-search-wrap">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             class="drawer-search-ico">
             <circle cx="11" cy="11" r="8" />
@@ -116,12 +115,12 @@
             @click="drawer = false">
             Filamentos
           </router-link>
-          <router-link to="/carrito" class="drawer-link drawer-link--cart" @click="drawer = false">
+          <router-link to="/carrito" class="drawer-link" @click="drawer = false">
             Carrito
-            <span v-if="cartStore.totalItems > 0" class="drawer-cart-badge">{{ cartStore.totalItems }}</span>
+            <span v-if="cartStore.totalItems > 0" class="drawer-cart-count">{{ cartStore.totalItems }}</span>
           </router-link>
           <div class="drawer-divider" />
-          <router-link to="/" class="drawer-link drawer-link--back" @click="drawer = false">
+          <router-link to="/" class="drawer-link drawer-link--muted" @click="drawer = false">
             ← Sitio principal
           </router-link>
         </nav>
@@ -141,7 +140,7 @@
     </q-page-container>
 
     <!-- ══════════════════════════════════════════════
-         FOOTER
+         FOOTER — idéntico al MainLayout
     ═══════════════════════════════════════════════ -->
     <q-footer class="bs-footer">
       <div class="bs-footer-wrap">
@@ -184,6 +183,20 @@
                     d="M14 6c1.2 2.2 3.2 3.6 6 3.8v2.6c-2.6-.1-4.6-1.1-6-2.6v6.1a5.2 5.2 0 1 1-5.2-5.2c.4 0 .8 0 1.2.1v2.7a2.7 2.7 0 1 0 2.8 2.7V4h1.2z" />
                 </svg>
               </a>
+              <a class="bs-social" href="#" aria-label="X">
+                <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M6 18L18 6" />
+                  <path d="M8 6h5l3 4v8" />
+                  <path d="M16 18h-5l-3-4V6" />
+                </svg>
+              </a>
+              <a class="bs-social" href="#" aria-label="YouTube">
+                <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path
+                    d="M21 12s0-3.3-.4-4.7a2.3 2.3 0 0 0-1.6-1.6C17.6 5 12 5 12 5s-5.6 0-7 .7A2.3 2.3 0 0 0 3.4 7.3C3 8.7 3 12 3 12s0 3.3.4 4.7A2.3 2.3 0 0 0 5 18.3c1.4.7 7 .7 7 .7s5.6 0 7-.7a2.3 2.3 0 0 0 1.6-1.6C21 15.3 21 12 21 12z" />
+                  <path d="M10.5 9.5l5 2.5-5 2.5v-5z" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
             </div>
           </div>
         </div>
@@ -194,8 +207,10 @@
           <div class="bs-foot-links">
             <a class="bs-foot-link" href="#">Términos de uso</a>
             <a class="bs-foot-link" href="#">Política de privacidad</a>
+            <a class="bs-foot-link" href="#">GDPR</a>
             <a class="bs-foot-link bs-status" href="#">
-              <span class="bs-dot" />Sistema operativo
+              <span class="bs-dot" aria-hidden="true" />
+              System status
             </a>
           </div>
           <div class="bs-foot-copy">© {{ year }} ZiFux S.A.S.</div>
@@ -493,8 +508,8 @@ function handleSearch() {
   cursor: pointer;
 }
 
-/* Buscador mobile */
-.drawer-search {
+/* Buscador drawer */
+.drawer-search-wrap {
   position: relative;
   margin: 12px 14px 4px;
 }
@@ -527,7 +542,7 @@ function handleSearch() {
 .drawer-nav {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 12px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -551,15 +566,11 @@ function handleSearch() {
 }
 
 .drawer-link--active {
-  color: #0071e3 !important;
+  color: #0071e3;
   background: rgba(0, 113, 227, 0.06);
 }
 
-.drawer-link--cart {
-  font-weight: 700;
-}
-
-.drawer-cart-badge {
+.drawer-cart-count {
   background: #ff3b30;
   color: #fff;
   border-radius: 999px;
@@ -574,7 +585,7 @@ function handleSearch() {
   margin: 6px 0;
 }
 
-.drawer-link--back {
+.drawer-link--muted {
   color: rgba(11, 18, 32, 0.45);
   font-size: 13.5px;
 }
@@ -617,14 +628,15 @@ function handleSearch() {
 
 /* ══ FOOTER ══════════════════════════════════════ */
 .bs-footer {
-  background: #fff;
+  background: #ffffff;
   border-top: 1px solid rgba(15, 23, 42, 0.09);
 }
 
 .bs-footer-wrap {
+  width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 32px 40px;
+  padding: 34px 40px;
 }
 
 .bs-footer-top {
@@ -646,17 +658,18 @@ function handleSearch() {
 }
 
 .bs-foot-name {
+  color: #0b1220;
   font-weight: 900;
   font-size: 16px;
-  color: #0b1220;
+  line-height: 1.1;
 }
 
 .bs-foot-tag {
   margin-top: 4px;
-  font-size: 13px;
   color: rgba(11, 18, 32, 0.55);
+  font-size: 13px;
+  line-height: 1.35;
   max-width: 380px;
-  line-height: 1.4;
 }
 
 .bs-foot-right {
@@ -674,24 +687,25 @@ function handleSearch() {
 .bs-foot-contact-link {
   color: rgba(11, 18, 32, 0.65);
   text-decoration: none;
+  font-weight: 800;
   font-size: 13px;
-  font-weight: 700;
 }
 
 .bs-foot-contact-link:hover {
-  color: #0b1220;
+  color: rgba(11, 18, 32, 0.95);
 }
 
 .bs-vline {
   width: 1px;
   height: 18px;
-  background: rgba(15, 23, 42, 0.12);
+  background: rgba(15, 23, 42, 0.14);
   flex: 0 0 auto;
 }
 
 .bs-foot-social {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
 }
 
 .bs-social {
@@ -700,16 +714,18 @@ function handleSearch() {
   border-radius: 999px;
   display: grid;
   place-items: center;
+  background: rgba(2, 6, 23, 0.03);
   border: 1px solid rgba(15, 23, 42, 0.12);
-  color: rgba(11, 18, 32, 0.65);
+  color: rgba(11, 18, 32, 0.70);
   text-decoration: none;
-  transition: all 180ms;
+  transition: all 200ms;
 }
 
 .bs-social:hover {
   color: #0071e3;
-  border-color: rgba(0, 113, 227, 0.3);
-  background: rgba(0, 113, 227, 0.08);
+  border-color: rgba(0, 113, 227, 0.35);
+  background: rgba(0, 113, 227, 0.10);
+  transform: translateY(-1px);
 }
 
 .bs-ico {
@@ -719,52 +735,57 @@ function handleSearch() {
 
 .bs-foot-hr {
   height: 1px;
-  background: rgba(15, 23, 42, 0.09);
-  margin: 22px 0 16px;
+  background: rgba(15, 23, 42, 0.10);
+  margin: 24px 0 18px;
 }
 
 .bs-footer-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 18px;
 }
 
 .bs-foot-links {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 22px;
+  flex-wrap: wrap;
 }
 
 .bs-foot-link {
-  color: rgba(11, 18, 32, 0.5);
+  color: rgba(11, 18, 32, 0.55);
   text-decoration: none;
+  font-weight: 800;
   font-size: 12px;
-  font-weight: 700;
 }
 
 .bs-foot-link:hover {
-  color: #0b1220;
+  color: rgba(11, 18, 32, 0.92);
 }
 
 .bs-status {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .bs-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
   background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
 }
 
 .bs-foot-copy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(11, 18, 32, 0.55);
+  font-weight: 800;
   font-size: 12px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, 0.45);
+  white-space: nowrap;
 }
 
 /* ══ WhatsApp ═════════════════════════════════════ */
@@ -821,6 +842,8 @@ function handleSearch() {
   }
 
   .bs-foot-right {
+    width: 100%;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
 
@@ -842,6 +865,10 @@ function handleSearch() {
   .bs-footer-bottom {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .bs-foot-copy {
+    white-space: normal;
   }
 
   .bs-search {
