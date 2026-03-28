@@ -50,7 +50,7 @@ const routes = [
       // Subcategoría  →  /tienda/drones/sub/baterias
       {
         path: ':categoryId/sub/:subcategoryId',
-        component: () => import('src/components/views/Subcategoryview.vue'),
+        component: () => import('src/components/views/SubcategoryView.vue'),
       },
       // Detalle de producto  →  /tienda/drones/dr-bat-01
       {
