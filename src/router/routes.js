@@ -30,34 +30,36 @@ const routes = [
   },
 
   // ══════════════════════════════════════════════════════════
+  //  AUTENTICACIÓN  →  sin layout (AuthView tiene el suyo)
+  // ══════════════════════════════════════════════════════════
+  {
+    path: '/auth',
+    component: () => import('pages/AuthView.vue'),
+  },
+
+  // ══════════════════════════════════════════════════════════
   //  TIENDA  →  usa StoreLayout (navbar propia con carrito)
-  //  Todas las rutas de tienda van anidadas aquí
   // ══════════════════════════════════════════════════════════
   {
     path: '/tienda',
     component: () => import('layouts/StoreLayout.vue'),
     children: [
-      // Catálogo principal (pantalla de inicio de la tienda)
       {
         path: '',
         component: () => import('src/components/views/CatalogView.vue'),
       },
-      // Categoría  →  /tienda/drones  o  /tienda/filamentos
       {
         path: ':categoryId',
         component: () => import('src/components/views/ServiceStoreView.vue'),
       },
-      // Subcategoría  →  /tienda/drones/sub/baterias
       {
         path: ':categoryId/sub/:subcategoryId',
         component: () => import('src/components/views/SubcategoryView.vue'),
       },
-      // Detalle de producto  →  /tienda/drones/dr-bat-01
       {
         path: ':categoryId/:productId',
         component: () => import('src/components/views/ProductDetailView.vue'),
       },
-      // Carrito
       {
         path: '../carrito',
         redirect: '/carrito',
@@ -65,7 +67,7 @@ const routes = [
     ],
   },
 
-  // Carrito y checkout fuera del nested para que la URL sea limpia
+  // Carrito y checkout
   {
     path: '/carrito',
     component: () => import('layouts/StoreLayout.vue'),

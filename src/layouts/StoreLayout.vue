@@ -6,7 +6,7 @@
 
         <!-- Logo -->
         <router-link to="/" class="nav-logo">
-          <img src="/logo.jpeg" alt="ZiFux" class="nav-logo-img" />
+          <img src="/IconoZ.png" alt="ZiFux" class="nav-logo-img" />
         </router-link>
 
         <!-- Links tienda desktop -->
@@ -79,7 +79,7 @@
     <q-drawer v-model="drawer" side="right" overlay class="mobile-drawer lt-md">
       <div class="mob-inner">
         <div class="mob-head">
-          <img src="/logo.jpeg" alt="ZiFux" class="mob-logo" />
+          <img src="/IconoZ.png" alt="ZiFux" class="mob-logo" />
           <button class="mob-close" @click="drawer = false">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -136,7 +136,7 @@
       <div class="footer-inner">
         <div class="footer-top">
           <div class="footer-brand">
-            <img src="/logo.jpeg" alt="ZiFux" class="footer-logo" />
+            <img src="/IconoZ.png" alt="ZiFux" class="footer-logo" />
             <p class="footer-tagline">Importación de maquinaria, ingeniería a medida y soporte técnico confiable.</p>
           </div>
           <div class="footer-cols">

@@ -9,7 +9,7 @@
 
         <!-- Logo -->
         <router-link to="/" class="bs-brand">
-          <img src="/logo.jpeg" alt="ZiFux" class="bs-logo-img" />
+          <img src="/IconoZ.png" alt="ZiFux" class="bs-logo-img" />
         </router-link>
 
         <!-- Nav desktop -->
@@ -97,8 +97,8 @@
 
         <!-- Acciones desktop -->
         <div class="row items-center no-wrap q-gutter-sm gt-sm">
-          <button class="bs-link-btn">Ingresar</button>
-          <button class="bs-signup-btn">Cotizar</button>
+          <button class="bs-link-btn" @click="router.push('/auth')">Ingresar</button>
+          <button class="bs-signup-btn" @click="router.push('/auth')">Cotizar</button>
         </div>
 
         <!-- Menú móvil -->
@@ -112,7 +112,7 @@
     <q-drawer v-model="drawer" side="right" overlay class="bs-drawer lt-md">
       <div class="drawer-inner">
         <div class="drawer-head">
-          <img src="/logo.jpeg" alt="ZiFux" class="drawer-logo" />
+          <img src="/IconoZ.png" alt="ZiFux" class="drawer-logo" />
           <button class="drawer-close" @click="drawer = false">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -163,8 +163,8 @@
         </nav>
 
         <div class="drawer-actions">
-          <button class="drawer-btn-outline">Ingresar</button>
-          <button class="drawer-btn-fill">Cotizar</button>
+          <button class="drawer-btn-outline" @click="router.push('/auth'); drawer = false">Ingresar</button>
+          <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">Cotizar</button>
         </div>
       </div>
     </q-drawer>
@@ -183,7 +183,7 @@
       <div class="bs-footer-wrap">
         <div class="bs-footer-top">
           <div class="bs-foot-brand">
-            <img src="/logo.jpeg" alt="ZiFux" class="foot-logo-img" />
+            <img src="/IconoZ.png" alt="ZiFux" class="foot-logo-img" />
             <div class="bs-foot-brand-text">
               <div class="bs-foot-name">ZiFux</div>
               <div class="bs-foot-tag">
@@ -269,7 +269,9 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'  // ← agregar
 
+const router = useRouter()
 const drawer = ref(false)
 const scrolled = ref(false)
 const year = new Date().getFullYear()
