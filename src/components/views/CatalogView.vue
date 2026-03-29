@@ -25,40 +25,9 @@
           </div>
         </div>
 
-        <!-- Mapa SVG inline — sin fondo -->
+        <!-- Mapa -->
         <div class="hero-map">
-          <svg class="latam-map" viewBox="0 0 400 780" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M 48,18 L 72,14 L 105,18 L 128,22 L 148,16 L 162,24 L 168,38 L 175,52 L 178,66 L 170,76 L 162,88 L 168,100 L 174,112 L 166,120 L 154,126 L 140,132 L 122,138 L 108,136 L 96,130 L 80,128 L 66,118 L 55,108 L 44,94 L 36,78 L 30,62 L 32,46 Z" />
-            <path d="M 30,62 L 36,50 L 40,36 L 34,28 L 24,38 L 18,54 L 20,68 L 28,72 Z" />
-            <path
-              d="M 154,126 L 166,120 L 178,122 L 188,128 L 196,136 L 198,146 L 192,154 L 182,158 L 170,156 L 160,150 L 152,142 Z" />
-            <path d="M 182,158 L 196,154 L 206,158 L 212,168 L 208,178 L 196,184 L 184,180 L 178,170 Z" />
-            <path d="M 196,184 L 208,180 L 216,186 L 218,196 L 212,204 L 202,204 L 194,196 Z" />
-            <path d="M 210,202 L 218,196 L 228,194 L 240,196 L 248,202 L 244,210 L 232,214 L 218,212 Z" />
-            <ellipse cx="205" cy="103" rx="28" ry="9" transform="rotate(-8 205 103)" />
-            <ellipse cx="244" cy="107" rx="10" ry="6" transform="rotate(-5 244 107)" />
-            <path
-              d="M 228,214 L 244,210 L 260,212 L 276,216 L 292,218 L 306,222 L 316,232 L 314,246 L 304,256 L 290,262 L 274,264 L 260,260 L 248,252 L 238,240 L 228,228 Z" />
-            <path
-              d="M 292,218 L 308,222 L 322,218 L 338,216 L 350,220 L 358,230 L 354,242 L 342,250 L 326,252 L 312,248 L 304,256 L 316,232 Z" />
-            <path
-              d="M 342,250 L 358,244 L 372,240 L 386,242 L 396,248 L 394,260 L 380,266 L 364,268 L 350,264 L 340,258 Z" />
-            <path d="M 228,262 L 242,258 L 252,264 L 254,278 L 248,290 L 236,292 L 224,286 L 220,274 Z" />
-            <path
-              d="M 236,292 L 252,288 L 262,296 L 268,312 L 272,328 L 270,346 L 262,360 L 250,368 L 236,368 L 222,360 L 214,344 L 212,326 L 216,308 L 224,296 Z" />
-            <path
-              d="M 262,328 L 278,322 L 294,324 L 306,332 L 308,348 L 302,362 L 288,368 L 272,366 L 264,356 L 262,342 Z" />
-            <path
-              d="M 294,224 L 310,226 L 326,228 L 342,226 L 356,230 L 370,238 L 382,248 L 392,260 L 398,274 L 398,292 L 394,310 L 388,328 L 382,346 L 374,362 L 364,376 L 352,388 L 338,396 L 322,400 L 306,398 L 292,392 L 280,382 L 270,370 L 272,366 L 288,368 L 302,362 L 308,348 L 306,332 L 294,324 L 278,322 L 268,312 L 268,296 L 278,286 L 290,278 L 302,270 L 312,260 L 314,248 L 316,234 L 306,224 Z" />
-            <path d="M 272,368 L 286,370 L 298,374 L 306,384 L 300,394 L 286,396 L 272,390 L 264,380 Z" />
-            <path d="M 298,394 L 314,392 L 322,400 L 320,412 L 308,418 L 294,414 L 288,404 Z" />
-            <path
-              d="M 212,344 L 224,360 L 230,374 L 232,392 L 228,412 L 220,432 L 212,452 L 204,474 L 198,496 L 194,518 L 190,540 L 188,560 L 186,578 L 184,596 L 182,612 L 178,626 L 172,636 L 166,642 L 160,638 L 158,624 L 162,608 L 166,590 L 170,570 L 174,548 L 178,524 L 180,500 L 182,474 L 184,448 L 186,422 L 190,398 L 196,376 L 204,360 Z" />
-            <path
-              d="M 230,374 L 250,372 L 268,372 L 284,374 L 296,380 L 306,388 L 308,402 L 304,418 L 296,432 L 284,444 L 272,456 L 260,468 L 248,482 L 238,498 L 228,514 L 220,530 L 212,548 L 204,564 L 196,578 L 188,590 L 182,604 L 178,616 L 174,628 L 170,638 L 166,642 L 172,636 L 178,626 L 182,612 L 184,596 L 186,578 L 188,560 L 190,540 L 194,518 L 198,496 L 204,474 L 212,452 L 220,432 L 228,412 L 232,392 Z" />
-            <path d="M 196,650 L 210,646 L 222,650 L 226,660 L 220,668 L 206,670 L 194,664 Z" />
-          </svg>
+          <img src="/mapa.png" alt="Latinoamérica" class="latam-map" />
         </div>
       </div>
 
@@ -263,9 +232,30 @@ const vReveal = {
   width: 100%;
   height: 100%;
   max-height: 500px;
-  /* SVG inline: fill directo, sin fondo, sin blend */
-  fill: #1b1b1b;
-  transition: fill 200ms;
+  object-fit: contain;
+  /* Difumina los bordes: izquierda, arriba y abajo */
+  -webkit-mask-image: linear-gradient(to right,
+      transparent 0%,
+      black 18%,
+      black 85%,
+      transparent 100%),
+    linear-gradient(to bottom,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%);
+  -webkit-mask-composite: destination-in;
+  mask-image: linear-gradient(to right,
+      transparent 0%,
+      black 18%,
+      black 85%,
+      transparent 100%),
+    linear-gradient(to bottom,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%);
+  mask-composite: intersect;
 }
 
 
