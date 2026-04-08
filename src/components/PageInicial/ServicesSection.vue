@@ -31,7 +31,6 @@
             </ul>
           </div>
 
-          <!-- BOTÓN SIEMPRE ABAJO -->
           <q-btn unelevated class="card-cta" :label="service.cta" icon-right="arrow_forward"
             @click="handleServiceClick(service)" />
         </article>
@@ -97,23 +96,20 @@ function handleServiceClick(service) {
     router.push('/servicios-industriales')
     return
   }
-
   if (service.action === 'goMaquinaria') {
     router.push('/maquinaria')
     return
   }
-
   if (service.action === 'goIngenieria') {
     router.push('/ingenieria')
     return
   }
-
   scrollTo('#contacto')
 }
-
 </script>
 
 <style scoped>
+/* ══ Wrap ════════════════════════════════════════ */
 .bs-wrap {
   width: 100%;
   max-width: 1280px;
@@ -121,29 +117,33 @@ function handleServiceClick(service) {
   padding: 0 24px;
 }
 
+/* ══ Section — fondo blanco puro ═════════════════ */
 .services {
   --blue: #0071e3;
   --yellow: #fdda24;
 
-  padding: 90px 0;
+  padding: 100px 0;
   background: #ffffff;
   color: #0b0b0b;
 }
 
+/* ══ Header ══════════════════════════════════════ */
 .header {
   text-align: center;
-  margin-bottom: 64px;
+  margin-bottom: 72px;
 }
 
 .pill {
   display: inline-flex;
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   border: 1px solid rgba(0, 0, 0, 0.14);
-  margin-bottom: 16px;
+  color: rgba(0, 0, 0, 0.50);
+  margin-bottom: 20px;
 }
 
 .title {
@@ -151,102 +151,168 @@ function handleServiceClick(service) {
   font-size: clamp(36px, 4vw, 56px);
   font-weight: 900;
   line-height: 1.15;
+  color: #0b1220;
 }
 
 .title span {
   display: block;
-  color: rgba(0, 0, 0, 0.75);
+  color: rgba(11, 18, 32, 0.55);
 }
 
 .subtitle {
   margin: 20px auto 0;
-  max-width: 680px;
+  max-width: 620px;
   font-size: 17px;
   line-height: 1.7;
-  color: rgba(0, 0, 0, 0.66);
+  color: rgba(0, 0, 0, 0.55);
 }
 
+/* ══ Grid ════════════════════════════════════════ */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 32px;
 }
 
-/* ========================= */
-/* SOLUCIÓN PROFESIONAL */
-/* ========================= */
-
+/* ══ Card — negra, efecto 3D sobre fondo blanco ══ */
 .service-card {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  border-radius: 20px;
-  padding: 32px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
+  background: #0f0f0f;
+  border-radius: 22px;
+  padding: 36px 32px 32px;
+
+  /* Borde superior con highlight — simula luz */
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top-color: rgba(255, 255, 255, 0.14);
+
+  /* Capas de sombra para el efecto 3D sobre blanco */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    /* highlight interno */
+    0 2px 4px rgba(11, 18, 32, 0.08),
+    /* sombra base pegada */
+    0 6px 16px rgba(11, 18, 32, 0.12),
+    /* sombra media */
+    0 18px 40px rgba(11, 18, 32, 0.16),
+    /* sombra profunda */
+    0 36px 64px rgba(11, 18, 32, 0.14),
+    /* sombra ambiental */
+    0 64px 80px -24px rgba(11, 18, 32, 0.10);
+  /* difusión lejana */
 
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  transition: transform 300ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    box-shadow 300ms ease;
+  will-change: transform;
+}
+
+.service-card:hover {
+  transform: translateY(-10px) scale(1.015);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 8px rgba(11, 18, 32, 0.12),
+    0 12px 28px rgba(11, 18, 32, 0.18),
+    0 28px 56px rgba(11, 18, 32, 0.22),
+    0 52px 80px rgba(11, 18, 32, 0.18),
+    0 80px 100px -28px rgba(11, 18, 32, 0.14),
+    0 0 32px rgba(0, 113, 227, 0.08);
+  /* halo azul muy sutil */
 }
 
 .card-top {
   flex-grow: 1;
 }
 
+/* ══ Ícono ═══════════════════════════════════════ */
 .card-icon {
   width: 64px;
   height: 64px;
   border-radius: 16px;
-  background: rgba(0, 113, 227, 0.10);
+  background: rgba(0, 113, 227, 0.14);
+  border: 1px solid rgba(0, 113, 227, 0.28);
   display: grid;
   place-items: center;
-  color: var(--blue);
-  margin-bottom: 18px;
+  color: #60a5fa;
+  margin-bottom: 22px;
+  box-shadow:
+    0 0 20px rgba(0, 113, 227, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
+/* ══ Textos ══════════════════════════════════════ */
 .card-title {
   margin: 0 0 12px;
   font-size: 20px;
   font-weight: 900;
+  color: #ffffff;
+  line-height: 1.3;
 }
 
 .card-desc {
-  margin: 0 0 20px;
+  margin: 0 0 22px;
   font-size: 15px;
-  line-height: 1.6;
-  color: rgba(0, 0, 0, 0.66);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.48);
 }
 
+/* ══ Lista features ══════════════════════════════ */
 .card-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 24px;
+  margin: 0 0 28px;
 }
 
 .card-features li {
   display: flex;
+  align-items: flex-start;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 13px;
   font-size: 14px;
+  color: rgba(255, 255, 255, 0.74);
 }
 
 .check-icon {
   color: var(--yellow);
   flex-shrink: 0;
+  filter: drop-shadow(0 0 5px rgba(253, 218, 36, 0.28));
 }
 
+/* ══ Botón CTA — azul #0071e3 ════════════════════ */
+/* ══ Botón CTA — azul #0071e3 ════════════════════ */
 .card-cta {
   width: 100%;
-  height: 48px;
+  height: 50px;
   border-radius: 12px;
-  font-weight: 800;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0;
   background: var(--blue);
   color: #ffffff;
   text-transform: none;
-
   margin-top: auto;
-  /* 👈 CLAVE */
+  box-shadow:
+    0 4px 18px rgba(0, 113, 227, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  transition: background 180ms, box-shadow 180ms, transform 180ms;
 }
 
+.card-cta :deep(.q-btn__content) {
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.card-cta:hover {
+  background: #005fcd;
+  box-shadow:
+    0 8px 28px rgba(0, 113, 227, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+/* ══ Reveal animation ════════════════════════════ */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -258,9 +324,22 @@ function handleServiceClick(service) {
   transform: translateY(0);
 }
 
+/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 1024px) {
   .services-grid {
     grid-template-columns: 1fr;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .services {
+    padding: 64px 0;
+  }
+
+  .service-card {
+    padding: 28px 24px 24px;
   }
 }
 </style>

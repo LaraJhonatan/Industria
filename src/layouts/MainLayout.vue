@@ -15,8 +15,7 @@
         <!-- Nav desktop -->
         <nav class="bs-nav gt-sm" aria-label="Navegación principal">
 
-          <router-link to="/" class="bs-link" exact-active-class="bs-link--active">Inicio</router-link>
-
+          <router-link to="/" class="bs-link">Inicio</router-link>
           <router-link to="/tienda" class="bs-tienda-link">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -97,8 +96,7 @@
 
         <!-- Acciones desktop -->
         <div class="row items-center no-wrap q-gutter-sm gt-sm">
-          <button class="bs-link-btn" @click="router.push('/auth')">Ingresar</button>
-          <button class="bs-signup-btn" @click="router.push('/auth')">Cotizar</button>
+          <button class="bs-signup-btn" @click="router.push('/auth')">Regístrate / Inicia Sesión</button>
         </div>
 
         <!-- Menú móvil -->
@@ -163,8 +161,8 @@
         </nav>
 
         <div class="drawer-actions">
-          <button class="drawer-btn-outline" @click="router.push('/auth'); drawer = false">Ingresar</button>
-          <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">Cotizar</button>
+          <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">Regístrate / Inicia
+            Sesión</button>
         </div>
       </div>
     </q-drawer>
@@ -460,7 +458,7 @@ const serviciosMenu = [
 
 .bs-signup-btn {
   height: 38px;
-  padding: 0 20px;
+  padding: 0 24px;
   background: #0b1220;
   color: #fff;
   border: none;

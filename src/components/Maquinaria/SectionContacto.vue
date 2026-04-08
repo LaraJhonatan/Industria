@@ -1,177 +1,128 @@
 <template>
   <q-page class="page">
-    <section id="formulario-proyectos" class="projects" aria-label="Formulario de proyectos">
+    <section id="formulario-maquinaria" class="projects">
       <div class="bs-wrap">
 
-        <!-- TOP -->
-        <div class="top" :class="{ ready }">
-          <div class="kicker">FORMULARIO DE PROYECTOS</div>
-          <div class="headlineRow">
-            <h1 class="h1">
-              Manejamos <span>cualquier proyecto de ingeniería</span>, sin fórmulas rígidas.
-            </h1>
-            <q-btn unelevated class="talkBtn" label="Hablemos" icon-right="chat_bubble_outline" @click="onTalk" />
-          </div>
+        <!-- ══ COLUMNA IZQUIERDA ══════════════════ -->
+        <div class="col-left" :class="{ ready }">
+
+          <div class="kicker">IMPORTACIÓN DE MAQUINARIA</div>
+
+          <h1 class="h1">
+            Importamos la maquinaria
+            <span>que tu operación necesita</span>,
+            con criterio técnico real.
+          </h1>
+
           <p class="sub">
-            Cuéntanos tu necesidad y lo aterrizamos con criterio técnico. Desde el diagnóstico hasta la implementación
-            final.
+            Dinos qué equipo buscas y cuántas unidades requieres.
+            Nuestro equipo lo gestiona desde la selección hasta la puesta en marcha.
           </p>
+
+          <!-- Calendly card -->
+          <a href="https://calendly.com/zifux/llamada" target="_blank" class="calendly-card" rel="noopener">
+            <div class="cal-inner">
+              <div class="cal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+              <div>
+                <div class="cal-q">¿Prefieres que te llamemos?</div>
+                <div class="cal-cta">Agenda una llamada gratuita →</div>
+              </div>
+            </div>
+            <div class="cal-foot">
+              <div class="av av1">JR</div>
+              <div class="av av2">MC</div>
+              <div class="av av3">SA</div>
+              <div class="cal-team">Nuestro equipo te atiende</div>
+            </div>
+          </a>
+
         </div>
 
-        <!-- FORM -->
-        <q-form ref="formRef" class="formWrap" @submit.prevent="onSubmit" :class="{ ready }">
+        <!-- ══ COLUMNA DERECHA — FORMULARIO ══════ -->
+        <q-form ref="formRef" class="contact-form" :class="{ ready }" @submit.prevent="onSubmit">
 
-          <!-- Fila A: Servicio + Empresa -->
-          <div class="card">
-            <div class="row-head">
-              <span class="step">01</span>
-              <div>
-                <div class="cardTitle">Servicio y empresa</div>
-                <div class="cardHint">Tipo de solicitud e información básica</div>
-              </div>
+          <!-- Fila 1: Empresa + NIT -->
+          <div class="form-grid">
+            <div class="field">
+              <label class="label">Nombre de la empresa *</label>
+              <q-input v-model="form.empresa" outlined dense class="inp" placeholder="Nova Industria S.A.S."
+                :rules="[required]" />
             </div>
-            <q-checkbox v-model="form.servicioIngenieria" label="Estás buscando el servicio de ingeniería y proyectos"
-              class="chk mb12" />
-            <div class="grid3">
-              <div class="field">
-                <div class="label">Nombre de la empresa</div>
-                <q-input v-model="form.empresa" class="inp" outlined dense placeholder="Nova Industria S.A.S."
-                  :rules="[required]" />
-              </div>
-              <div class="field">
-                <div class="label">NIT / ID fiscal</div>
-                <q-input v-model="form.nit" class="inp" outlined dense placeholder="900123456-7" :rules="[required]" />
-              </div>
-              <div class="field">
-                <div class="label">Sector</div>
-                <q-select v-model="form.sector" class="inp" outlined dense emit-value map-options
-                  :options="sectorOptions" placeholder="Selecciona un sector" :rules="[required]" />
-              </div>
+            <div class="field">
+              <label class="label">NIT / ID fiscal *</label>
+              <q-input v-model="form.nit" outlined dense class="inp" placeholder="900123456-7" :rules="[required]" />
             </div>
           </div>
 
-          <!-- Fila B: Contacto -->
-          <div class="card">
-            <div class="row-head">
-              <span class="step">02</span>
-              <div>
-                <div class="cardTitle">Persona de contacto</div>
-                <div class="cardHint">A quién contactar para afinar el alcance</div>
-              </div>
+          <!-- Fila 2: Contacto + Teléfono -->
+          <div class="form-grid">
+            <div class="field">
+              <label class="label">Nombre de contacto *</label>
+              <q-input v-model="form.contacto" outlined dense class="inp" placeholder="Nombre y apellido"
+                :rules="[required]" />
             </div>
-            <div class="grid4">
-              <div class="field">
-                <div class="label">Nombre</div>
-                <q-input v-model="form.contacto" class="inp" outlined dense placeholder="Nombre y apellido"
-                  :rules="[required]" />
-              </div>
-              <div class="field">
-                <div class="label">Cargo</div>
-                <q-input v-model="form.cargo" class="inp" outlined dense placeholder="Jefe de mantenimiento"
-                  :rules="[required]" />
-              </div>
-              <div class="field">
-                <div class="label">Correo corporativo</div>
-                <q-input v-model="form.correo" class="inp" outlined dense placeholder="nombre@empresa.com"
-                  :rules="[required, emailRule]" />
-              </div>
-              <div class="field">
-                <div class="label">Celular</div>
-                <q-input v-model="form.celular" class="inp" outlined dense placeholder="+57 300 000 0000"
-                  :rules="[required]" />
-              </div>
+            <div class="field">
+              <label class="label">Teléfono *</label>
+              <q-input v-model="form.telefono" outlined dense class="inp" placeholder="+57 300 000 0000"
+                :rules="[required]" />
             </div>
           </div>
 
-          <!-- Fila C: Proyecto + Ejecución -->
-          <div class="card">
-            <div class="row-head">
-              <span class="step">03</span>
-              <div>
-                <div class="cardTitle">Proyecto y tiempos</div>
-                <div class="cardHint">Detalle, región, fecha y presupuesto</div>
-              </div>
-            </div>
-            <div class="field mb12">
-              <div class="label">Cuéntanos qué necesitas o qué problema buscas resolver.</div>
-              <q-input v-model="form.detalle" class="ta" outlined type="textarea" autogrow :rules="[required]"
-                @focus="clearExampleOnFocus" />
-              <div class="tiny">Ej: "Proyecto de drones para cuidar bases aéreas de Colombia".</div>
-            </div>
-            <div class="grid3">
-              <div class="field">
-                <div class="label">Ciudad o región</div>
-                <q-input v-model="form.region" class="inp" outlined dense placeholder="Bogotá / Antioquia / ..."
-                  :rules="[required]" />
-              </div>
-              <div class="field">
-                <div class="label">Fecha estimada de inicio</div>
-                <q-input v-model="form.fechaInicio" class="inp" outlined dense type="date" :rules="[required]" />
-              </div>
-              <div class="field">
-                <div class="label">¿Tienes presupuesto aproximado?</div>
-                <q-option-group v-model="form.presupuestoEstado" :options="budgetOptions" type="radio" inline
-                  class="radios" />
-              </div>
-            </div>
-            <div v-if="form.presupuestoEstado === 'si'" class="grid2 mt12">
-              <div class="field">
-                <div class="label">Presupuesto mínimo (COP)</div>
-                <q-input v-model="form.presupuestoMin" class="inp" outlined dense type="number" min="0"
-                  placeholder="20000000" :rules="[required, minPositive]" />
-              </div>
-              <div class="field">
-                <div class="label">Presupuesto máximo (COP)</div>
-                <q-input v-model="form.presupuestoMax" class="inp" outlined dense type="number" min="0"
-                  placeholder="80000000" :rules="[required, maxGteMin]" />
-              </div>
-            </div>
+          <!-- Correo -->
+          <div class="field">
+            <label class="label">Correo corporativo *</label>
+            <q-input v-model="form.correo" outlined dense class="inp" type="email" placeholder="nombre@empresa.com"
+              :rules="[required, emailRule]" />
           </div>
 
-          <!-- Fila D: Adjuntos + Submit -->
-          <div class="card">
-            <div class="row-head">
-              <span class="step">04</span>
-              <div>
-                <div class="cardTitle">Adjuntos y envío</div>
-                <div class="cardHint">Documentos técnicos opcionales</div>
-              </div>
-            </div>
+          <!-- ¿Qué maquinaria necesita? + imagen -->
+          <div class="field">
+            <label class="label">¿Qué maquinaria necesitas? *</label>
+            <q-input v-model="form.maquinaria" outlined class="ta" type="textarea" autogrow
+              placeholder="Describe el equipo o maquinaria que buscas, marca, modelo, capacidad, uso..."
+              :rules="[required]" />
+          </div>
 
-            <q-checkbox v-model="form.adjuntarDocs" label="¿Adjuntar documentos técnicos?" class="chk" />
+          <!-- Adjuntar imagen -->
+          <div class="field">
+            <label class="label">Adjuntar imagen de referencia (opcional)</label>
+            <q-file v-model="form.imagen" outlined dense class="inp" accept="image/*" :max-files="5" multiple use-chips
+              label="Subir imagen(es)">
+              <template #prepend>
+                <q-icon name="image" />
+              </template>
+            </q-file>
+          </div>
 
-            <div v-if="form.adjuntarDocs" class="grid3 mt12">
-              <div class="field">
-                <div class="label">Planos</div>
-                <q-file v-model="form.planos" class="inp file" outlined dense multiple use-chips counter :max-files="10"
-                  label="Subir planos" />
-              </div>
-              <div class="field">
-                <div class="label">Especificaciones</div>
-                <q-file v-model="form.especificaciones" class="inp file" outlined dense multiple use-chips counter
-                  :max-files="10" label="Subir especificaciones" />
-              </div>
-              <div class="field">
-                <div class="label">Fotos</div>
-                <q-file v-model="form.fotos" class="inp file" outlined dense multiple use-chips counter accept="image/*"
-                  :max-files="20" label="Subir fotos" />
-              </div>
-            </div>
+          <!-- Cuántas unidades -->
+          <div class="field">
+            <label class="label">¿Cuántas unidades necesitas? *</label>
+            <q-input v-model="form.unidades" outlined dense class="inp" type="number" min="1" placeholder="Ej: 2"
+              :rules="[required, positivo]" />
+          </div>
 
-            <div class="footer-row">
-              <div class="footer-left">
-                <div class="msg">
-                  Te contactaremos en menos de <b>24 horas hábiles</b>.
-                </div>
-                <q-checkbox v-model="form.aceptaDatos" class="chk consent"
-                  :rules="[(v) => v === true || 'Debes aceptar el tratamiento de datos personales']"
-                  label="Acepto el tratamiento de datos personales." />
-              </div>
-              <q-btn unelevated class="submitBtn" label="Solicitar cotización" type="submit" :loading="sending" />
-            </div>
+          <!-- Footer -->
+          <div class="form-footer">
+            <q-checkbox v-model="form.aceptaDatos" class="chk">
+              <span class="check-lbl">
+                Acepto el tratamiento de mis datos según la
+                <a href="/politica-privacidad" class="link">política de privacidad</a>
+              </span>
+            </q-checkbox>
+
+            <q-btn unelevated type="submit" class="submit-btn" label="Enviar solicitud" icon-right="send"
+              :loading="sending" />
           </div>
 
         </q-form>
+
       </div>
     </section>
   </q-page>
@@ -184,396 +135,377 @@ const ready = ref(false)
 const sending = ref(false)
 const formRef = ref(null)
 
-const exampleText = 'Estamos buscando ayuda para nuestro proyecto de drones para cuidar bases aéreas de Colombia'
-
 const form = ref({
-  servicioIngenieria: false,
-  empresa: '', nit: '', sector: null,
-  contacto: '', cargo: '', correo: '', celular: '',
-  detalle: exampleText,
-  region: '', fechaInicio: '',
-  presupuestoEstado: 'en_evaluacion', presupuestoMin: '', presupuestoMax: '',
-  adjuntarDocs: false, planos: [], especificaciones: [], fotos: [],
+  empresa: '',
+  nit: '',
+  contacto: '',
+  telefono: '',
+  correo: '',
+  maquinaria: '',
+  imagen: [],
+  unidades: '',
   aceptaDatos: false,
 })
 
-const sectorOptions = [
-  { label: 'Construcción', value: 'construccion' },
-  { label: 'Industria', value: 'industria' },
-  { label: 'Energía', value: 'energia' },
-  { label: 'Educación/Universidades', value: 'educacion' },
-  { label: 'Entidad pública', value: 'publica' },
-  { label: 'Otro', value: 'otro' },
-]
-
-const budgetOptions = [
-  { label: 'Sí', value: 'si' },
-  { label: 'No', value: 'no' },
-  { label: 'En evaluación', value: 'en_evaluacion' },
-]
-
 const required = (v) => (v !== null && v !== undefined && String(v).trim() !== '') || 'Campo obligatorio'
-const emailRule = (v) => { if (!v) return 'Campo obligatorio'; return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).trim()) || 'Correo inválido' }
-const minPositive = (v) => { if (!v) return true; return Number(v) >= 0 || 'Debe ser un número válido' }
-const maxGteMin = (v) => {
-  const min = Number(form.value.presupuestoMin), max = Number(v)
-  if (!form.value.presupuestoMin || !v) return true
-  if (isNaN(min) || isNaN(max)) return 'Valores inválidos'
-  return max >= min || 'El máximo debe ser ≥ al mínimo'
+const emailRule = (v) => {
+  if (!v) return 'Campo obligatorio'
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).trim()) || 'Correo inválido'
 }
-
-function clearExampleOnFocus() {
-  if (form.value.detalle === exampleText) form.value.detalle = ''
-}
-
-function onTalk() {
-  window.location.href = `mailto:comercial@novaindustria.co?subject=${encodeURIComponent('Hablemos: proyecto de ingeniería')}&body=Hola%2C%20quiero%20contarte%20un%20proyecto.%0A%0A`
-}
+const positivo = (v) => (!v || Number(v) >= 1) || 'Debe ser al menos 1'
 
 async function onSubmit() {
   const ok = await formRef.value?.validate?.()
   if (!ok) return
   sending.value = true
   try {
-    const to = 'comercial@novaindustria.co'
-    const subject = `Solicitud de cotización — ${form.value.empresa || 'Proyecto'}`
+    const to = 'comercial@zifux.com'
+    const subject = `Importación maquinaria — ${form.value.empresa}`
     const lines = [
-      'Servicio: Ingeniería y proyectos', '',
-      `Empresa: ${form.value.empresa}`, `NIT: ${form.value.nit}`,
-      `Sector: ${sectorOptions.find(x => x.value === form.value.sector)?.label || form.value.sector}`, '',
-      `Contacto: ${form.value.contacto}`, `Cargo: ${form.value.cargo}`,
-      `Correo: ${form.value.correo}`, `Celular: ${form.value.celular}`, '',
-      'Detalle:', form.value.detalle, '',
-      `Región: ${form.value.region}`, `Inicio: ${form.value.fechaInicio}`,
-      `Presupuesto: ${budgetOptions.find(x => x.value === form.value.presupuestoEstado)?.label}`,
-      form.value.presupuestoEstado === 'si' ? `Rango: ${form.value.presupuestoMin} - ${form.value.presupuestoMax} COP` : null,
-    ].filter(Boolean)
-    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${lines.join('%0D%0A')}`
+      `Empresa: ${form.value.empresa}`,
+      `NIT: ${form.value.nit}`,
+      `Contacto: ${form.value.contacto}`,
+      `Teléfono: ${form.value.telefono}`,
+      `Correo: ${form.value.correo}`,
+      ``,
+      `Maquinaria requerida:`,
+      form.value.maquinaria,
+      ``,
+      `Unidades: ${form.value.unidades}`,
+    ]
+    window.location.href =
+      `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${lines.join('%0D%0A')}`
   } finally {
     setTimeout(() => { sending.value = false }, 400)
   }
 }
 
-onMounted(() => { requestAnimationFrame(() => { ready.value = true }) })
+onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 </script>
 
 <style scoped>
+/* ══ Page ════════════════════════════════════════ */
 .page {
-  background: #fff;
+  background: #ffffff;
 }
 
+/* ══ Section ═════════════════════════════════════ */
+.projects {
+  --blue: #0071e3;
+  --blue-dark: #005fcd;
+
+  padding: 100px 0;
+  background: #ffffff;
+  color: #0b1220;
+}
+
+/* ══ Wrap — 2 columnas ═══════════════════════════ */
 .bs-wrap {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 64px;
+  align-items: start;
 }
 
-.projects {
-  padding: 72px 0 80px;
-  color: #1b1b1b;
-}
-
-/* ── TOP ──────────────────────────────── */
-.top,
-.formWrap {
+/* ══ Columna izquierda ═══════════════════════════ */
+.col-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(20px);
   transition: opacity 700ms ease, transform 700ms ease;
 }
 
-.top.ready,
-.formWrap.ready {
+.col-left.ready {
   opacity: 1;
   transform: translateY(0);
-}
-
-.formWrap {
-  transition-delay: 80ms;
 }
 
 .kicker {
   display: inline-flex;
   padding: 8px 14px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
-  letter-spacing: 1px;
+  letter-spacing: 1.4px;
   text-transform: uppercase;
-  color: #0071e3;
-  background: rgba(0, 113, 227, 0.07);
-  border: 1.5px solid rgba(0, 113, 227, 0.2);
-  margin-bottom: 16px;
-}
-
-.headlineRow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
+  color: var(--blue);
+  background: rgba(0, 113, 227, 0.08);
+  border: 1.5px solid rgba(0, 113, 227, 0.20);
+  width: fit-content;
 }
 
 .h1 {
   margin: 0;
+  font-size: clamp(28px, 3.2vw, 44px);
   font-weight: 900;
-  letter-spacing: -0.8px;
-  line-height: 1.1;
-  font-size: clamp(30px, 3.8vw, 52px);
-  flex: 1;
-  min-width: 0;
+  line-height: 1.13;
+  letter-spacing: -0.5px;
+  color: #0b1220;
 }
 
 .h1 span {
-  color: #0071e3;
+  color: var(--blue);
 }
 
 .sub {
   font-size: 15px;
-  line-height: 1.65;
-  color: rgba(27, 27, 27, 0.65);
-  max-width: 80ch;
+  line-height: 1.72;
+  color: rgba(11, 18, 32, 0.55);
 }
 
-.talkBtn {
-  height: 44px;
-  border-radius: 999px;
-  padding: 0 22px;
+/* ══ Calendly card ═══════════════════════════════ */
+.calendly-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1.5px solid rgba(11, 18, 32, 0.10);
+  text-decoration: none;
+  transition: border-color 220ms, box-shadow 220ms, transform 220ms;
+  box-shadow:
+    0 2px 8px rgba(11, 18, 32, 0.06),
+    0 8px 24px rgba(11, 18, 32, 0.08);
+}
+
+.calendly-card:hover {
+  border-color: rgba(0, 113, 227, 0.35);
+  box-shadow:
+    0 4px 16px rgba(11, 18, 32, 0.08),
+    0 12px 32px rgba(0, 113, 227, 0.10);
+  transform: translateY(-2px);
+}
+
+.cal-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.cal-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: rgba(0, 113, 227, 0.08);
+  border: 1px solid rgba(0, 113, 227, 0.18);
+  display: grid;
+  place-items: center;
+  color: var(--blue);
+}
+
+.cal-q {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0b1220;
+  margin-bottom: 4px;
+}
+
+.cal-cta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+.cal-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(11, 18, 32, 0.08);
+}
+
+.av {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
   font-weight: 900;
-  font-size: 14px;
-  color: #fff;
-  background: #0071e3;
-  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.28);
-  white-space: nowrap;
+  border: 2px solid #ffffff;
+  margin-left: -8px;
   flex-shrink: 0;
 }
 
-/* ── FORM ─────────────────────────────── */
-.formWrap {
-  margin-top: 36px;
+.av:first-child {
+  margin-left: 0
+}
+
+.av1 {
+  background: #0071e3;
+  color: #fff
+}
+
+.av2 {
+  background: #fdda24;
+  color: #0b1220
+}
+
+.av3 {
+  background: #22c55e;
+  color: #fff
+}
+
+.cal-team {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, 0.42);
+  margin-left: 4px;
+}
+
+/* ══ Formulario ══════════════════════════════════ */
+.contact-form {
+  background: #ffffff;
+  border: 1.5px solid rgba(11, 18, 32, 0.10);
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow:
+    0 2px 8px rgba(11, 18, 32, 0.05),
+    0 20px 56px rgba(11, 18, 32, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 700ms ease 80ms, transform 700ms ease 80ms;
+}
+
+.contact-form.ready {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-grid {
   display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-.card {
-  border-radius: 16px;
-  border: 2px solid rgba(27, 27, 27, 0.08);
-  background: #fff;
-  padding: 22px 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
-.row-head {
+.field {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(27, 27, 27, 0.06);
-  margin-bottom: 16px;
-}
-
-.step {
-  font-size: 26px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  color: rgba(0, 113, 227, 0.15);
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-.cardTitle {
-  font-size: 15px;
-  font-weight: 900;
-  color: #1b1b1b;
-}
-
-.cardHint {
-  font-size: 12.5px;
-  color: rgba(27, 27, 27, 0.45);
-  margin-top: 2px;
+  flex-direction: column;
+  gap: 7px;
 }
 
 .label {
-  margin-bottom: 7px;
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #1b1b1b;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b1220;
 }
 
-.tiny {
-  margin-top: 6px;
-  font-size: 12.5px;
-  color: rgba(27, 27, 27, 0.45);
-}
-
-.mb12 {
-  margin-bottom: 12px;
-}
-
-.mt12 {
-  margin-top: 12px;
-}
-
-.grid2 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-
-.grid3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.grid4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-}
-
-.field {
-  min-width: 0;
-}
-
-.radios {
-  padding-top: 6px;
-}
-
-.chk {
-  margin-top: 2px;
-}
-
-.consent {
-  margin-top: 10px;
-}
-
-/* Footer row inside last card */
-.footer-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(27, 27, 27, 0.06);
-}
-
-.footer-left {
-  flex: 1;
-  min-width: 0;
-}
-
-.msg {
-  font-size: 14px;
-  color: rgba(27, 27, 27, 0.65);
-}
-
-.msg b {
-  color: #0071e3;
-  font-weight: 900;
-}
-
-.submitBtn {
-  height: 48px;
-  border-radius: 12px;
-  padding: 0 28px;
-  font-weight: 900;
-  font-size: 14px;
-  color: #fff;
-  background: #0071e3;
-  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.28);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* ── Quasar overrides ────────────────── */
+/* Inputs */
 .inp :deep(.q-field__control),
-.ta :deep(.q-field__control),
-.file:deep(.q-field__control) {
-  background: rgba(27, 27, 27, 0.02) !important;
+.ta :deep(.q-field__control) {
+  background: #ffffff !important;
   border-radius: 10px !important;
 }
 
 .inp :deep(.q-field--outlined .q-field__control:before),
-.ta :deep(.q-field--outlined .q-field__control:before),
-.file:deep(.q-field--outlined .q-field__control:before) {
-  border: 2px solid rgba(27, 27, 27, 0.12) !important;
+.ta :deep(.q-field--outlined .q-field__control:before) {
+  border: 1.5px solid rgba(11, 18, 32, 0.15) !important;
 }
 
 .inp :deep(.q-field--outlined .q-field__control:hover:before),
-.ta :deep(.q-field--outlined .q-field__control:hover:before),
-.file:deep(.q-field--outlined .q-field__control:hover:before) {
-  border-color: rgba(27, 27, 27, 0.2) !important;
+.ta :deep(.q-field--outlined .q-field__control:hover:before) {
+  border-color: rgba(11, 18, 32, 0.28) !important;
 }
 
 .inp :deep(.q-field--outlined.q-field--focused .q-field__control:before),
-.ta :deep(.q-field--outlined.q-field--focused .q-field__control:before),
-.file:deep(.q-field--outlined.q-field--focused .q-field__control:before) {
-  border-color: #0071e3 !important;
-}
-
-.inp :deep(.q-field--outlined.q-field--focused .q-field__control),
-.ta :deep(.q-field--outlined.q-field--focused .q-field__control),
-.file:deep(.q-field--outlined.q-field--focused .q-field__control) {
-  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1) !important;
+.ta :deep(.q-field--outlined.q-field--focused .q-field__control:before) {
+  border-color: var(--blue) !important;
 }
 
 .inp :deep(.q-field__native),
-.inp :deep(.q-field__input),
-.ta :deep(.q-field__native),
-.ta :deep(textarea),
-.file:deep(.q-field__native),
-.file:deep(.q-field__input) {
-  color: #1b1b1b !important;
-  caret-color: #0071e3 !important;
+.ta :deep(textarea) {
+  color: #0b1220 !important;
+  font-size: 14px !important;
 }
 
 .inp :deep(.q-field__native::placeholder),
-.inp :deep(.q-field__input::placeholder),
 .ta :deep(textarea::placeholder) {
-  color: rgba(27, 27, 27, 0.38) !important;
+  color: rgba(11, 18, 32, 0.32) !important;
 }
 
-:deep(.q-checkbox__label),
-:deep(.q-radio__label) {
-  color: #1b1b1b !important;
+.ta :deep(textarea) {
+  min-height: 100px !important;
 }
 
-/* ── Responsive ──────────────────────── */
-@media (max-width: 1024px) {
-  .grid4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* Footer */
+.form-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 4px;
+}
 
-  .grid3 {
+.check-lbl {
+  font-size: 13px;
+  color: rgba(11, 18, 32, 0.52);
+  line-height: 1.5;
+}
+
+.link {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline
+}
+
+.submit-btn {
+  height: 52px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0;
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(0, 113, 227, 0.32);
+  transition: background 180ms, box-shadow 180ms, transform 180ms;
+}
+
+.submit-btn :deep(.q-btn__content) {
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.submit-btn:hover {
+  background: var(--blue-dark);
+  box-shadow: 0 8px 28px rgba(0, 113, 227, 0.45);
+  transform: translateY(-1px);
+}
+
+/* ══ Responsive ══════════════════════════════════ */
+@media (max-width: 960px) {
+  .bs-wrap {
     grid-template-columns: 1fr;
+    gap: 40px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .projects {
-    padding: 56px 0 64px;
+    padding: 64px 0
   }
 
-  .grid4,
-  .grid2 {
-    grid-template-columns: 1fr;
+  .contact-form {
+    padding: 24px 20px
   }
 
-  .headlineRow {
-    flex-direction: column;
-  }
-
-  .footer-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .submitBtn {
-    width: 100%;
+  .form-grid {
+    grid-template-columns: 1fr
   }
 }
 </style>

@@ -41,7 +41,7 @@
     <div class="auth-panel">
       <div class="auth-box">
 
-        <!-- CABECERA FIJA: logo + tabs -->
+        <!-- CABECERA -->
         <div class="panel-head">
           <div class="panel-brand">
             <router-link to="/"><img src="/IconoZ.png" alt="ZiFux" class="panel-logo" /></router-link>
@@ -126,8 +126,8 @@
               <div v-for="(s, i) in steps" :key="i" class="st"
                 :class="{ 'st--done': reg.step > i + 1, 'st--on': reg.step === i + 1 }">
                 <div class="st-dot">
-                  <svg v-if="reg.step > i + 1" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="3.5">
+                  <svg v-if="reg.step > i + 1" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3.5">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                   <span v-else>{{ i + 1 }}</span>
@@ -143,18 +143,22 @@
                 <h2 class="fh-title">Registra tu empresa</h2>
                 <p class="fh-sub">Crea tu cuenta empresarial con validación segura</p>
               </div>
-              <div class="section-tag"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2">
+              <div class="section-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
                   <path d="M3 9h18" />
                   <path d="M9 21V9" />
-                </svg>Identidad legal</div>
-              <div v-if="reg.nitErr" class="alert alert--err"><svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2">
+                </svg>
+                Identidad legal
+              </div>
+              <div v-if="reg.nitErr" class="alert alert--err">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>{{ reg.nitErr }}</div>
+                </svg>
+                {{ reg.nitErr }}
+              </div>
               <div class="fg">
                 <label class="fl">NIT de la empresa <span class="req">*</span></label>
                 <div class="iw">
@@ -171,11 +175,13 @@
               <button class="btn-p w-full" :class="{ loading: reg.loading }" @click="consultarNIT"
                 :disabled="reg.loading || !reg.nit">
                 <span v-if="reg.loading" class="spinner" />
-                <template v-else><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
+                <template v-else>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8" />
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>Consultar empresa</template>
+                  </svg>
+                  Consultar empresa
+                </template>
               </button>
               <p class="foot-txt">¿Ya tienes cuenta? <button class="tlink tlink--b" @click="switchMode('login')">Iniciar
                   sesión</button></p>
@@ -193,7 +199,8 @@
                   <div class="ec-info">
                     <p class="ec-name">{{ reg.empresa.razonSocial }}</p>
                     <span class="ec-badge"
-                      :class="reg.empresa.estado === 'ACTIVA' ? 'ec-badge--ok' : 'ec-badge--warn'">{{ reg.empresa.estado }}</span>
+                      :class="reg.empresa.estado === 'ACTIVA' ? 'ec-badge--ok' : 'ec-badge--warn'">{{
+                        reg.empresa.estado }}</span>
                   </div>
                   <svg class="ec-ok" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
@@ -202,33 +209,53 @@
                   </svg>
                 </div>
                 <div class="ec-grid">
-                  <div class="ec-f"><span class="ec-l">NIT</span><span
-                      class="ec-v">{{ reg.empresa.nit }}-{{ reg.empresa.dv }}</span>
+                  <div class="ec-f">
+                    <span class="ec-l">NIT</span>
+                    <span class="ec-v">{{ reg.empresa.nit }}-{{ reg.empresa.dv }}</span>
                   </div>
-                  <div class="ec-f"><span class="ec-l">Tipo contribuyente</span><span
-                      class="ec-v">{{ reg.empresa.tipoContribuyente }}</span></div>
-                  <div class="ec-f"><span class="ec-l">Actividad principal</span><span
-                      class="ec-v">{{ reg.empresa.actividadEconomicaPrincipal }}</span></div>
-                  <div class="ec-f"><span class="ec-l">Actividad secundaria</span><span
-                      class="ec-v">{{ reg.empresa.actividadEconomicaSecundaria ?? '—' }}</span></div>
-                  <div class="ec-f"><span class="ec-l">Dirección</span><span
-                      class="ec-v">{{ reg.empresa.direccion ?? '—' }}</span>
+                  <div class="ec-f">
+                    <span class="ec-l">Estado</span>
+                    <span class="ec-v">{{ reg.empresa.estado ?? '—' }}</span>
                   </div>
-                  <div class="ec-f"><span class="ec-l">Teléfono</span><span
-                      class="ec-v">{{ reg.empresa.telefono ?? '—' }}</span></div>
+                  <div class="ec-f">
+                    <span class="ec-l">Tipo de sociedad</span>
+                    <span class="ec-v">{{ reg.empresa.tipoSociedad ?? '—' }}</span>
+                  </div>
+                  <div class="ec-f">
+                    <span class="ec-l">Cámara de comercio</span>
+                    <span class="ec-v">{{ reg.empresa.camara ?? '—' }}</span>
+                  </div>
+
+
+
+                  <div class="ec-f" style="grid-column: 1 / -1">
+                    <span class="ec-l">Representante legal</span>
+                    <span class="ec-v">{{ reg.empresa.representanteLegal ?? '—' }}</span>
+                  </div>
+                  <div class="ec-f" style="grid-column: 1 / -1">
+                    <span class="ec-l">Tipo contribuyente</span>
+                    <span class="ec-v">{{ reg.empresa.tipoContribuyente ?? '—' }}</span>
+                  </div>
                 </div>
               </div>
-              <div class="section-tag mt-12"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2">
+
+              <div class="section-tag mt-12">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
-                </svg>Cargar RUT</div>
-              <div v-if="reg.rutErr" class="alert alert--err"><svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2">
+                </svg>
+                Cargar RUT
+              </div>
+
+              <div v-if="reg.rutErr" class="alert alert--err">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>{{ reg.rutErr }}</div>
+                </svg>
+                {{ reg.rutErr }}
+              </div>
+
               <div class="dropzone" :class="{ 'dz--has': reg.rutFile, 'dz--drag': reg.drag }"
                 @click="!reg.rutFile && $refs.fi.click()" @dragover.prevent="reg.drag = true"
                 @dragleave.prevent="reg.drag = false" @drop.prevent="onDrop">
@@ -253,20 +280,27 @@
                       <p class="dz-fn">{{ reg.rutFile.name }}</p>
                       <p class="dz-fs">{{ fmtBytes(reg.rutFile.size) }}</p>
                     </div>
-                    <button class="dz-rm" @click.stop="reg.rutFile = null; reg.rutValidado = false"><svg width="13"
-                        height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <button class="dz-rm" @click.stop="reg.rutFile = null; reg.rutValidado = false">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
                         <line x1="18" y1="6" x2="6" y2="18" />
                         <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg></button>
+                      </svg>
+                    </button>
                   </div>
                 </template>
               </div>
-              <div v-if="reg.rutValidado" class="alert alert--ok mt-8"><svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2.5">
+
+              <div v-if="reg.rutValidado" class="alert alert--ok mt-8">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <polyline points="20 6 9 17 4 12" />
-                </svg>RUT validado. Correo: <strong>{{ maskEmail(reg.empresa.correoMock) }}</strong></div>
+                </svg>
+                RUT validado. Correo: <strong>{{ reg.correoEnmascarado }}</strong>
+              </div>
+
               <div class="btn-row mt-16">
-                <button class="btn-g" @click="reg.step = 1; reg.empresa = null; reg.rutFile = null; reg.rutValidado = false">←
+                <button class="btn-g"
+                  @click="reg.step = 1; reg.empresa = null; reg.rutFile = null; reg.rutValidado = false">←
                   Volver</button>
                 <button v-if="!reg.rutValidado" class="btn-p" :class="{ loading: reg.loading }"
                   :disabled="!reg.rutFile || reg.loading" @click="validarRUT">
@@ -278,32 +312,35 @@
 
             <!-- PASO 3 — OTP -->
             <div v-if="reg.step === 3">
-              <div class="otp-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="1.8">
+              <div class="otp-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
-                </svg></div>
+                </svg>
+              </div>
               <div class="fh">
                 <h2 class="fh-title">Verifica tu correo</h2>
-                <p class="fh-sub">Enviamos un código a <strong
-                    class="em-blue">{{ maskEmail(reg.empresa.correoMock) }}</strong></p>
+                <p class="fh-sub">Enviamos un código a <strong class="em-blue">{{ reg.correoEnmascarado }}</strong></p>
               </div>
-              <div v-if="reg.otpErr" class="alert alert--err"><svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2">
+              <div v-if="reg.otpErr" class="alert alert--err">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>{{ reg.otpErr }}</div>
-              <div v-if="reg.otpResent" class="alert alert--ok"><svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>Código reenviado. Revisa tu correo.</div>
-              <div class="otp-group">
-                <input v-for="(_, i) in 6" :key="i" :ref="el => { if (el) otpR[i] = el }" v-model="reg.otp[i]" class="otp-box"
-                  type="text" maxlength="1" inputmode="numeric" @input="otpIn(i, $event)" @keydown="otpKd(i, $event)"
-                  @paste="otpPaste($event)" @focus="reg.otpErr = ''" />
+                </svg>
+                {{ reg.otpErr }}
               </div>
-              <p class="otp-hint">Código de prueba: <strong>123456</strong></p>
+              <div v-if="reg.otpResent" class="alert alert--ok">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Código reenviado. Revisa tu correo.
+              </div>
+              <div class="otp-group">
+                <input v-for="(_, i) in 6" :key="i" :ref="el => { if (el) otpR[i] = el }" v-model="reg.otp[i]"
+                  class="otp-box" type="text" maxlength="1" inputmode="numeric" @input="otpIn(i, $event)"
+                  @keydown="otpKd(i, $event)" @paste="otpPaste($event)" @focus="reg.otpErr = ''" />
+              </div>
               <button class="btn-p w-full" :class="{ loading: reg.loading }"
                 :disabled="reg.otp.join('').length < 6 || reg.loading" @click="verificarOTP">
                 <span v-if="reg.loading" class="spinner" /><span v-else>Verificar código</span>
@@ -321,17 +358,19 @@
                 <h2 class="fh-title">Crea tu contraseña</h2>
                 <p class="fh-sub">Define una contraseña segura para tu empresa</p>
               </div>
-              <div v-if="reg.passErr" class="alert alert--err"><svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2">
+              <div v-if="reg.passErr" class="alert alert--err">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>{{ reg.passErr }}</div>
+                </svg>
+                {{ reg.passErr }}
+              </div>
               <div class="fg">
                 <label class="fl">Contraseña <span class="req">*</span></label>
                 <div class="iw">
-                  <input v-model="reg.pw" class="fi" :type="showP ? 'text' : 'password'" placeholder="Mínimo 8 caracteres"
-                    @input="reg.passErr = ''" />
+                  <input v-model="reg.pw" class="fi" :type="showP ? 'text' : 'password'"
+                    placeholder="Mínimo 8 caracteres" @input="reg.passErr = ''" />
                   <button class="eye" type="button" @click="showP = !showP">
                     <svg v-if="!showP" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2">
@@ -357,8 +396,8 @@
                       stroke="currentColor" stroke-width="3">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>Mínimo 8 caracteres</li>
-                  <li :class="{ ok: /[a-zA-Z]/.test(reg.pw) }"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="3">
+                  <li :class="{ ok: /[a-zA-Z]/.test(reg.pw) }"><svg width="10" height="10" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" stroke-width="3">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>Al menos una letra</li>
                   <li :class="{ ok: /\d/.test(reg.pw) }"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
@@ -393,42 +432,45 @@
                 <span class="checkbox-lbl">Confirmo que represento legalmente a esta empresa <span
                     class="req">*</span></span>
               </label>
-              <div class="info-tip mt-12"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2">
+              <div class="info-tip mt-12">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>Tu cuenta quedará asociada a esta empresa.</div>
+                </svg>
+                Tu cuenta quedará asociada a esta empresa.
+              </div>
               <button class="btn-p w-full mt-16" :class="{ loading: reg.loading }"
                 :disabled="!pValid || !reg.acepta || reg.loading" @click="crearCuenta">
                 <span v-if="reg.loading" class="spinner" />
-                <template v-else><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
+                <template v-else>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M9 12l2 2 4-4" />
                     <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0" />
-                  </svg>Verificar empresa y continuar →</template>
+                  </svg>
+                  Crear cuenta →
+                </template>
               </button>
-              <p class="foot-note">✅ Validaremos tu NIT y te enviaremos un código de verificación.</p>
             </div>
 
             <!-- PASO 5 — Éxito -->
             <div v-if="reg.step === 5" class="success-block">
-              <div class="success-ico"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2">
+              <div class="success-ico">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
-                </svg></div>
+                </svg>
+              </div>
               <h2 class="fh-title" style="text-align:center">¡Cuenta creada!</h2>
               <p class="fh-sub" style="text-align:center">Tu empresa <strong>{{ reg.empresa?.razonSocial }}</strong> ya
                 tiene acceso
                 al sistema.</p>
               <div class="success-detail">
-                <div class="sd-row"><span class="sd-l">NIT</span><span
-                    class="sd-v">{{ reg.empresa?.nit }}-{{ reg.empresa?.dv }}</span>
-                </div>
-                <div class="sd-row"><span class="sd-l">Correo</span><span
-                    class="sd-v">{{ maskEmail(reg.empresa?.correoMock) }}</span>
-                </div>
+                <div class="sd-row"><span class="sd-l">NIT</span><span class="sd-v">{{ reg.empresa?.nit }}-{{
+                  reg.empresa?.dv
+                    }}</span></div>
+                <div class="sd-row"><span class="sd-l">Correo</span><span class="sd-v">{{ reg.correoEnmascarado
+                    }}</span></div>
               </div>
               <button class="btn-p w-full mt-16" @click="irAlLogin">Ir a iniciar sesión →</button>
             </div>
@@ -437,21 +479,12 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-
-// ── MOCK EMPRESAS ── TODO: reemplazar por POST /api/empresas/consultar-nit
-const EMPRESAS = [
-  { nit: '900123456', dv: '7', razonSocial: 'Empresa Demo SAS', estado: 'ACTIVA', actividadEconomicaPrincipal: '6201 — Desarrollo de sistemas informáticos', actividadEconomicaSecundaria: '4711 — Comercio al por menor', tipoContribuyente: 'Persona Jurídica', direccion: 'Calle 123 # 45-67, Bogotá D.C.', telefono: '+57 300 123 4567', correoMock: 'contacto@empresademo.com' },
-  { nit: '800456789', dv: '2', razonSocial: 'Industrias Norte SA', estado: 'ACTIVA', actividadEconomicaPrincipal: '2511 — Fabricación de productos metálicos', actividadEconomicaSecundaria: null, tipoContribuyente: 'Gran Contribuyente', direccion: 'Av Industrial 89, Medellín', telefono: '+57 604 123 4567', correoMock: 'info@industriasnorte.com' },
-  { nit: '700987654', dv: '5', razonSocial: 'Comercializadora Sur LTDA', estado: 'SUSPENDIDA', actividadEconomicaPrincipal: '4659 — Comercio al por mayor', actividadEconomicaSecundaria: null, tipoContribuyente: 'Persona Jurídica', direccion: null, telefono: null, correoMock: 'ventas@cosur.com' },
-  { nit: '600111222', dv: '3', razonSocial: 'Soluciones Tech Colombia SAS', estado: 'ACTIVA', actividadEconomicaPrincipal: '6209 — Otras actividades de tecnología', actividadEconomicaSecundaria: '7310 — Publicidad', tipoContribuyente: 'Persona Jurídica', direccion: 'Cra 15 # 93-75, Bogotá', telefono: '+57 315 987 6543', correoMock: null },
-]
-const MOCK_OTP = '123456'
+import api from '../api/axios'
 
 const mode = ref('login')
 const steps = ['Empresa', 'RUT', 'Verificar', 'Contraseña']
@@ -461,7 +494,13 @@ const loginErr = ref('')
 const loginLoading = ref(false)
 const showLP = ref(false)
 
-const reg = reactive({ step: 1, nit: '', nitErr: '', empresa: null, loading: false, rutFile: null, rutErr: '', rutValidado: false, drag: false, otp: ['', '', '', '', '', ''], otpErr: '', otpResent: false, pw: '', pwc: '', passErr: '', acepta: false })
+const reg = reactive({
+  step: 1, nit: '', nitErr: '', empresa: null, loading: false,
+  rutFile: null, rutErr: '', rutValidado: false, drag: false,
+  correoEnmascarado: '',
+  otp: ['', '', '', '', '', ''], otpErr: '', otpResent: false,
+  pw: '', pwc: '', passErr: '', acepta: false,
+})
 const showP = ref(false)
 const showPC = ref(false)
 const otpR = ref([])
@@ -470,75 +509,165 @@ const pStrength = computed(() => [reg.pw.length >= 8, /[a-zA-Z]/.test(reg.pw), /
 const pLabel = computed(() => (['', 'débil', 'regular', 'buena', 'fuerte'])[pStrength.value] ?? 'débil')
 const pValid = computed(() => reg.pw.length >= 8 && /[a-zA-Z]/.test(reg.pw) && /\d/.test(reg.pw) && reg.pw === reg.pwc)
 
-function maskEmail(e) { if (!e) return '—'; const [u, d] = e.split('@'); return u.slice(0, 2) + '*****@' + d }
 function fmtBytes(b) { if (b < 1024) return b + ' B'; if (b < 1048576) return (b / 1024).toFixed(1) + ' KB'; return (b / 1048576).toFixed(1) + ' MB' }
 
 function switchMode(m) {
-  mode.value = m; loginErr.value = ''
-  if (m === 'register') Object.assign(reg, { step: 1, nit: '', nitErr: '', empresa: null, loading: false, rutFile: null, rutErr: '', rutValidado: false, otp: ['', '', '', '', '', ''], otpErr: '', otpResent: false, pw: '', pwc: '', passErr: '', acepta: false })
+  mode.value = m
+  loginErr.value = ''
+  if (m === 'register') Object.assign(reg, {
+    step: 1, nit: '', nitErr: '', empresa: null, loading: false,
+    rutFile: null, rutErr: '', rutValidado: false,
+    correoEnmascarado: '',
+    otp: ['', '', '', '', '', ''], otpErr: '', otpResent: false,
+    pw: '', pwc: '', passErr: '', acepta: false,
+  })
 }
 
-// LOGIN — TODO: POST /api/auth/login
-function doLogin() {
+// ── LOGIN ────────────────────────────────────────────────────────────────────
+async function doLogin() {
   loginErr.value = ''
   if (!login.id || !login.pw) { loginErr.value = 'Completa todos los campos.'; return }
   loginLoading.value = true
-  setTimeout(() => {
+  try {
+    const { data } = await api.post('/auth/login', {
+      identificador: login.id,
+      password: login.pw,
+    })
+    localStorage.setItem('zifux_sesion', JSON.stringify(data))
+    // TODO: redirigir al dashboard
+    alert(`✅ Bienvenido, ${data.empresa.razonSocial}`)
+  } catch (err) {
+    loginErr.value = err.message || 'NIT/correo o contraseña incorrectos.'
+  } finally {
     loginLoading.value = false
-    const cuentas = JSON.parse(localStorage.getItem('zifux_cuentas') || '[]')
-    const c = cuentas.find(x => (x.nit === login.id || x.correo === login.id) && x.password === login.pw)
-    if (c) { localStorage.setItem('zifux_sesion', JSON.stringify(c)); alert(`✅ Bienvenido, ${c.razonSocial}`) }
-    else loginErr.value = 'NIT/correo o contraseña incorrectos.'
-  }, 900)
+  }
 }
 
-// NIT — TODO: POST /api/empresas/consultar-nit
-function consultarNIT() {
+// ── PASO 1 — Consultar NIT ───────────────────────────────────────────────────
+async function consultarNIT() {
   reg.nitErr = ''
   const n = reg.nit.trim().replace(/\D/g, '')
   if (!n) { reg.nitErr = 'Ingresa el NIT de la empresa.'; return }
   if (n.length < 6) { reg.nitErr = 'El NIT debe tener al menos 6 dígitos.'; return }
   reg.loading = true
-  setTimeout(() => {
+  try {
+    const { data } = await api.post('/auth/empresas/consultar-nit', { nit: n })
+    reg.empresa = { ...data.empresa }
+    reg.step = 2
+  } catch (err) {
+    reg.nitErr = err.message || 'No encontramos una empresa con ese NIT.'
+  } finally {
     reg.loading = false
-    const f = EMPRESAS.find(e => e.nit === n)
-    if (!f) { reg.nitErr = 'No encontramos una empresa con ese NIT. Verifica e intenta de nuevo.'; return }
-    reg.empresa = { ...f }; reg.step = 2
-  }, 1100)
+  }
 }
 
-// RUT — TODO: POST /api/rut/validar
-function onFile(e) { const f = e.target.files?.[0]; if (!f) return; if (!f.name.toLowerCase().endsWith('.pdf')) { reg.rutErr = 'Solo se aceptan archivos PDF.'; return } reg.rutErr = ''; reg.rutFile = f; reg.rutValidado = false }
-function onDrop(e) { reg.drag = false; const f = e.dataTransfer.files?.[0]; if (!f) return; if (!f.name.toLowerCase().endsWith('.pdf')) { reg.rutErr = 'Solo archivos PDF.'; return } reg.rutErr = ''; reg.rutFile = f; reg.rutValidado = false }
-function validarRUT() {
-  reg.rutErr = ''; if (!reg.rutFile) return; reg.loading = true
-  setTimeout(() => { reg.loading = false; if (!reg.empresa?.correoMock) { reg.rutErr = 'No se encontró correo para esta empresa.'; return } reg.rutValidado = true }, 1200)
+// ── PASO 2 — Validar RUT ─────────────────────────────────────────────────────
+function onFile(e) {
+  const f = e.target.files?.[0]
+  if (!f) return
+  if (!f.name.toLowerCase().endsWith('.pdf')) { reg.rutErr = 'Solo se aceptan archivos PDF.'; return }
+  reg.rutErr = ''; reg.rutFile = f; reg.rutValidado = false
 }
-function enviarCodigo() { reg.otp = ['', '', '', '', '', '']; reg.otpErr = ''; reg.otpResent = false; reg.step = 3 }
+function onDrop(e) {
+  reg.drag = false
+  const f = e.dataTransfer.files?.[0]
+  if (!f) return
+  if (!f.name.toLowerCase().endsWith('.pdf')) { reg.rutErr = 'Solo archivos PDF.'; return }
+  reg.rutErr = ''; reg.rutFile = f; reg.rutValidado = false
+}
 
-// OTP — TODO: POST /api/auth/verificar-codigo
+async function validarRUT() {
+  reg.rutErr = ''
+  if (!reg.rutFile) return
+  reg.loading = true
+  try {
+    const form = new FormData()
+    form.append('nit', reg.empresa.nit)
+    form.append('rut', reg.rutFile)
+    const { data } = await api.post('/auth/rut/validar', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    reg.correoEnmascarado = data.correoEnmascarado
+    reg.rutValidado = true
+  } catch (err) {
+    reg.rutErr = err.message || 'No se pudo validar el RUT. Intenta de nuevo.'
+  } finally {
+    reg.loading = false
+  }
+}
+
+// ── PASO 3 — OTP ─────────────────────────────────────────────────────────────
+async function enviarCodigo() {
+  reg.loading = true
+  try {
+    await api.post('/auth/enviar-codigo', { nit: reg.empresa.nit })
+    reg.otp = ['', '', '', '', '', '']
+    reg.otpErr = ''
+    reg.otpResent = false
+    reg.step = 3
+  } catch (err) {
+    reg.rutErr = err.message || 'Error al enviar el código.'
+  } finally {
+    reg.loading = false
+  }
+}
+
 function otpIn(i, e) { const v = e.target.value.replace(/\D/g, ''); reg.otp[i] = v.slice(-1); if (v && i < 5) otpR.value[i + 1]?.focus() }
 function otpKd(i, e) { if (e.key === 'Backspace' && !reg.otp[i] && i > 0) otpR.value[i - 1]?.focus() }
-function otpPaste(e) { e.preventDefault(); const t = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6); for (let i = 0; i < 6; i++)reg.otp[i] = t[i] ?? '' }
-function verificarOTP() {
-  reg.otpErr = ''; const c = reg.otp.join(''); if (c.length < 6) { reg.otpErr = 'Ingresa los 6 dígitos.'; return }
-  reg.loading = true; setTimeout(() => { reg.loading = false; if (c !== MOCK_OTP) { reg.otpErr = 'Código incorrecto. Inténtalo de nuevo.'; return } reg.step = 4 }, 700)
-}
-function reenviarOTP() { reg.otp = ['', '', '', '', '', '']; reg.otpErr = ''; reg.otpResent = true; setTimeout(() => reg.otpResent = false, 4000) }
+function otpPaste(e) { e.preventDefault(); const t = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6); for (let i = 0; i < 6; i++) reg.otp[i] = t[i] ?? '' }
 
-// CREAR CUENTA — TODO: POST /api/auth/crear-cuenta-empresa
-function crearCuenta() {
-  reg.passErr = ''; if (!pValid.value) { reg.passErr = 'Revisa los requisitos de contraseña.'; return } if (!reg.acepta) { reg.passErr = 'Debes confirmar que representas a esta empresa.'; return }
+async function verificarOTP() {
+  reg.otpErr = ''
+  const c = reg.otp.join('')
+  if (c.length < 6) { reg.otpErr = 'Ingresa los 6 dígitos.'; return }
   reg.loading = true
-  setTimeout(() => {
+  try {
+    await api.post('/auth/verificar-codigo', { nit: reg.empresa.nit, codigo: c })
+    reg.step = 4
+  } catch (err) {
+    reg.otpErr = err.message || 'Código incorrecto. Inténtalo de nuevo.'
+  } finally {
     reg.loading = false
-    const arr = JSON.parse(localStorage.getItem('zifux_cuentas') || '[]')
-    if (arr.find(c => c.nit === reg.empresa.nit)) { reg.passErr = 'Ya existe una cuenta para este NIT.'; return }
-    arr.push({ nit: reg.empresa.nit, correo: reg.empresa.correoMock, razonSocial: reg.empresa.razonSocial, password: reg.pw })
-    localStorage.setItem('zifux_cuentas', JSON.stringify(arr)); reg.step = 5
-  }, 1000)
+  }
 }
-function irAlLogin() { login.id = reg.empresa?.nit ?? ''; login.pw = ''; switchMode('login') }
+
+async function reenviarOTP() {
+  try {
+    await api.post('/auth/enviar-codigo', { nit: reg.empresa.nit })
+    reg.otp = ['', '', '', '', '', '']
+    reg.otpErr = ''
+    reg.otpResent = true
+    setTimeout(() => reg.otpResent = false, 4000)
+  } catch (err) {
+    reg.otpErr = err.message || 'Error al reenviar el código.'
+  }
+}
+
+// ── PASO 4 — Crear cuenta ────────────────────────────────────────────────────
+async function crearCuenta() {
+  reg.passErr = ''
+  if (!pValid.value) { reg.passErr = 'Revisa los requisitos de contraseña.'; return }
+  if (!reg.acepta) { reg.passErr = 'Debes confirmar que representas a esta empresa.'; return }
+  reg.loading = true
+  try {
+    await api.post('/auth/crear-cuenta-empresa', {
+      nit: reg.empresa.nit,
+      password: reg.pw,
+      aceptaRepresentacion: true,
+    })
+    reg.step = 5
+  } catch (err) {
+    reg.passErr = err.message || 'Error al crear la cuenta. Intenta de nuevo.'
+  } finally {
+    reg.loading = false
+  }
+}
+
+function irAlLogin() {
+  login.id = reg.empresa?.nit ?? ''
+  login.pw = ''
+  switchMode('login')
+}
 </script>
 
 <style scoped>

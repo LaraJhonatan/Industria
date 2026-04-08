@@ -32,6 +32,13 @@ const F = {
   flex: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&h=600&fit=crop&q=80',
 }
 
+const A = {
+  hero: 'https://lamanuelita.org/wp-content/uploads/cafe-340g-x2-achiras.jpg',
+  cafe: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB4AuYQOGkKpF3EIPdz0WVjril445qWWb1mQ&s',
+  achiras:
+    'https://cloudfront-us-east-1.images.arcpublishing.com/elespectador/XJO6VJFNMVBJHFVIVEU7CHS72A.jpg',
+}
+
 // ─────────────────────────────────────────────────────────────
 //  CATEGORÍAS
 // ─────────────────────────────────────────────────────────────
@@ -58,7 +65,6 @@ export const STORE_CATEGORIES = [
       { id: 'camaras', name: 'Cámaras', count: 15, img: D.cam },
     ],
     products: [
-      // ── BATERÍAS ────────────────────────
       {
         id: 'dr-bat-01',
         subcategory: 'baterias',
@@ -133,8 +139,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [D.pcb, D.elec, D.fly1],
       },
-
-      // ── MOTORES ─────────────────────────
       {
         id: 'dr-mot-01',
         subcategory: 'motores',
@@ -208,8 +212,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [D.elec, D.pcb],
       },
-
-      // ── CONTROLADORES ───────────────────
       {
         id: 'dr-ctrl-01',
         subcategory: 'controladores',
@@ -259,8 +261,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [D.pcb, D.gps, D.elec],
       },
-
-      // ── ESTRUCTURAS ─────────────────────
       {
         id: 'dr-str-01',
         subcategory: 'estructuras',
@@ -309,8 +309,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [D.fly2, D.fly1, D.carbon],
       },
-
-      // ── HÉLICES ─────────────────────────
       {
         id: 'dr-hel-01',
         subcategory: 'helices',
@@ -360,8 +358,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [D.prop, D.carbon],
       },
-
-      // ── SENSORES ────────────────────────
       {
         id: 'dr-sen-01',
         subcategory: 'sensores',
@@ -386,8 +382,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [D.sens, D.pcb],
       },
-
-      // ── GPS ─────────────────────────────
       {
         id: 'dr-gps-01',
         subcategory: 'gps',
@@ -412,8 +406,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [D.gps, D.pcb, D.elec],
       },
-
-      // ── CÁMARAS ─────────────────────────
       {
         id: 'dr-cam-01',
         subcategory: 'camaras',
@@ -462,7 +454,6 @@ export const STORE_CATEGORIES = [
       { id: 'especiales', name: 'Especiales', count: 15, img: F.print2 },
     ],
     products: [
-      // ── PLA ─────────────────────────────
       {
         id: 'fil-vidrio-01',
         subcategory: 'pla',
@@ -549,8 +540,6 @@ export const STORE_CATEGORIES = [
           F.print1,
         ],
       },
-
-      // ── PETG ────────────────────────────
       {
         id: 'fil-petg-01',
         subcategory: 'petg',
@@ -599,8 +588,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [F.mat1, F.print2],
       },
-
-      // ── ABS ─────────────────────────────
       {
         id: 'fil-abs-01',
         subcategory: 'abs',
@@ -625,8 +612,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [F.print2, F.mat1, F.print1],
       },
-
-      // ── TPU ─────────────────────────────
       {
         id: 'fil-tpu-01',
         subcategory: 'tpu',
@@ -675,8 +660,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [F.flex, F.mat1],
       },
-
-      // ── NYLON ───────────────────────────
       {
         id: 'fil-nylon-01',
         subcategory: 'nylon',
@@ -701,8 +684,6 @@ export const STORE_CATEGORIES = [
         ],
         images: [F.mat2, F.print2, F.mat1],
       },
-
-      // ── ESPECIALES ──────────────────────
       {
         id: 'fil-esp-pla-madera',
         subcategory: 'especiales',
@@ -750,6 +731,173 @@ export const STORE_CATEGORIES = [
           { l: 'Densidad', v: '1.32 g/cm³' },
         ],
         images: [F.print2, F.spool2],
+      },
+    ],
+  },
+
+  // ════════════════════════════════════════
+  //  ALIMENTOS
+  // ════════════════════════════════════════
+  {
+    id: 'alimentos',
+    title: 'Alimentos',
+    kicker: 'Café & Achiras',
+    color: '#5a3825',
+    accentColor: '#b97745',
+    heroImg: A.hero,
+    description:
+      'Productos tradicionales para comprar en línea: café y achiras en diferentes presentaciones.',
+    subcategories: [
+      { id: 'cafe', name: 'Café', count: 3, img: A.cafe },
+      { id: 'achiras', name: 'Achiras', count: 3, img: A.achiras },
+    ],
+    products: [
+      // ── CAFÉ ────────────────────────────
+      {
+        id: 'ali-cafe-250',
+        subcategory: 'cafe',
+        name: 'Café Molido Tradicional 250g',
+        shortDesc: 'Café molido de aroma intenso y sabor balanceado, ideal para consumo diario.',
+        longDesc:
+          'Café molido de excelente calidad, con aroma pronunciado, tostión media y sabor balanceado. Perfecto para preparar en greca, cafetera de filtro o prensa francesa. Presentación ideal para hogares y oficinas pequeñas.',
+        price: 18000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['250g', '340g', '500g'],
+        specs: [
+          { l: 'Presentación', v: '250g' },
+          { l: 'Tipo', v: 'Café molido' },
+          { l: 'Tostión', v: 'Media' },
+          { l: 'Perfil', v: 'Aromático y balanceado' },
+          { l: 'Preparación', v: 'Greca, filtro, prensa francesa' },
+          { l: 'Origen', v: 'Colombia' },
+          { l: 'Empaque', v: 'Bolsa sellada' },
+          { l: 'Conservación', v: 'Lugar fresco y seco' },
+        ],
+        images: [A.cafe, A.hero],
+      },
+      {
+        id: 'ali-cafe-340',
+        subcategory: 'cafe',
+        name: 'Café Molido Tradicional 340g',
+        shortDesc: 'Presentación intermedia de café molido, ideal para el hogar.',
+        longDesc:
+          'Café molido en presentación de 340g, con sabor suave y agradable, ideal para quienes buscan una opción práctica y rendidora. Mantiene un aroma fresco y una molienda uniforme para una mejor extracción.',
+        price: 24000,
+        originalPrice: 28000,
+        discount: 14,
+        stock: true,
+        normativasOptions: ['250g', '340g', '500g'],
+        specs: [
+          { l: 'Presentación', v: '340g' },
+          { l: 'Tipo', v: 'Café molido' },
+          { l: 'Tostión', v: 'Media' },
+          { l: 'Perfil', v: 'Suave y aromático' },
+          { l: 'Preparación', v: 'Greca, filtro, cafetera' },
+          { l: 'Origen', v: 'Colombia' },
+          { l: 'Empaque', v: 'Bolsa sellada' },
+          { l: 'Conservación', v: 'Lugar fresco y seco' },
+        ],
+        images: [A.cafe, A.hero],
+      },
+      {
+        id: 'ali-cafe-500',
+        subcategory: 'cafe',
+        name: 'Café Molido Tradicional 500g',
+        shortDesc: 'Café molido en presentación grande para mayor rendimiento.',
+        longDesc:
+          'Presentación de 500g pensada para familias o negocios que consumen café con frecuencia. Ofrece excelente rendimiento, aroma intenso y sabor tradicional colombiano en cada taza.',
+        price: 32500,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['250g', '340g', '500g'],
+        specs: [
+          { l: 'Presentación', v: '500g' },
+          { l: 'Tipo', v: 'Café molido' },
+          { l: 'Tostión', v: 'Media' },
+          { l: 'Perfil', v: 'Tradicional colombiano' },
+          { l: 'Preparación', v: 'Greca, filtro, cafetera' },
+          { l: 'Origen', v: 'Colombia' },
+          { l: 'Empaque', v: 'Bolsa sellada' },
+          { l: 'Rendimiento', v: 'Alta duración' },
+        ],
+        images: [A.cafe, A.hero],
+      },
+
+      // ── ACHIRAS ─────────────────────────
+      {
+        id: 'ali-ach-100',
+        subcategory: 'achiras',
+        name: 'Achiras Artesanales 100g',
+        shortDesc: 'Achiras crocantes en presentación pequeña, perfectas para antojo o regalo.',
+        longDesc:
+          'Achiras artesanales elaboradas con receta tradicional, textura crocante y sabor auténtico. Presentación práctica de 100g para consumo personal, meriendas o detalles especiales.',
+        price: 9500,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['100g', '250g', '500g'],
+        specs: [
+          { l: 'Presentación', v: '100g' },
+          { l: 'Tipo', v: 'Achiras artesanales' },
+          { l: 'Textura', v: 'Crocante' },
+          { l: 'Sabor', v: 'Tradicional' },
+          { l: 'Empaque', v: 'Bolsa sellada' },
+          { l: 'Consumo', v: 'Merienda o acompañamiento' },
+          { l: 'Origen', v: 'Colombia' },
+          { l: 'Conservación', v: 'Lugar fresco y seco' },
+        ],
+        images: [A.achiras, A.hero],
+      },
+      {
+        id: 'ali-ach-250',
+        subcategory: 'achiras',
+        name: 'Achiras Artesanales 250g',
+        shortDesc: 'Achiras tradicionales en tamaño mediano, ideales para compartir.',
+        longDesc:
+          'Achiras artesanales de sabor casero y textura crocante en presentación de 250g. Ideales para acompañar café, reuniones familiares o como producto típico para venta.',
+        price: 18000,
+        originalPrice: 21000,
+        discount: 14,
+        stock: true,
+        normativasOptions: ['100g', '250g', '500g'],
+        specs: [
+          { l: 'Presentación', v: '250g' },
+          { l: 'Tipo', v: 'Achiras artesanales' },
+          { l: 'Textura', v: 'Crocante' },
+          { l: 'Sabor', v: 'Tradicional' },
+          { l: 'Empaque', v: 'Bolsa sellada' },
+          { l: 'Consumo', v: 'Acompañamiento para café' },
+          { l: 'Origen', v: 'Colombia' },
+          { l: 'Conservación', v: 'Lugar fresco y seco' },
+        ],
+        images: [A.achiras, A.hero],
+      },
+      {
+        id: 'ali-ach-500',
+        subcategory: 'achiras',
+        name: 'Achiras Artesanales 500g',
+        shortDesc: 'Presentación grande de achiras, ideal para familias o ventas.',
+        longDesc:
+          'Achiras artesanales en bolsa grande de 500g, perfectas para compartir, vender o tener siempre en casa. Conservan su textura crocante y sabor tradicional en una presentación rendidora.',
+        price: 32000,
+        originalPrice: null,
+        discount: 0,
+        stock: true,
+        normativasOptions: ['100g', '250g', '500g'],
+        specs: [
+          { l: 'Presentación', v: '500g' },
+          { l: 'Tipo', v: 'Achiras artesanales' },
+          { l: 'Textura', v: 'Crocante' },
+          { l: 'Sabor', v: 'Tradicional' },
+          { l: 'Empaque', v: 'Bolsa sellada' },
+          { l: 'Uso', v: 'Hogar o comercial' },
+          { l: 'Origen', v: 'Colombia' },
+          { l: 'Rendimiento', v: 'Alta duración' },
+        ],
+        images: [A.achiras, A.hero],
       },
     ],
   },
