@@ -117,7 +117,7 @@ function handleServiceClick(service) {
   padding: 0 24px;
 }
 
-/* ══ Section — fondo blanco puro ═════════════════ */
+/* ══ Section ═════════════════════════════════════ */
 .services {
   --blue: #0071e3;
   --yellow: #fdda24;
@@ -174,30 +174,23 @@ function handleServiceClick(service) {
   gap: 32px;
 }
 
-/* ══ Card — negra, efecto 3D sobre fondo blanco ══ */
+/* ══ Card — blanca, efecto 3D sobre fondo blanco ═ */
 .service-card {
-  background: #0f0f0f;
+  background: #ffffff;
   border-radius: 22px;
   padding: 36px 32px 32px;
 
-  /* Borde superior con highlight — simula luz */
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-top-color: rgba(255, 255, 255, 0.14);
+  /* Borde sutil */
+  border: 1px solid rgba(11, 18, 32, 0.08);
+  border-top-color: rgba(11, 18, 32, 0.06);
 
-  /* Capas de sombra para el efecto 3D sobre blanco */
+  /* Sombras en capas — efecto 3D flotante sobre blanco */
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    /* highlight interno */
-    0 2px 4px rgba(11, 18, 32, 0.08),
-    /* sombra base pegada */
-    0 6px 16px rgba(11, 18, 32, 0.12),
-    /* sombra media */
-    0 18px 40px rgba(11, 18, 32, 0.16),
-    /* sombra profunda */
-    0 36px 64px rgba(11, 18, 32, 0.14),
-    /* sombra ambiental */
-    0 64px 80px -24px rgba(11, 18, 32, 0.10);
-  /* difusión lejana */
+    0 2px 4px rgba(11, 18, 32, 0.06),
+    0 6px 16px rgba(11, 18, 32, 0.10),
+    0 18px 40px rgba(11, 18, 32, 0.13),
+    0 36px 64px rgba(11, 18, 32, 0.11),
+    0 64px 80px -24px rgba(11, 18, 32, 0.08);
 
   display: flex;
   flex-direction: column;
@@ -211,14 +204,12 @@ function handleServiceClick(service) {
 .service-card:hover {
   transform: translateY(-10px) scale(1.015);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 4px 8px rgba(11, 18, 32, 0.12),
-    0 12px 28px rgba(11, 18, 32, 0.18),
-    0 28px 56px rgba(11, 18, 32, 0.22),
-    0 52px 80px rgba(11, 18, 32, 0.18),
-    0 80px 100px -28px rgba(11, 18, 32, 0.14),
-    0 0 32px rgba(0, 113, 227, 0.08);
-  /* halo azul muy sutil */
+    0 4px 8px rgba(11, 18, 32, 0.10),
+    0 12px 28px rgba(11, 18, 32, 0.15),
+    0 28px 56px rgba(11, 18, 32, 0.18),
+    0 52px 80px rgba(11, 18, 32, 0.14),
+    0 80px 100px -28px rgba(11, 18, 32, 0.10),
+    0 0 32px rgba(0, 113, 227, 0.06);
 }
 
 .card-top {
@@ -230,15 +221,13 @@ function handleServiceClick(service) {
   width: 64px;
   height: 64px;
   border-radius: 16px;
-  background: rgba(0, 113, 227, 0.14);
-  border: 1px solid rgba(0, 113, 227, 0.28);
+  background: rgba(0, 113, 227, 0.08);
+  border: 1px solid rgba(0, 113, 227, 0.18);
   display: grid;
   place-items: center;
-  color: #60a5fa;
+  color: var(--blue);
   margin-bottom: 22px;
-  box-shadow:
-    0 0 20px rgba(0, 113, 227, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 20px rgba(0, 113, 227, 0.10);
 }
 
 /* ══ Textos ══════════════════════════════════════ */
@@ -246,7 +235,7 @@ function handleServiceClick(service) {
   margin: 0 0 12px;
   font-size: 20px;
   font-weight: 900;
-  color: #ffffff;
+  color: #0b1220;
   line-height: 1.3;
 }
 
@@ -254,7 +243,7 @@ function handleServiceClick(service) {
   margin: 0 0 22px;
   font-size: 15px;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(11, 18, 32, 0.55);
 }
 
 /* ══ Lista features ══════════════════════════════ */
@@ -270,17 +259,16 @@ function handleServiceClick(service) {
   gap: 12px;
   margin-bottom: 13px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.74);
+  color: rgba(11, 18, 32, 0.72);
 }
 
 .check-icon {
   color: var(--yellow);
   flex-shrink: 0;
-  filter: drop-shadow(0 0 5px rgba(253, 218, 36, 0.28));
+  filter: drop-shadow(0 0 4px rgba(253, 218, 36, 0.35));
 }
 
-/* ══ Botón CTA — azul #0071e3 ════════════════════ */
-/* ══ Botón CTA — azul #0071e3 ════════════════════ */
+/* ══ Botón CTA ═══════════════════════════════════ */
 .card-cta {
   width: 100%;
   height: 50px;
@@ -293,7 +281,7 @@ function handleServiceClick(service) {
   text-transform: none;
   margin-top: auto;
   box-shadow:
-    0 4px 18px rgba(0, 113, 227, 0.38),
+    0 4px 18px rgba(0, 113, 227, 0.30),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
   transition: background 180ms, box-shadow 180ms, transform 180ms;
 }
@@ -307,12 +295,12 @@ function handleServiceClick(service) {
 .card-cta:hover {
   background: #005fcd;
   box-shadow:
-    0 8px 28px rgba(0, 113, 227, 0.52),
+    0 8px 28px rgba(0, 113, 227, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
   transform: translateY(-1px);
 }
 
-/* ══ Reveal animation ════════════════════════════ */
+/* ══ Reveal ══════════════════════════════════════ */
 .reveal {
   opacity: 0;
   transform: translateY(30px);

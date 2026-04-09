@@ -33,10 +33,9 @@ const F = {
 }
 
 const A = {
-  hero: 'https://lamanuelita.org/wp-content/uploads/cafe-340g-x2-achiras.jpg',
+  hero: '/achira2.jpeg',
   cafe: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB4AuYQOGkKpF3EIPdz0WVjril445qWWb1mQ&s',
-  achiras:
-    'https://cloudfront-us-east-1.images.arcpublishing.com/elespectador/XJO6VJFNMVBJHFVIVEU7CHS72A.jpg',
+  achiras: '/achira2.jpeg', // ← slash al inicio, sin "public"
 }
 
 // ─────────────────────────────────────────────────────────────

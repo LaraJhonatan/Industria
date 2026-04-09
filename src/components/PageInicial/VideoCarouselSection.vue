@@ -1,10 +1,8 @@
 <template>
   <section class="hero" aria-label="Hero principal">
 
-    <!-- Fondo -->
+    <!-- Fondo con cuadrícula sutil -->
     <div class="hero-bg" aria-hidden="true">
-      <div class="glow glow-left" />
-      <div class="glow glow-right" />
       <div class="grid-overlay" />
     </div>
 
@@ -19,31 +17,11 @@
 
       <!-- ② DESCRIPCIÓN -->
       <p class="hero-desc">
-        Integración real con criterio técnico y enfoque estratégico.<br />
+        Integración real con criterio técnico y enfoque estratégico.
         Soluciones industriales a medida para empresas que exigen resultados.
       </p>
 
-      <!-- ③ CTA + SOCIAL PROOF -->
-      <div class="hero-actions">
-        <a class="cta-btn" href="#contacto">
-          Cotiza tu proyecto
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </a>
-
-        <div class="social-proof">
-          <div class="avatars">
-            <div class="av av1">EC</div>
-            <div class="av av2">AR</div>
-            <div class="av av3">BA</div>
-            <div class="av av4">NU</div>
-          </div>
-          <span class="proof-text">Confiado por <strong>+30 empresas</strong></span>
-        </div>
-      </div>
-
-      <!-- ④ VIDEO -->
+      <!-- ③ VIDEO -->
       <div class="video-block">
         <div class="video-wrapper">
           <iframe v-if="useYouTube" class="video-iframe" :src="youtubeEmbedUrl" title="Video de presentación ZiFux"
@@ -56,16 +34,16 @@
         </div>
       </div>
 
-      <!-- ⑤ CARRUSEL -->
+      <!-- ④ CARRUSEL DE LOGOS -->
       <div class="carousel-wrap" :class="{ carouselReady }">
-        <div class="carousel-label">MARCAS CON LAS QUE TRABAJAMOS</div>
+        <div class="carousel-label">MARCAS ALIADAS</div>
         <div class="track-outer">
           <div class="carousel-track">
-            <div v-for="(marca, idx) in marcas" :key="`a-${idx}`" class="marca-pill">
-              <span>{{ marca }}</span>
+            <div v-for="(logo, idx) in filledLogos" :key="`a-${idx}`" class="logo-pill">
+              <img :src="logo.url" :alt="logo.name" class="logo-img" />
             </div>
-            <div v-for="(marca, idx) in marcas" :key="`b-${idx}`" class="marca-pill">
-              <span>{{ marca }}</span>
+            <div v-for="(logo, idx) in filledLogos" :key="`b-${idx}`" class="logo-pill">
+              <img :src="logo.url" :alt="logo.name" class="logo-img" />
             </div>
           </div>
         </div>
@@ -76,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 const ready = ref(false)
 const carouselReady = ref(false)
@@ -89,10 +67,17 @@ const youtubeEmbedUrl = ref(
 )
 const videoSrc = ref('/videos/industrial-demo.mp4')
 
-const marcas = ref([
-  'Ecopetrol', 'Argos', 'Bavaria', 'Bancolombia',
-  'Tecnoglass', 'Corona', 'Nutresa', 'ISA'
+const logos = ref([
+  { name: 'Acerolab', url: 'https://acerolab.com.co/wp-content/uploads/2022/10/LOGO-PNG-1024x865.png' },
+  { name: 'Syse', url: 'https://syse.com.co/gallery_gen/8fb7ec8d3cc335f5a78a71a9e6ae8320_536x302_fit.png?ts=1721230543' },
 ])
+
+// Repite logos hasta tener al menos 10 ítems — carrusel siempre lleno
+const filledLogos = computed(() => {
+  if (!logos.value.length) return []
+  const times = Math.ceil(10 / logos.value.length)
+  return Array.from({ length: times }, () => logos.value).flat()
+})
 
 onMounted(() => {
   requestAnimationFrame(() => (ready.value = true))
@@ -101,23 +86,22 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ══ Sección — ocupa exactamente la pantalla ═════ */
+/* ══ Sección ═════════════════════════════════════ */
 .hero {
   --blue: #0071e3;
   --yellow: #fdda24;
-  --bg: #07090f;
+  --bg: #ffffff;
 
   position: relative;
   overflow: hidden;
   background: var(--bg);
-  color: #fff;
+  color: #0b1220;
   min-height: calc(100svh - 72px);
-  /* descuenta el navbar */
   display: flex;
   align-items: center;
 }
 
-/* ══ Fondo ═══════════════════════════════════════ */
+/* ══ Fondo — cuadrícula sutil igual a la anterior ═ */
 .hero-bg {
   position: absolute;
   inset: 0;
@@ -125,41 +109,24 @@ onMounted(() => {
   z-index: 0;
 }
 
-.glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(130px);
-  opacity: 0.24;
-}
-
-.glow-left {
-  width: 600px;
-  height: 600px;
-  background: #0055c4;
-  top: -120px;
-  left: -180px;
-}
-
-.glow-right {
-  width: 460px;
-  height: 460px;
-  background: #0044aa;
-  top: -60px;
-  right: -160px;
-  opacity: 0.13;
-}
-
 .grid-overlay {
   position: absolute;
-  inset: 0;
+  inset: -12%;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.033) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.033) 1px, transparent 1px);
-  background-size: 60px 60px;
-  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 28%,
-      black 30%, transparent 80%);
-  mask-image: radial-gradient(ellipse 90% 80% at 50% 28%,
-      black 30%, transparent 80%);
+    linear-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, 0.04) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 2px, transparent 2px);
+  background-size:
+    80px 80px,
+    80px 80px,
+    400px 400px,
+    400px 400px;
+  opacity: 0.65;
+  -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%,
+      rgba(0, 0, 0, 1) 30%, transparent 80%);
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%,
+      rgba(0, 0, 0, 1) 30%, transparent 80%);
 }
 
 /* ══ Contenido ═══════════════════════════════════ */
@@ -171,10 +138,10 @@ onMounted(() => {
   align-items: center;
   text-align: center;
   width: 100%;
-  max-width: 980px;
+  max-width: 1020px;
   margin: 0 auto;
-  padding: 28px 24px 24px;
-  /* muy compacto */
+  padding: 12px 24px 16px;
+  /* mínimo espacio arriba */
 
   opacity: 0;
   transform: translateY(12px);
@@ -188,12 +155,12 @@ onMounted(() => {
 
 /* ══ Título ══════════════════════════════════════ */
 .hero-title {
-  font-size: clamp(26px, 4.2vw, 54px);
+  font-size: clamp(28px, 4.4vw, 56px);
   font-weight: 900;
   line-height: 1.10;
   letter-spacing: -1.2px;
-  color: #ffffff;
-  margin: 0 0 12px;
+  color: #0b1220;
+  margin: 0 0 10px;
 }
 
 .dot {
@@ -204,133 +171,29 @@ onMounted(() => {
 .hero-desc {
   font-size: clamp(13px, 1.4vw, 15px);
   line-height: 1.68;
-  color: rgba(255, 255, 255, 0.44);
+  color: rgba(11, 18, 32, 0.50);
   max-width: 520px;
-  margin: 0 0 20px;
+  margin: 0 0 14px;
 }
 
-/* ══ Acciones ════════════════════════════════════ */
-.hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  height: 46px;
-  padding: 0 24px;
-  border-radius: 999px;
-  background: var(--blue);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  letter-spacing: 0;
-  box-shadow:
-    0 4px 18px rgba(0, 113, 227, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  transition: background 180ms, transform 180ms, box-shadow 180ms;
-}
-
-.cta-btn:hover {
-  background: #005fcd;
-  transform: translateY(-2px);
-  box-shadow:
-    0 8px 28px rgba(0, 113, 227, 0.58),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-}
-
-.cta-btn svg {
-  flex-shrink: 0;
-  transition: transform 200ms;
-}
-
-.cta-btn:hover svg {
-  transform: translateX(3px)
-}
-
-.social-proof {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.avatars {
-  display: flex
-}
-
-.av {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 10px;
-  font-weight: 900;
-  border: 2px solid var(--bg);
-  margin-left: -9px;
-  flex-shrink: 0;
-}
-
-.av:first-child {
-  margin-left: 0
-}
-
-.av1 {
-  background: #0071e3;
-  color: #fff
-}
-
-.av2 {
-  background: #fdda24;
-  color: #0b1220
-}
-
-.av3 {
-  background: #22c55e;
-  color: #fff
-}
-
-.av4 {
-  background: #f97316;
-  color: #fff
-}
-
-.proof-text {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.42);
-  white-space: nowrap;
-}
-
-.proof-text strong {
-  color: rgba(255, 255, 255, 0.72);
-  font-weight: 700;
-}
-
-/* ══ Video ═══════════════════════════════════════ */
+/* ══ Video — más grande ══════════════════════════ */
 .video-block {
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .video-wrapper {
   width: 100%;
-  max-width: 800px;
+  max-width: 880px;
+  /* más ancho que antes */
   margin: 0 auto;
   border-radius: 16px;
   overflow: hidden;
   background: #000;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(11, 18, 32, 0.10);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04),
-    0 20px 55px rgba(0, 0, 0, 0.65),
-    0 40px 90px rgba(0, 0, 0, 0.45);
+    0 4px 16px rgba(11, 18, 32, 0.08),
+    0 20px 48px rgba(11, 18, 32, 0.12);
 }
 
 .video-iframe,
@@ -358,18 +221,18 @@ onMounted(() => {
 
 .carousel-label {
   text-align: center;
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 900;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.20);
+  color: rgba(11, 18, 32, 0.30);
   margin-bottom: 10px;
 }
 
 .track-outer {
   overflow: hidden;
   position: relative;
-  padding: 4px 0;
+  padding: 6px 0;
 }
 
 .track-outer::before,
@@ -378,7 +241,7 @@ onMounted(() => {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 70px;
+  width: 100px;
   z-index: 2;
   pointer-events: none;
 }
@@ -395,9 +258,11 @@ onMounted(() => {
 
 .carousel-track {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 56px;
   width: max-content;
-  animation: scroll 24s linear infinite;
+  animation: scroll 18s linear infinite;
 }
 
 .carousel-track:hover {
@@ -414,35 +279,35 @@ onMounted(() => {
   }
 }
 
-.marca-pill {
+/* ── Logo ─────────────────────────────────────── */
+.logo-pill {
   flex-shrink: 0;
-  min-width: 120px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  padding: 0 16px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: background 200ms, border-color 200ms, transform 200ms;
+  height: 56px;
+  /* más alto que antes */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.marca-pill:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(0, 113, 227, 0.44);
-  transform: translateY(-2px);
+.logo-img {
+  height: 48px;
+  /* logos más grandes */
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+
+  /* Elimina fondo blanco de PNGs sobre fondo blanco */
+  mix-blend-mode: multiply;
+
+  opacity: 0.65;
+  filter: grayscale(0.15);
+  transition: opacity 220ms, filter 220ms, transform 220ms;
 }
 
-.marca-pill span {
-  font-size: 12px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.46);
-  white-space: nowrap;
-  transition: color 200ms;
-}
-
-.marca-pill:hover span {
-  color: #fff
+.logo-pill:hover .logo-img {
+  opacity: 1;
+  filter: grayscale(0);
+  transform: scale(1.05);
 }
 
 /* ══ Responsive ══════════════════════════════════ */
@@ -452,27 +317,11 @@ onMounted(() => {
   }
 
   .hero-wrap {
-    padding: 24px 16px 20px;
+    padding: 10px 16px 14px;
   }
 
-  .hero-actions {
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .glow-left {
-    width: 300px;
-    height: 300px;
-    left: -100px
-  }
-
-  .glow-right {
-    display: none
-  }
-
-  .marca-pill {
-    min-width: 105px;
-    height: 34px
+  .logo-img {
+    height: 36px;
   }
 }
 

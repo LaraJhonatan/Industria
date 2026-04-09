@@ -48,6 +48,15 @@
             <div class="brand-sep" />
             <span class="brand-label">Portal empresarial</span>
           </div>
+          <!-- Badge de modo mock visible solo en desarrollo -->
+          <!-- <div v-if="mockActive" class="mock-badge">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+            Mock activo · Bancolombia
+          </div> -->
           <div class="tabs" v-if="reg.step < 5">
             <button class="tab" :class="{ 'tab--on': mode === 'login' }" @click="switchMode('login')">Iniciar
               sesión</button>
@@ -143,6 +152,17 @@
                 <h2 class="fh-title">Registra tu empresa</h2>
                 <p class="fh-sub">Crea tu cuenta empresarial con validación segura</p>
               </div>
+
+              <!-- Hint de mock -->
+              <!-- <div v-if="mockActive" class="alert alert--mock">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+                Modo demo — usa cualquier NIT (ej: <strong>890903938</strong>) para cargar datos de Bancolombia
+              </div> -->
+
               <div class="section-tag">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -225,9 +245,6 @@
                     <span class="ec-l">Cámara de comercio</span>
                     <span class="ec-v">{{ reg.empresa.camara ?? '—' }}</span>
                   </div>
-
-
-
                   <div class="ec-f" style="grid-column: 1 / -1">
                     <span class="ec-l">Representante legal</span>
                     <span class="ec-v">{{ reg.empresa.representanteLegal ?? '—' }}</span>
@@ -245,6 +262,16 @@
                   <polyline points="14 2 14 8 20 8" />
                 </svg>
                 Cargar RUT
+              </div>
+
+              <!-- Hint mock en paso 2 -->
+              <div v-if="mockActive" class="alert alert--mock">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+                Demo — sube cualquier PDF, el RUT se validará automáticamente con datos de Bancolombia
               </div>
 
               <div v-if="reg.rutErr" class="alert alert--err">
@@ -322,6 +349,17 @@
                 <h2 class="fh-title">Verifica tu correo</h2>
                 <p class="fh-sub">Enviamos un código a <strong class="em-blue">{{ reg.correoEnmascarado }}</strong></p>
               </div>
+
+              <!-- Hint mock en OTP -->
+              <div v-if="mockActive" class="alert alert--mock">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+                Demo — ingresa cualquier código de 6 dígitos para continuar (ej: <strong>123456</strong>)
+              </div>
+
               <div v-if="reg.otpErr" class="alert alert--err">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10" />
@@ -470,7 +508,7 @@
                   reg.empresa?.dv
                     }}</span></div>
                 <div class="sd-row"><span class="sd-l">Correo</span><span class="sd-v">{{ reg.correoEnmascarado
-                    }}</span></div>
+                }}</span></div>
               </div>
               <button class="btn-p w-full mt-16" @click="irAlLogin">Ir a iniciar sesión →</button>
             </div>
@@ -484,8 +522,66 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import api from '../api/axios'
 
+// ─── Stub de API: cuando el API real esté listo, reemplaza esto con:
+// import api from '../api/axios'
+// Con FORCE_MOCK = true este objeto nunca se invoca de todas formas.
+const api = {
+  post: async () => { throw new Error('API no disponible') },
+  get: async () => { throw new Error('API no disponible') },
+}
+
+// ════════════════════════════════════════════════════════════════════
+// MOCK DATA — Bancolombia
+// Cambia FORCE_MOCK a false cuando el API real esté disponible.
+// ════════════════════════════════════════════════════════════════════
+const FORCE_MOCK = true   // ← pon en false para desactivar
+
+const MOCK = {
+  empresa: {
+    nit: '890903938',
+    dv: '8',
+    razonSocial: 'BANCOLOMBIA S.A.',
+    estado: 'ACTIVA',
+    tipoSociedad: 'Sociedad Anónima',
+    camara: 'Cámara de Comercio de Medellín',
+    representanteLegal: 'JUAN CARLOS MORA URIBE',
+    tipoContribuyente: 'Gran Contribuyente - Régimen Común',
+  },
+  correoEnmascarado: 'ge****@bancolombia.com.co',
+  // Si quieres validar el código exacto, cámbialo aquí; null = acepta cualquiera
+  otpSecreto: null,
+}
+
+// Indicador reactivo de si el mock está activo (para mostrar los hints en UI)
+const mockActive = ref(FORCE_MOCK)
+
+/**
+ * tryApi(apiFn, mockFn)
+ * Ejecuta apiFn (llamada al API real).
+ * Si falla — por red, CORS, 4xx, 5xx — cae silenciosamente a mockFn.
+ * Si FORCE_MOCK=true nunca llega al API real.
+ */
+async function tryApi(apiFn, mockFn) {
+  if (FORCE_MOCK) {
+    await delay(750)        // latencia realista
+    mockActive.value = true
+    return mockFn()
+  }
+  try {
+    return await apiFn()
+  } catch {
+    await delay(750)
+    mockActive.value = true
+    return mockFn()
+  }
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)) }
+
+// ════════════════════════════════════════════════════════════════════
+// Estado
+// ════════════════════════════════════════════════════════════════════
 const mode = ref('login')
 const steps = ['Empresa', 'RUT', 'Verificar', 'Contraseña']
 
@@ -505,11 +601,26 @@ const showP = ref(false)
 const showPC = ref(false)
 const otpR = ref([])
 
-const pStrength = computed(() => [reg.pw.length >= 8, /[a-zA-Z]/.test(reg.pw), /\d/.test(reg.pw), /[^a-zA-Z0-9]/.test(reg.pw)].filter(Boolean).length)
+// ════════════════════════════════════════════════════════════════════
+// Computeds
+// ════════════════════════════════════════════════════════════════════
+const pStrength = computed(() =>
+  [reg.pw.length >= 8, /[a-zA-Z]/.test(reg.pw), /\d/.test(reg.pw), /[^a-zA-Z0-9]/.test(reg.pw)]
+    .filter(Boolean).length
+)
 const pLabel = computed(() => (['', 'débil', 'regular', 'buena', 'fuerte'])[pStrength.value] ?? 'débil')
-const pValid = computed(() => reg.pw.length >= 8 && /[a-zA-Z]/.test(reg.pw) && /\d/.test(reg.pw) && reg.pw === reg.pwc)
+const pValid = computed(() =>
+  reg.pw.length >= 8 && /[a-zA-Z]/.test(reg.pw) && /\d/.test(reg.pw) && reg.pw === reg.pwc
+)
 
-function fmtBytes(b) { if (b < 1024) return b + ' B'; if (b < 1048576) return (b / 1024).toFixed(1) + ' KB'; return (b / 1048576).toFixed(1) + ' MB' }
+// ════════════════════════════════════════════════════════════════════
+// Helpers
+// ════════════════════════════════════════════════════════════════════
+function fmtBytes(b) {
+  if (b < 1024) return b + ' B'
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB'
+  return (b / 1048576).toFixed(1) + ' MB'
+}
 
 function switchMode(m) {
   mode.value = m
@@ -523,18 +634,23 @@ function switchMode(m) {
   })
 }
 
-// ── LOGIN ────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════════════════════════════════════
 async function doLogin() {
   loginErr.value = ''
   if (!login.id || !login.pw) { loginErr.value = 'Completa todos los campos.'; return }
   loginLoading.value = true
   try {
-    const { data } = await api.post('/auth/login', {
-      identificador: login.id,
-      password: login.pw,
-    })
+    const data = await tryApi(
+      () => api.post('/auth/login', { identificador: login.id, password: login.pw }).then(r => r.data),
+      () => ({
+        token: 'mock-jwt-bancolombia',
+        empresa: { ...MOCK.empresa },
+      })
+    )
     localStorage.setItem('zifux_sesion', JSON.stringify(data))
-    // TODO: redirigir al dashboard
+    // TODO: reemplaza el alert por tu router.push('/dashboard')
     alert(`✅ Bienvenido, ${data.empresa.razonSocial}`)
   } catch (err) {
     loginErr.value = err.message || 'NIT/correo o contraseña incorrectos.'
@@ -543,7 +659,9 @@ async function doLogin() {
   }
 }
 
-// ── PASO 1 — Consultar NIT ───────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+// PASO 1 — Consultar NIT
+// ════════════════════════════════════════════════════════════════════
 async function consultarNIT() {
   reg.nitErr = ''
   const n = reg.nit.trim().replace(/\D/g, '')
@@ -551,7 +669,10 @@ async function consultarNIT() {
   if (n.length < 6) { reg.nitErr = 'El NIT debe tener al menos 6 dígitos.'; return }
   reg.loading = true
   try {
-    const { data } = await api.post('/auth/empresas/consultar-nit', { nit: n })
+    const data = await tryApi(
+      () => api.post('/auth/empresas/consultar-nit', { nit: n }).then(r => r.data),
+      () => ({ empresa: { ...MOCK.empresa } })
+    )
     reg.empresa = { ...data.empresa }
     reg.step = 2
   } catch (err) {
@@ -561,7 +682,9 @@ async function consultarNIT() {
   }
 }
 
-// ── PASO 2 — Validar RUT ─────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+// PASO 2 — Dropzone + Validar RUT
+// ════════════════════════════════════════════════════════════════════
 function onFile(e) {
   const f = e.target.files?.[0]
   if (!f) return
@@ -581,12 +704,17 @@ async function validarRUT() {
   if (!reg.rutFile) return
   reg.loading = true
   try {
-    const form = new FormData()
-    form.append('nit', reg.empresa.nit)
-    form.append('rut', reg.rutFile)
-    const { data } = await api.post('/auth/rut/validar', form, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    const data = await tryApi(
+      () => {
+        const form = new FormData()
+        form.append('nit', reg.empresa.nit)
+        form.append('rut', reg.rutFile)
+        return api.post('/auth/rut/validar', form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }).then(r => r.data)
+      },
+      () => ({ correoEnmascarado: MOCK.correoEnmascarado })
+    )
     reg.correoEnmascarado = data.correoEnmascarado
     reg.rutValidado = true
   } catch (err) {
@@ -596,11 +724,16 @@ async function validarRUT() {
   }
 }
 
-// ── PASO 3 — OTP ─────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+// PASO 3 — OTP
+// ════════════════════════════════════════════════════════════════════
 async function enviarCodigo() {
   reg.loading = true
   try {
-    await api.post('/auth/enviar-codigo', { nit: reg.empresa.nit })
+    await tryApi(
+      () => api.post('/auth/enviar-codigo', { nit: reg.empresa.nit }),
+      () => ({ ok: true })
+    )
     reg.otp = ['', '', '', '', '', '']
     reg.otpErr = ''
     reg.otpResent = false
@@ -612,9 +745,19 @@ async function enviarCodigo() {
   }
 }
 
-function otpIn(i, e) { const v = e.target.value.replace(/\D/g, ''); reg.otp[i] = v.slice(-1); if (v && i < 5) otpR.value[i + 1]?.focus() }
-function otpKd(i, e) { if (e.key === 'Backspace' && !reg.otp[i] && i > 0) otpR.value[i - 1]?.focus() }
-function otpPaste(e) { e.preventDefault(); const t = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6); for (let i = 0; i < 6; i++) reg.otp[i] = t[i] ?? '' }
+function otpIn(i, e) {
+  const v = e.target.value.replace(/\D/g, '')
+  reg.otp[i] = v.slice(-1)
+  if (v && i < 5) otpR.value[i + 1]?.focus()
+}
+function otpKd(i, e) {
+  if (e.key === 'Backspace' && !reg.otp[i] && i > 0) otpR.value[i - 1]?.focus()
+}
+function otpPaste(e) {
+  e.preventDefault()
+  const t = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
+  for (let i = 0; i < 6; i++) reg.otp[i] = t[i] ?? ''
+}
 
 async function verificarOTP() {
   reg.otpErr = ''
@@ -622,7 +765,14 @@ async function verificarOTP() {
   if (c.length < 6) { reg.otpErr = 'Ingresa los 6 dígitos.'; return }
   reg.loading = true
   try {
-    await api.post('/auth/verificar-codigo', { nit: reg.empresa.nit, codigo: c })
+    await tryApi(
+      () => api.post('/auth/verificar-codigo', { nit: reg.empresa.nit, codigo: c }),
+      () => {
+        // Descomenta la siguiente línea para validar el código exacto del mock:
+        // if (MOCK.otpSecreto && c !== MOCK.otpSecreto) throw new Error('Código incorrecto.')
+        return { ok: true }
+      }
+    )
     reg.step = 4
   } catch (err) {
     reg.otpErr = err.message || 'Código incorrecto. Inténtalo de nuevo.'
@@ -633,7 +783,10 @@ async function verificarOTP() {
 
 async function reenviarOTP() {
   try {
-    await api.post('/auth/enviar-codigo', { nit: reg.empresa.nit })
+    await tryApi(
+      () => api.post('/auth/enviar-codigo', { nit: reg.empresa.nit }),
+      () => ({ ok: true })
+    )
     reg.otp = ['', '', '', '', '', '']
     reg.otpErr = ''
     reg.otpResent = true
@@ -643,18 +796,23 @@ async function reenviarOTP() {
   }
 }
 
-// ── PASO 4 — Crear cuenta ────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+// PASO 4 — Crear cuenta
+// ════════════════════════════════════════════════════════════════════
 async function crearCuenta() {
   reg.passErr = ''
   if (!pValid.value) { reg.passErr = 'Revisa los requisitos de contraseña.'; return }
   if (!reg.acepta) { reg.passErr = 'Debes confirmar que representas a esta empresa.'; return }
   reg.loading = true
   try {
-    await api.post('/auth/crear-cuenta-empresa', {
-      nit: reg.empresa.nit,
-      password: reg.pw,
-      aceptaRepresentacion: true,
-    })
+    await tryApi(
+      () => api.post('/auth/crear-cuenta-empresa', {
+        nit: reg.empresa.nit,
+        password: reg.pw,
+        aceptaRepresentacion: true,
+      }),
+      () => ({ ok: true })
+    )
     reg.step = 5
   } catch (err) {
     reg.passErr = err.message || 'Error al crear la cuenta. Intenta de nuevo.'
@@ -822,21 +980,21 @@ function irAlLogin() {
   max-width: 460px;
   background: #fff;
   border-radius: 20px;
-  border: 1px solid rgba(15, 23, 42, 0.09);
-  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(15, 23, 42, .09);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-/* Cabecera dentro de la card */
+/* Cabecera */
 .panel-head {
   background: #fff;
   padding: 28px 32px 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+  border-bottom: 1px solid rgba(15, 23, 42, .07);
 }
 
 .panel-brand {
@@ -864,6 +1022,22 @@ function irAlLogin() {
   color: rgba(11, 18, 32, .42);
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+/* Badge de mock */
+.mock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  background: rgba(234, 179, 8, .10);
+  border: 1px solid rgba(234, 179, 8, .30);
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #92400e;
+  letter-spacing: .2px;
+  align-self: flex-start;
 }
 
 /* Tabs */
@@ -902,7 +1076,7 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-/* Cuerpo dinámico */
+/* Cuerpo */
 .panel-body {
   flex: 1;
   display: flex;
@@ -1007,12 +1181,6 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-.fg-hint-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 5px;
-}
-
 .fhint {
   font-size: 12px;
   color: rgba(11, 18, 32, .45);
@@ -1046,6 +1214,13 @@ function irAlLogin() {
   background: rgba(26, 171, 92, .07);
   border: 1px solid rgba(26, 171, 92, .22);
   color: #15803d;
+}
+
+/* Alert de mock/demo — amarillo suave */
+.alert--mock {
+  background: rgba(234, 179, 8, .08);
+  border: 1px solid rgba(234, 179, 8, .28);
+  color: #78350f;
 }
 
 .alert svg {
@@ -1370,13 +1545,6 @@ function irAlLogin() {
   box-shadow: 0 0 0 3px rgba(0, 113, 227, .13);
 }
 
-.otp-hint {
-  font-size: 12px;
-  color: rgba(11, 18, 32, .42);
-  text-align: center;
-  margin-bottom: 14px;
-}
-
 .resend-row {
   display: flex;
   align-items: center;
@@ -1697,13 +1865,6 @@ function irAlLogin() {
   font-size: 13.5px;
   color: rgba(11, 18, 32, .52);
   margin-top: 14px;
-}
-
-.foot-note {
-  font-size: 12px;
-  color: rgba(11, 18, 32, .42);
-  text-align: center;
-  margin-top: 10px;
 }
 
 /* Espaciado */
