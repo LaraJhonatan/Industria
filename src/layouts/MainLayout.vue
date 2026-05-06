@@ -1,34 +1,26 @@
 <template>
   <q-layout view="hHh lpR fff" class="bs-layout">
-
-    <!-- ══════════════════════════════════════════════
-         HEADER
-    ═══════════════════════════════════════════════ -->
     <q-header :class="['bs-header', { 'bs-header--scrolled': scrolled }]" height-hint="72">
       <q-toolbar class="bs-toolbar">
-
-        <!-- Logo -->
         <router-link to="/" class="bs-brand">
           <img src="/IconoZ.png" alt="ZiFux" class="bs-logo-img" />
         </router-link>
 
-        <!-- Nav desktop -->
         <nav class="bs-nav gt-sm" aria-label="Navegación principal">
-
           <router-link to="/" class="bs-link">Inicio</router-link>
+
           <router-link to="/tienda" class="bs-tienda-link">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
-            Tienda
+            Marketplace B2B
           </router-link>
 
-          <!-- Importación dropdown -->
           <div class="bs-dropdown-wrap" @mouseenter="openMenu('importacion')" @mouseleave="closeMenu()">
             <button class="bs-link bs-link-arrow" :class="{ 'bs-link--active': activeMenu === 'importacion' }">
-              Importación
+              Importación de maquinaria
               <svg class="arrow-ico" :class="{ 'arrow-open': activeMenu === 'importacion' }" width="12" height="12"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="6 9 12 15 18 9" />
@@ -59,54 +51,20 @@
             </Transition>
           </div>
 
-          <!-- Servicios Industriales dropdown -->
-          <div class="bs-dropdown-wrap bs-dropdown-wide" @mouseenter="openMenu('servicios')" @mouseleave="closeMenu()">
-            <button class="bs-link bs-link-arrow" :class="{ 'bs-link--active': activeMenu === 'servicios' }">
-              Servicios industriales
-              <svg class="arrow-ico" :class="{ 'arrow-open': activeMenu === 'servicios' }" width="12" height="12"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-            <Transition name="drop-wide">
-              <div v-if="activeMenu === 'servicios'" class="bs-dropdown bs-dropdown--grid" @mouseenter="cancelClose"
-                @mouseleave="closeMenu()">
-                <div class="drop-header drop-header--full">
-                  <span class="drop-label">Servicios especializados</span>
-                  <router-link to="/servicios-industriales" class="drop-ver-todos" @click="activeMenu = null">
-                    Ver todos →
-                  </router-link>
-                </div>
-                <div class="drop-services-grid">
-                  <router-link v-for="srv in serviciosMenu" :key="srv.id" :to="`/servicios-industriales/${srv.id}`"
-                    class="drop-srv-item" @click="activeMenu = null">
-                    <div class="drop-srv-icon" v-html="srv.icon" />
-                    <div class="drop-srv-title">{{ srv.name }}</div>
-                  </router-link>
-                </div>
-              </div>
-            </Transition>
-          </div>
-
-          <router-link to="/ingenieria" class="bs-link" active-class="bs-link--active">Ingeniería</router-link>
-
+          <router-link to="/faq" class="bs-link" active-class="bs-link--active">Preguntas frecuentes</router-link>
+          <router-link to="/contacto" class="bs-link" active-class="bs-link--active">Contáctanos</router-link>
         </nav>
 
         <q-space />
 
-        <!-- Acciones desktop -->
         <div class="row items-center no-wrap q-gutter-sm gt-sm">
           <button class="bs-signup-btn" @click="router.push('/auth')">Regístrate / Inicia Sesión</button>
         </div>
 
-        <!-- Menú móvil -->
         <q-btn flat round dense icon="menu" class="lt-md bs-menu-btn" @click="drawer = !drawer" />
       </q-toolbar>
     </q-header>
 
-    <!-- ══════════════════════════════════════════════
-         DRAWER MOBILE
-    ═══════════════════════════════════════════════ -->
     <q-drawer v-model="drawer" side="right" overlay class="bs-drawer lt-md">
       <div class="drawer-inner">
         <div class="drawer-head">
@@ -121,13 +79,11 @@
 
         <nav class="drawer-nav">
           <router-link to="/" class="drawer-link" @click="drawer = false">Inicio</router-link>
-          <router-link to="/tienda" class="drawer-link drawer-link--tienda" @click="drawer = false">
-            Tienda
-          </router-link>
+          <router-link to="/tienda" class="drawer-link drawer-link--tienda" @click="drawer = false">Tienda</router-link>
 
           <div class="drawer-section">
             <button class="drawer-section-btn" @click="mobileOpen.importacion = !mobileOpen.importacion">
-              Importación
+              Importación de maquinaria
               <svg :class="{ 'rotate-180': mobileOpen.importacion }" width="14" height="14" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="6 9 12 15 18 9" />
@@ -141,23 +97,8 @@
             </div>
           </div>
 
-          <div class="drawer-section">
-            <button class="drawer-section-btn" @click="mobileOpen.servicios = !mobileOpen.servicios">
-              Servicios industriales
-              <svg :class="{ 'rotate-180': mobileOpen.servicios }" width="14" height="14" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-            <div v-if="mobileOpen.servicios" class="drawer-sub">
-              <router-link v-for="srv in serviciosMenu" :key="srv.id" :to="`/servicios-industriales/${srv.id}`"
-                class="drawer-sub-link" @click="drawer = false">
-                {{ srv.name }}
-              </router-link>
-            </div>
-          </div>
-
-          <router-link to="/ingenieria" class="drawer-link" @click="drawer = false">Ingeniería</router-link>
+          <router-link to="/faq" class="drawer-link" @click="drawer = false">Preguntas frecuentes</router-link>
+          <router-link to="/contacto" class="drawer-link" @click="drawer = false">Contáctanos</router-link>
         </nav>
 
         <div class="drawer-actions">
@@ -167,16 +108,10 @@
       </div>
     </q-drawer>
 
-    <!-- ══════════════════════════════════════════════
-         CONTENIDO
-    ═══════════════════════════════════════════════ -->
     <q-page-container class="bs-page">
       <router-view />
     </q-page-container>
 
-    <!-- ══════════════════════════════════════════════
-         FOOTER
-    ═══════════════════════════════════════════════ -->
     <q-footer class="bs-footer">
       <div class="bs-footer-wrap">
         <div class="bs-footer-top">
@@ -184,9 +119,7 @@
             <img src="/IconoZ.png" alt="ZiFux" class="foot-logo-img" />
             <div class="bs-foot-brand-text">
               <div class="bs-foot-name">ZiFux</div>
-              <div class="bs-foot-tag">
-                Importación de maquinaria, ingeniería a medida y soporte técnico confiable.
-              </div>
+              <div class="bs-foot-tag">Importación de maquinaria, ingeniería a medida y soporte técnico confiable.</div>
             </div>
           </div>
 
@@ -251,7 +184,6 @@
       </div>
     </q-footer>
 
-    <!-- WhatsApp -->
     <q-page-sticky position="bottom-right" :offset="[24, 24]" class="z-fab">
       <a href="https://wa.me/573001234567" target="_blank" class="bs-whatsapp-float">
         <div class="bs-whatsapp-pulse" />
@@ -261,20 +193,19 @@
         </svg>
       </a>
     </q-page-sticky>
-
   </q-layout>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'  // ← agregar
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const drawer = ref(false)
 const scrolled = ref(false)
 const year = new Date().getFullYear()
 const activeMenu = ref(null)
-const mobileOpen = ref({ importacion: false, servicios: false })
+const mobileOpen = ref({ importacion: false })
 let closeTimer = null
 
 function openMenu(name) { clearTimeout(closeTimer); activeMenu.value = name }
@@ -293,25 +224,9 @@ const maquinas = [
   { id: 'soldadura', name: 'Equipos de soldadura', sub: 'MIG · TIG · SMAW' },
   { id: 'medicion', name: 'Instrumentos de medición', sub: 'CMM y calibres' },
 ]
-
-const serviciosMenu = [
-  { id: 'corte-laser', name: 'Corte láser', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>` },
-  { id: 'diseno-piezas', name: 'Diseño de piezas', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>` },
-  { id: 'diseno-industrial', name: 'Diseño industrial', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>` },
-  { id: 'cnc', name: 'CNC mecanizado', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>` },
-  { id: 'probetas', name: 'Probetas', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.5 2v17.5c0 1.4-1.1 2.5-2.5 2.5s-2.5-1.1-2.5-2.5V2"/><path d="M8.5 2h7"/></svg>` },
-  { id: 'fibra-carbono', name: 'Fibra de carbono', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>` },
-  { id: 'masa-lineal', name: 'Masa lineal', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>` },
-  { id: 'doblado', name: 'Doblado', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 12 6"/><polyline points="12 6 18 18"/><polyline points="18 18 21 18"/></svg>` },
-  { id: 'traccion', name: 'Tracción', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="2" x2="12" y2="22"/><path d="M8 6l4-4 4 4"/><path d="M8 18l4 4 4-4"/></svg>` },
-  { id: 'dimensional', name: 'Dimensional', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="2" y1="12" x2="22" y2="12"/><path d="M2 8l4 4-4 4"/><path d="M22 8l-4 4 4 4"/></svg>` },
-  { id: 'dureza', name: 'Dureza', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` },
-  { id: 'ensayo-especializado', name: 'Ensayo especializado', icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>` },
-]
 </script>
 
 <style scoped>
-/* ══ Layout ══════════════════════════════════════ */
 .bs-layout {
   background: #fff;
   color: #0b1220;
@@ -321,7 +236,6 @@ const serviciosMenu = [
   background: transparent;
 }
 
-/* ══ Header ══════════════════════════════════════ */
 .bs-header {
   background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(16px);
@@ -345,7 +259,6 @@ const serviciosMenu = [
   gap: 4px;
 }
 
-/* Logo */
 .bs-brand {
   display: inline-flex;
   align-items: center;
@@ -360,7 +273,6 @@ const serviciosMenu = [
   display: block;
 }
 
-/* Nav */
 .bs-nav {
   display: flex;
   align-items: center;
@@ -411,7 +323,6 @@ const serviciosMenu = [
   opacity: .9;
 }
 
-/* Tienda pill */
 .bs-tienda-link {
   display: inline-flex;
   align-items: center;
@@ -437,29 +348,10 @@ const serviciosMenu = [
   background: #004ea8;
 }
 
-/* Acciones */
-.bs-link-btn {
-  height: 36px;
-  padding: 0 16px;
-  background: none;
-  border: none;
-  font-size: 14px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, 0.72);
-  cursor: pointer;
-  border-radius: 8px;
-  transition: color 160ms, background 160ms;
-}
-
-.bs-link-btn:hover {
-  color: #0b1220;
-  background: rgba(0, 0, 0, 0.04);
-}
-
 .bs-signup-btn {
   height: 38px;
   padding: 0 24px;
-  background: #0b1220;
+  background: #0071e3;
   color: #fff;
   border: none;
   border-radius: 999px;
@@ -470,14 +362,13 @@ const serviciosMenu = [
 }
 
 .bs-signup-btn:hover {
-  background: #0071e3;
+  background: #005fcd;
 }
 
 .bs-menu-btn {
   color: rgba(11, 18, 32, 0.72) !important;
 }
 
-/* ══ DROPDOWN ════════════════════════════════════ */
 .bs-dropdown-wrap {
   position: relative;
 }
@@ -496,13 +387,6 @@ const serviciosMenu = [
   z-index: 9999;
 }
 
-.bs-dropdown--grid {
-  left: auto;
-  right: 0;
-  transform: none;
-  min-width: 480px;
-}
-
 .drop-header {
   display: flex;
   align-items: center;
@@ -512,27 +396,12 @@ const serviciosMenu = [
   margin-bottom: 6px;
 }
 
-.drop-header--full {
-  width: 100%;
-}
-
 .drop-label {
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: rgba(11, 18, 32, 0.4);
-}
-
-.drop-ver-todos {
-  font-size: 12px;
-  font-weight: 800;
-  color: #0071e3;
-  text-decoration: none;
-}
-
-.drop-ver-todos:hover {
-  text-decoration: underline;
 }
 
 .drop-item {
@@ -574,41 +443,6 @@ const serviciosMenu = [
   margin-top: 1px;
 }
 
-.drop-services-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
-}
-
-.drop-srv-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 10px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #0b1220;
-  transition: background 140ms;
-}
-
-.drop-srv-item:hover {
-  background: rgba(0, 113, 227, 0.06);
-}
-
-.drop-srv-icon {
-  color: #0071e3;
-  display: flex;
-  align-items: center;
-}
-
-.drop-srv-title {
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-/* Transitions */
 .drop-enter-active {
   transition: opacity 160ms ease, transform 160ms ease;
 }
@@ -627,25 +461,6 @@ const serviciosMenu = [
   transform: translateY(-4px) translateX(-50%);
 }
 
-.drop-wide-enter-active {
-  transition: opacity 160ms ease, transform 160ms ease;
-}
-
-.drop-wide-leave-active {
-  transition: opacity 120ms ease, transform 120ms ease;
-}
-
-.drop-wide-enter-from {
-  opacity: 0;
-  transform: translateY(-6px);
-}
-
-.drop-wide-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-/* ══ DRAWER MOBILE ════════════════════════════════ */
 .bs-drawer {
   background: #fff !important;
 }
@@ -780,17 +595,6 @@ const serviciosMenu = [
   gap: 8px;
 }
 
-.drawer-btn-outline {
-  width: 100%;
-  height: 44px;
-  border: 1.5px solid rgba(15, 23, 42, 0.15);
-  border-radius: 12px;
-  background: none;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .drawer-btn-fill {
   width: 100%;
   height: 44px;
@@ -808,7 +612,6 @@ const serviciosMenu = [
   background: #005fcd;
 }
 
-/* ══ FOOTER ══════════════════════════════════════ */
 .bs-footer {
   background: #fff;
   border-top: 1px solid rgba(15, 23, 42, 0.09);
@@ -965,7 +768,6 @@ const serviciosMenu = [
   color: rgba(11, 18, 32, 0.45);
 }
 
-/* ══ WhatsApp ═════════════════════════════════════ */
 .bs-whatsapp-float {
   position: relative;
   width: 56px;
@@ -1011,7 +813,6 @@ const serviciosMenu = [
   }
 }
 
-/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 900px) {
   .bs-footer-top {
     flex-direction: column;

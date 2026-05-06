@@ -53,10 +53,7 @@ export default defineConfig((/* ctx */) => {
         },
       },
 
-      plugins: [
-        // opcional: útil para toasts cuando envíes formularios
-        // 'Notify'
-      ],
+      plugins: ['Notify', 'Dialog'],
     },
 
     animations: [],

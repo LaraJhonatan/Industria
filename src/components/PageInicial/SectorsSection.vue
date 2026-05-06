@@ -13,13 +13,8 @@
       </div>
 
       <div class="sectors-grid">
-        <div 
-          v-for="(sector, idx) in sectors" 
-          :key="idx"
-          class="sector-card"
-          v-reveal
-          :data-delay="idx * 80"
-        >
+        <router-link v-for="(sector, idx) in sectors" :key="idx" :to="`/tienda/${sector.slug}`" class="sector-card"
+          v-reveal :data-delay="idx * 80">
           <div class="sector-icon">
             <q-icon :name="sector.icon" size="28px" />
           </div>
@@ -27,7 +22,7 @@
             <h3 class="sector-title">{{ sector.title }}</h3>
             <p class="sector-desc">{{ sector.desc }}</p>
           </div>
-        </div>
+        </router-link>
       </div>
     </div>
   </section>
@@ -36,35 +31,41 @@
 <script setup>
 const sectors = [
   {
+    slug: 'manufacturero',
     icon: 'factory',
-    title: 'Manufactura',
-    desc: 'Optimización de líneas de producción y automatización de procesos industriales.'
+    title: 'Manufacturero',
+    desc: 'Empresas que transforman materia prima en producto: alimentos procesados, textil, metalmecánica, plásticos, electrónica y más.'
   },
   {
-    icon: 'water_drop',
-    title: 'Alimentos y bebidas',
-    desc: 'Equipos especializados y soluciones técnicas para procesamiento alimentario.'
-  },
-  {
-    icon: 'science',
-    title: 'Farmacéutico',
-    desc: 'Sistemas de precisión y control de calidad para la industria farmacéutica.'
-  },
-  {
-    icon: 'local_shipping',
-    title: 'Logística',
-    desc: 'Automatización y optimización de centros de distribución y almacenamiento.'
-  },
-  {
-    icon: 'construction',
-    title: 'Construcción',
-    desc: 'Maquinaria y equipos especializados para proyectos de construcción e infraestructura.'
-  },
-  {
+    slug: 'agroindustria',
     icon: 'agriculture',
     title: 'Agroindustria',
-    desc: 'Soluciones técnicas para procesamiento, empaque y conservación de productos agrícolas.'
-  }
+    desc: 'El oro de Colombia con valor agregado: café, cacao, lácteos, flores, aceites, exportación agrícola y piscicultura.'
+  },
+  {
+    slug: 'comercio',
+    icon: 'storefront',
+    title: 'Comercio',
+    desc: 'El sector con más empresas: retail, e-commerce, distribuidores mayoristas, importadores y dropshipping.'
+  },
+  {
+    slug: 'servicios',
+    icon: 'build_circle',
+    title: 'Servicios',
+    desc: 'Aquí no se venden productos, se venden soluciones: salud, educación, restaurantes, logística, consultoría y más.'
+  },
+  {
+    slug: 'tecnologia',
+    icon: 'computer',
+    title: 'Tecnología',
+    desc: 'Desarrollo de software, startups, inteligencia artificial, ciberseguridad, fintech y plataformas digitales.'
+  },
+  {
+    slug: 'construccion',
+    icon: 'construction',
+    title: 'Construcción e Infraestructura',
+    desc: 'Viviendas, obras civiles, remodelaciones, arquitectura, ingeniería y proyectos inmobiliarios.'
+  },
 ]
 
 const vReveal = {
@@ -72,22 +73,14 @@ const vReveal = {
     el.classList.add('reveal')
     const delay = Number(el.dataset.delay || 0)
     el.style.transitionDelay = `${delay}ms`
-    
     const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('is-visible')
-          obs.disconnect()
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add('is-visible'); obs.disconnect() } },
       { threshold: 0.12, rootMargin: '0px 0px -12% 0px' }
     )
     obs.observe(el)
     el.__obs = obs
   },
-  unmounted(el) {
-    el.__obs?.disconnect?.()
-  }
+  unmounted(el) { el.__obs?.disconnect?.() }
 }
 </script>
 
@@ -145,6 +138,7 @@ const vReveal = {
   background: #fff;
   border: 2px solid rgba(27, 27, 27, 0.08);
   border-radius: 16px;
+  text-decoration: none;
   transition: all 300ms ease;
 }
 
@@ -158,7 +152,7 @@ const vReveal = {
   width: 56px;
   height: 56px;
   border-radius: 12px;
-  background: rgba(0, 113, 227, 0.1);
+  background: rgba(0, 113, 227, 0.10);
   display: grid;
   place-items: center;
   color: #0071e3;
@@ -166,11 +160,10 @@ const vReveal = {
 }
 
 .sector-title {
-  margin: 0;
+  margin: 0 0 8px;
   font-size: 18px;
   font-weight: 900;
   color: #1b1b1b;
-  margin-bottom: 8px;
 }
 
 .sector-desc {
@@ -192,12 +185,12 @@ const vReveal = {
 }
 
 @media (max-width: 768px) {
-  .sectors-grid {
-    grid-template-columns: 1fr;
-  }
-  
   .sectors {
     padding: 70px 0;
+  }
+
+  .sectors-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -206,7 +199,7 @@ const vReveal = {
     padding: 20px;
     gap: 16px;
   }
-  
+
   .sector-icon {
     width: 48px;
     height: 48px;

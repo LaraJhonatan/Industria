@@ -1,27 +1,50 @@
 <template>
   <section class="hero" aria-label="Hero principal">
 
-    <!-- Fondo con cuadrícula sutil -->
     <div class="hero-bg" aria-hidden="true">
       <div class="grid-overlay" />
     </div>
 
     <div class="hero-wrap" :class="{ ready }">
 
-      <!-- ① TÍTULO -->
       <h1 class="hero-title">
         Importamos maquinaria.<br />
-        Diseñamos soluciones.<br />
-        Ejecutamos servicios<span class="dot">.</span>
+        Conectamos empresas.<br />
+        Hacemos que vendas más<span class="dot">.</span>
       </h1>
 
-      <!-- ② DESCRIPCIÓN -->
       <p class="hero-desc">
         Integración real con criterio técnico y enfoque estratégico.
         Soluciones industriales a medida para empresas que exigen resultados.
       </p>
 
-      <!-- ③ VIDEO -->
+      <!-- ③ CTAs -->
+      <div class="hero-ctas">
+        <router-link to="/tienda" class="cta-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
+          <div class="cta-texts">
+            <span class="cta-main">Explorar tienda</span>
+            <span class="cta-sub">Encuentra proveedores industriales en minutos.</span>
+          </div>
+        </router-link>
+
+        <router-link to="/auth?mode=registro-empresa" class="cta-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          <div class="cta-texts">
+            <span class="cta-main">Vender en ZiFux</span>
+            <span class="cta-sub">Regístrate gratis y empieza a vender hoy.</span>
+          </div>
+        </router-link>
+      </div>
+
+      <!-- ④ VIDEO -->
       <div class="video-block">
         <div class="video-wrapper">
           <iframe v-if="useYouTube" class="video-iframe" :src="youtubeEmbedUrl" title="Video de presentación ZiFux"
@@ -34,7 +57,7 @@
         </div>
       </div>
 
-      <!-- ④ CARRUSEL DE LOGOS -->
+      <!-- ⑤ CARRUSEL DE LOGOS -->
       <div class="carousel-wrap" :class="{ carouselReady }">
         <div class="carousel-label">MARCAS ALIADAS</div>
         <div class="track-outer">
@@ -70,9 +93,10 @@ const videoSrc = ref('/videos/industrial-demo.mp4')
 const logos = ref([
   { name: 'Acerolab', url: 'https://acerolab.com.co/wp-content/uploads/2022/10/LOGO-PNG-1024x865.png' },
   { name: 'Syse', url: 'https://syse.com.co/gallery_gen/8fb7ec8d3cc335f5a78a71a9e6ae8320_536x302_fit.png?ts=1721230543' },
+  { name: 'Empresa 3', url: 'https://lh3.googleusercontent.com/p/AF1QipNeNZs4lyWrhMYvlsn3E9X9mKwMX0D01C2yx0LR=s680-w680-h510-rw' },
+  { name: 'Empresa 4', url: 'https://static.wixstatic.com/media/faf501_c9442b642562417793e285b6939e5dd5~mv2_d_2084_1819_s_2.png/v1/fill/w_197,h_172,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/faf501_c9442b642562417793e285b6939e5dd5~mv2_d_2084_1819_s_2.png' },
 ])
 
-// Repite logos hasta tener al menos 10 ítems — carrusel siempre lleno
 const filledLogos = computed(() => {
   if (!logos.value.length) return []
   const times = Math.ceil(10 / logos.value.length)
@@ -84,14 +108,11 @@ onMounted(() => {
   setTimeout(() => (carouselReady.value = true), 200)
 })
 </script>
-
 <style scoped>
-/* ══ Sección ═════════════════════════════════════ */
 .hero {
   --blue: #0071e3;
   --yellow: #fdda24;
   --bg: #ffffff;
-
   position: relative;
   overflow: hidden;
   background: var(--bg);
@@ -101,7 +122,6 @@ onMounted(() => {
   align-items: center;
 }
 
-/* ══ Fondo — cuadrícula sutil igual a la anterior ═ */
 .hero-bg {
   position: absolute;
   inset: 0;
@@ -111,25 +131,18 @@ onMounted(() => {
 
 .grid-overlay {
   position: absolute;
-  inset: -12%;
+  inset: -20%;
   background-image:
-    linear-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.07) 1px, transparent 1px),
-    linear-gradient(rgba(0, 0, 0, 0.04) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 2px, transparent 2px);
-  background-size:
-    80px 80px,
-    80px 80px,
-    400px 400px,
-    400px 400px;
-  opacity: 0.65;
-  -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%,
-      rgba(0, 0, 0, 1) 30%, transparent 80%);
-  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%,
-      rgba(0, 0, 0, 1) 30%, transparent 80%);
+    linear-gradient(rgba(0, 0, 0, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.10) 1px, transparent 1px);
+  background-size: 72px 72px;
+  transform: perspective(600px) rotateX(38deg) scale(1.6);
+  transform-origin: center 30%;
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 60%, rgba(0, 0, 0, 1) 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 60%, rgba(0, 0, 0, 1) 20%, transparent 75%);
 }
 
-/* ══ Contenido ═══════════════════════════════════ */
 .hero-wrap {
   position: relative;
   z-index: 2;
@@ -140,9 +153,7 @@ onMounted(() => {
   width: 100%;
   max-width: 1020px;
   margin: 0 auto;
-  padding: 12px 24px 16px;
-  /* mínimo espacio arriba */
-
+  padding: 12px 24px 96px;
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 650ms ease, transform 650ms ease;
@@ -153,7 +164,6 @@ onMounted(() => {
   transform: translateY(0);
 }
 
-/* ══ Título ══════════════════════════════════════ */
 .hero-title {
   font-size: clamp(28px, 4.4vw, 56px);
   font-weight: 900;
@@ -164,36 +174,97 @@ onMounted(() => {
 }
 
 .dot {
-  color: var(--yellow)
+  color: var(--yellow);
 }
 
-/* ══ Descripción ═════════════════════════════════ */
 .hero-desc {
   font-size: clamp(13px, 1.4vw, 15px);
   line-height: 1.68;
   color: rgba(11, 18, 32, 0.50);
   max-width: 520px;
-  margin: 0 0 14px;
+  margin: 0 0 20px;
 }
 
-/* ══ Video — más grande ══════════════════════════ */
+.hero-ctas {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cta-primary,
+.cta-secondary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  text-decoration: none;
+  min-width: 220px;
+  transition: transform 160ms, box-shadow 160ms, background 160ms, border-color 160ms;
+}
+
+.cta-primary {
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 113, 227, 0.30);
+}
+
+.cta-primary:hover {
+  background: #005fcd;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 113, 227, 0.38);
+}
+
+.cta-secondary {
+  background: #fff;
+  color: #0b1220;
+  border: 1.5px solid rgba(15, 23, 42, 0.14);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.cta-secondary:hover {
+  border-color: rgba(0, 113, 227, 0.35);
+  background: rgba(0, 113, 227, 0.03);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.09);
+}
+
+.cta-texts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cta-main {
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.cta-sub {
+  font-size: 11.5px;
+  opacity: 0.70;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
 .video-block {
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .video-wrapper {
   width: 100%;
-  max-width: 880px;
-  /* más ancho que antes */
+  max-width: 720px;
   margin: 0 auto;
   border-radius: 16px;
   overflow: hidden;
   background: #000;
   border: 1px solid rgba(11, 18, 32, 0.10);
-  box-shadow:
-    0 4px 16px rgba(11, 18, 32, 0.08),
-    0 20px 48px rgba(11, 18, 32, 0.12);
+  box-shadow: 0 4px 16px rgba(11, 18, 32, 0.08), 0 20px 48px rgba(11, 18, 32, 0.12);
 }
 
 .video-iframe,
@@ -205,13 +276,13 @@ onMounted(() => {
   border: 0;
 }
 
-/* ══ Carrusel ════════════════════════════════════ */
 .carousel-wrap {
   width: 100%;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 600ms ease, transform 600ms ease;
   transition-delay: 180ms;
+  padding-bottom: 24px;
 }
 
 .carousel-wrap.carouselReady {
@@ -259,31 +330,28 @@ onMounted(() => {
 .carousel-track {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 56px;
   width: max-content;
   animation: scroll 18s linear infinite;
 }
 
 .carousel-track:hover {
-  animation-play-state: paused
+  animation-play-state: paused;
 }
 
 @keyframes scroll {
   0% {
-    transform: translateX(0)
+    transform: translateX(0);
   }
 
   100% {
-    transform: translateX(-50%)
+    transform: translateX(-50%);
   }
 }
 
-/* ── Logo ─────────────────────────────────────── */
 .logo-pill {
   flex-shrink: 0;
   height: 56px;
-  /* más alto que antes */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -291,14 +359,10 @@ onMounted(() => {
 
 .logo-img {
   height: 48px;
-  /* logos más grandes */
   width: auto;
   max-width: 160px;
   object-fit: contain;
-
-  /* Elimina fondo blanco de PNGs sobre fondo blanco */
   mix-blend-mode: multiply;
-
   opacity: 0.65;
   filter: grayscale(0.15);
   transition: opacity 220ms, filter 220ms, transform 220ms;
@@ -310,14 +374,23 @@ onMounted(() => {
   transform: scale(1.05);
 }
 
-/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 768px) {
   .hero {
     min-height: calc(100svh - 64px);
   }
 
   .hero-wrap {
-    padding: 10px 16px 14px;
+    padding: 10px 16px 60px;
+  }
+
+  .hero-ctas {
+    gap: 8px;
+  }
+
+  .cta-primary,
+  .cta-secondary {
+    min-width: 160px;
+    padding: 10px 16px;
   }
 
   .logo-img {
@@ -327,12 +400,12 @@ onMounted(() => {
 
 @media (prefers-reduced-motion: reduce) {
   .carousel-track {
-    animation: none
+    animation: none;
   }
 
   .hero-wrap,
   .carousel-wrap {
-    transition: none
+    transition: none;
   }
 }
 </style>
