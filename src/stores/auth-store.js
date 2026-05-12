@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import http from '../api/http'
 
 export const useAuthStore = defineStore('auth', () => {
-  const sesion = ref(JSON.parse(localStorage.getItem('zifux_sesion') || 'null'))
+  const sesion = ref(JSON.parse(localStorage.getItem('ZIFCOR_sesion') || 'null'))
 
   const isAuthenticated = computed(() => !!sesion.value?.accessToken)
   const empresa = computed(() => sesion.value?.empresa || null)
@@ -12,17 +12,17 @@ export const useAuthStore = defineStore('auth', () => {
   async function login(identificador, password) {
     const { data } = await http.post('/auth/login', { identificador, password })
     sesion.value = data
-    localStorage.setItem('zifux_sesion', JSON.stringify(data))
+    localStorage.setItem('ZIFCOR_sesion', JSON.stringify(data))
     return data
   }
 
   function logout() {
     sesion.value = null
-    localStorage.removeItem('zifux_sesion')
+    localStorage.removeItem('ZIFCOR_sesion')
   }
 
   function restoreSession() {
-    const stored = localStorage.getItem('zifux_sesion')
+    const stored = localStorage.getItem('ZIFCOR_sesion')
     if (stored) sesion.value = JSON.parse(stored)
   }
 

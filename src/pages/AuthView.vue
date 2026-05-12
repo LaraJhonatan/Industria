@@ -44,7 +44,7 @@
         <!-- CABECERA -->
         <div class="panel-head">
           <div class="panel-brand">
-            <router-link to="/"><img src="/IconoZ.png" alt="ZiFux" class="panel-logo" /></router-link>
+            <router-link to="/"><img src="/IconoZ.png" alt="ZIFCOR" class="panel-logo" /></router-link>
             <div class="brand-sep" />
             <span class="brand-label">Portal empresarial</span>
           </div>
@@ -213,7 +213,7 @@
                     reg.empresa.dv
                       }}</span></div>
                   <div class="ec-f"><span class="ec-l">Estado</span><span class="ec-v">{{ reg.empresa.estado ?? '—'
-                      }}</span></div>
+                  }}</span></div>
                   <div class="ec-f"><span class="ec-l">Tipo de sociedad</span><span class="ec-v">{{
                     reg.empresa.tipoSociedad ?? '—'
                       }}</span></div>
@@ -463,7 +463,7 @@
                   reg.empresa?.dv
                     }}</span></div>
                 <div class="sd-row"><span class="sd-l">Correo</span><span class="sd-v">{{ reg.correoEnmascarado
-                    }}</span></div>
+                }}</span></div>
               </div>
               <button class="btn-p w-full mt-16" @click="irAlLogin">Ir a iniciar sesión →</button>
             </div>
@@ -490,7 +490,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(config => {
-  const sesion = localStorage.getItem('zifux_sesion')
+  const sesion = localStorage.getItem('ZIFCOR_sesion')
   if (sesion) {
     try {
       const { accessToken } = JSON.parse(sesion)

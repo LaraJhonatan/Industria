@@ -40,7 +40,7 @@
 
         <div class="sidebar-brand row items-center q-px-lg q-py-md">
           <router-link to="/">
-            <img src="/IconoZ.png" alt="ZiFux" style="height:28px" />
+            <img src="/IconoZ.png" alt="ZIFCOR" style="height:28px" />
           </router-link>
           <span class="q-ml-sm"
             style="font-size:11px;font-weight:900;color:rgba(11,18,32,.35);text-transform:uppercase;letter-spacing:1px">

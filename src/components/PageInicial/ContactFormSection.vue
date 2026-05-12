@@ -21,7 +21,7 @@
         </p>
 
         <!-- Bloque Calendly -->
-        <a href="https://calendly.com/zifux/llamada" target="_blank" class="calendly-card" rel="noopener">
+        <a href="https://calendly.com/ZIFCOR/llamada" target="_blank" class="calendly-card" rel="noopener">
           <div class="calendly-card-inner">
             <div class="calendly-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -124,7 +124,7 @@ async function onSubmit() {
 
   sending.value = true
   try {
-    const to = 'comercial@zifux.com'
+    const to = 'comercial@ZIFCOR.com'
     const subject = `Contacto web: ${form.value.firstName} ${form.value.lastName}`
     const body = [
       `Nombres: ${form.value.firstName}`,

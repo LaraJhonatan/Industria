@@ -6,7 +6,7 @@ const http = axios.create({
 })
 
 http.interceptors.request.use((config) => {
-  const sesion = localStorage.getItem('zifux_sesion')
+  const sesion = localStorage.getItem('ZIFCOR_sesion')
   if (sesion) {
     try {
       const { accessToken } = JSON.parse(sesion)
@@ -22,7 +22,7 @@ http.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('zifux_sesion')
+      localStorage.removeItem('ZIFCOR_sesion')
       window.location.href = '/auth'
     }
     return Promise.reject(err)

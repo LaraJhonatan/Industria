@@ -38,7 +38,7 @@
             </svg>
           </div>
           <div class="cta-texts">
-            <span class="cta-main">Vender en ZiFux</span>
+            <span class="cta-main">Vender en ZIFCOR</span>
             <span class="cta-sub">Regístrate gratis y empieza a vender hoy.</span>
           </div>
           <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -71,7 +71,7 @@
 
       <div class="video-block">
         <div class="video-wrapper">
-          <iframe v-if="useYouTube" class="video-iframe" :src="youtubeEmbedUrl" title="Video de presentación ZiFux"
+          <iframe v-if="useYouTube" class="video-iframe" :src="youtubeEmbedUrl" title="Video de presentación ZIFCOR"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen />

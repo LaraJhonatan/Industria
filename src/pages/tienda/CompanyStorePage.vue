@@ -225,7 +225,7 @@ const bannerUrl = computed(() =>
 
 const companyDescription = computed(() =>
   empresa.value?.profile?.descripcion ||
-  'Empresa registrada en ZiFux. Explora su catálogo, conoce sus productos y contáctala directamente desde la plataforma.'
+  'Empresa registrada en ZIFCOR. Explora su catálogo, conoce sus productos y contáctala directamente desde la plataforma.'
 )
 
 const locationText = computed(() => {
@@ -246,7 +246,7 @@ const whatsappHref = computed(() => {
   if (!phone) return ''
 
   const message = encodeURIComponent(
-    `Hola, estoy interesado en los productos de ${companyName.value} que vi en ZiFux.`
+    `Hola, estoy interesado en los productos de ${companyName.value} que vi en ZIFCOR.`
   )
 
   return `https://wa.me/${phone}?text=${message}`

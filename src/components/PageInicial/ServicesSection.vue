@@ -82,13 +82,13 @@
         <div class="ps-mockup">
           <div class="ps-mockup-bar">
             <span class="dot-r" /><span class="dot-y" /><span class="dot-g" />
-            <div class="ps-mockup-url">portal.zifux.com/dashboard</div>
+            <div class="ps-mockup-url">portal.ZIFCOR.com/dashboard</div>
           </div>
           <div class="ps-mockup-screen">
             <div class="ps-screen-fallback">
               <div class="db-topbar">
                 <div class="db-logo">
-                  <img src="/IconoZ.png" alt="ZiFux" style="height:20px" />
+                  <img src="/IconoZ.png" alt="ZIFCOR" style="height:20px" />
                   <span style="font-size:11px;font-weight:900;opacity:.5;margin-left:4px">PORTAL B2B</span>
                 </div>
                 <div class="db-search">

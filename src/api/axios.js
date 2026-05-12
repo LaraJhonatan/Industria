@@ -10,7 +10,7 @@ const api = axios.create({
 
 // Interceptor request — agrega token JWT si existe
 api.interceptors.request.use((config) => {
-  const sesion = localStorage.getItem('zifux_sesion')
+  const sesion = localStorage.getItem('ZIFCOR_sesion')
   if (sesion) {
     try {
       const { accessToken } = JSON.parse(sesion)

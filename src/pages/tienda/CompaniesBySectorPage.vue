@@ -15,7 +15,7 @@
       <template v-else>
         <div class="hero" v-reveal>
           <div class="hero-text">
-            <span class="kicker">Sector empresarial · ZiFux</span>
+            <span class="kicker">Sector empresarial · ZIFCOR</span>
 
             <h1 class="hero-title">
               Empresas de
@@ -43,10 +43,10 @@
           </div>
 
           <div class="hero-map">
-            <img src="/mapa.png" alt="Mapa de cobertura ZiFux" class="latam-map" />
+            <img src="/mapa.png" alt="Mapa de cobertura ZIFCOR" class="latam-map" />
 
             <div class="map-floating-card">
-              <p class="mfc-kicker">Cobertura ZiFux</p>
+              <p class="mfc-kicker">Cobertura ZIFCOR</p>
               <p class="mfc-title">{{ empresas.length }} empresas</p>
               <p class="mfc-sub">con presencia en este sector</p>
             </div>
@@ -110,7 +110,7 @@
                 {{
                   empresa.profile?.descripcion
                     ? `${empresa.profile.descripcion.slice(0, 150)}${empresa.profile.descripcion.length > 150 ? '...' : ''}`
-                    : 'Empresa registrada en ZiFux. Ingresa para conocer su tienda, productos y datos de contacto.'
+                    : 'Empresa registrada en ZIFCOR. Ingresa para conocer su tienda, productos y datos de contacto.'
                 }}
               </p>
 
@@ -164,7 +164,7 @@ const sectorSlug = computed(() => route.params.sectorSlug)
 
 const sectorDescription = computed(() =>
   sector.value?.descripcion ||
-  'Explora empresas registradas en este sector y conoce sus productos, servicios y datos comerciales dentro de ZiFux.'
+  'Explora empresas registradas en este sector y conoce sus productos, servicios y datos comerciales dentro de ZIFCOR.'
 )
 
 async function loadSectorData() {

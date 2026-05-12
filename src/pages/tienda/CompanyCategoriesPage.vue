@@ -5,7 +5,7 @@
       <div class="section-head">
         <h2 class="section-title">Explora por sector</h2>
         <p class="section-sub">
-          {{ sectores.length }} sectores disponibles en ZiFux
+          {{ sectores.length }} sectores disponibles en ZIFCOR
         </p>
       </div>
 
@@ -40,7 +40,7 @@
       <div class="cta-banner">
         <div>
           <p class="cta-title">¿Tu empresa no está aquí?</p>
-          <p class="cta-sub">Regístrate y empieza a vender en ZiFux</p>
+          <p class="cta-sub">Regístrate y empieza a vender en ZIFCOR</p>
         </div>
         <button class="cta-btn" @click="router.push('/auth')">
           Registrar empresa →

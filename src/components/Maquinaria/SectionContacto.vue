@@ -20,7 +20,7 @@
           </p>
 
           <!-- Calendly card -->
-          <a href="https://calendly.com/zifux/llamada" target="_blank" class="calendly-card" rel="noopener">
+          <a href="https://calendly.com/ZIFCOR/llamada" target="_blank" class="calendly-card" rel="noopener">
             <div class="cal-inner">
               <div class="cal-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -159,7 +159,7 @@ async function onSubmit() {
   if (!ok) return
   sending.value = true
   try {
-    const to = 'comercial@zifux.com'
+    const to = 'comercial@ZIFCOR.com'
     const subject = `Importación maquinaria — ${form.value.empresa}`
     const lines = [
       `Empresa: ${form.value.empresa}`,

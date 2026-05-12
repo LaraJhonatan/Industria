@@ -5,7 +5,7 @@
       <q-toolbar class="bs-toolbar">
 
         <router-link to="/" class="bs-brand">
-          <img src="/IconoZ.png" alt="ZiFux" class="bs-logo-img" />
+          <img src="/IconoZ.png" alt="ZIFCOR" class="bs-logo-img" />
         </router-link>
 
         <router-link to="/tienda" class="bs-catalogo-link gt-sm" exact-active-class="bs-catalogo-link--active">
@@ -43,7 +43,7 @@
     <q-drawer v-model="drawer" side="right" overlay class="bs-drawer lt-md">
       <div class="drawer-inner">
         <div class="drawer-head">
-          <img src="/IconoZ.png" alt="ZiFux" class="drawer-logo" />
+          <img src="/IconoZ.png" alt="ZIFCOR" class="drawer-logo" />
           <button class="drawer-close" @click="drawer = false">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -85,15 +85,15 @@
       <div class="bs-footer-wrap">
         <div class="bs-footer-top">
           <div class="bs-foot-brand">
-            <img src="/IconoZ.png" alt="ZiFux" class="foot-logo-img" />
+            <img src="/IconoZ.png" alt="ZIFCOR" class="foot-logo-img" />
             <div class="bs-foot-brand-text">
-              <div class="bs-foot-name">ZiFux</div>
+              <div class="bs-foot-name">ZIFCOR</div>
               <div class="bs-foot-tag">Marketplace B2B — conecta empresas, servicios y productos industriales.</div>
             </div>
           </div>
           <div class="bs-foot-right">
             <div class="bs-foot-contact">
-              <a class="bs-foot-contact-link" href="mailto:hola@zifux.com">hola@zifux.com</a>
+              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">hola@ZIFCOR.com</a>
             </div>
             <span class="bs-vline" />
             <div class="bs-foot-social">
@@ -122,7 +122,7 @@
             <a class="bs-foot-link" href="#">Política de privacidad</a>
             <a class="bs-foot-link bs-status" href="#"><span class="bs-dot" />Sistema operativo</a>
           </div>
-          <div class="bs-foot-copy">© {{ year }} ZiFux S.A.S.</div>
+          <div class="bs-foot-copy">© {{ year }} ZIFCOR S.A.S.</div>
         </div>
       </div>
     </q-footer>

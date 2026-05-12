@@ -1,11 +1,11 @@
 <template>
-  <section class="catalog-section" aria-label="Tienda ZiFux">
+  <section class="catalog-section" aria-label="Tienda ZIFCOR">
     <div class="bs-wrap">
 
       <!-- ══ HERO ═══════════════════════════════════════ -->
       <div class="hero" v-reveal>
         <div class="hero-text">
-          <span class="kicker">Tienda B2B · ZiFux</span>
+          <span class="kicker">Tienda B2B · ZIFCOR</span>
           <h1 class="hero-title">
             Todo lo que necesitas<br />
             <span class="accent">para construir más.</span>
