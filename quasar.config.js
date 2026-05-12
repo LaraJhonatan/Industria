@@ -26,7 +26,8 @@ export default defineConfig((/* ctx */) => {
       vueRouterMode: 'hash',
       env: {
         productName: 'Zifcor',
-        productDescription: 'Describe aquí qué hace Zifcor en una frase',
+        description:
+          'Importamos maquinaria industrial y conectamos empresas con soluciones a medida para maximizar sus resultados.',
       },
       vitePlugins: [
         [
