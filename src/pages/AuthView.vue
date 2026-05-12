@@ -213,7 +213,7 @@
                     reg.empresa.dv
                       }}</span></div>
                   <div class="ec-f"><span class="ec-l">Estado</span><span class="ec-v">{{ reg.empresa.estado ?? '—'
-                  }}</span></div>
+                      }}</span></div>
                   <div class="ec-f"><span class="ec-l">Tipo de sociedad</span><span class="ec-v">{{
                     reg.empresa.tipoSociedad ?? '—'
                       }}</span></div>
@@ -463,7 +463,7 @@
                   reg.empresa?.dv
                     }}</span></div>
                 <div class="sd-row"><span class="sd-l">Correo</span><span class="sd-v">{{ reg.correoEnmascarado
-                }}</span></div>
+                    }}</span></div>
               </div>
               <button class="btn-p w-full mt-16" @click="irAlLogin">Ir a iniciar sesión →</button>
             </div>
@@ -485,7 +485,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_ARMELLINI_BASE_URL}/api`,
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   timeout: 15000,
 })
 
