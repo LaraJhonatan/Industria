@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const http = axios.create({
-  baseURL: process.env.API_URL || 'http://localhost:3000/api',
+  baseURL: process.env.API_URL || 'import.meta.env.VITE_API_ARMELLINI_BASE_URL/api',
   timeout: 15000,
 })
 
