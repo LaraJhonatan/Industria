@@ -24,7 +24,10 @@ export default defineConfig((/* ctx */) => {
       },
 
       vueRouterMode: 'hash',
-
+      env: {
+        productName: 'Zifcor',
+        productDescription: 'Describe aquí qué hace Zifcor en una frase',
+      },
       vitePlugins: [
         [
           'vite-plugin-checker',

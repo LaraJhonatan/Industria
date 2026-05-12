@@ -12,6 +12,18 @@
       content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
     />
 
+    <!-- SEO -->
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.zifcor.com/" />
+
+    <!-- Open Graph (para redes sociales y Google) -->
+    <meta property="og:title" content="Zifcor" />
+    <meta property="og:description" content="<%= productDescription %>" />
+    <meta property="og:url" content="https://www.zifcor.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.zifcor.com/icons/favicon-128x128.png" />
+
+    <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="128x128" href="icons/favicon-128x128.png" />
     <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png" />
