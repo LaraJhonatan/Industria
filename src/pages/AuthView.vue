@@ -7,33 +7,96 @@
         class="hero-bg" alt="" />
       <div class="hero-overlay" />
       <div class="hero-inner">
+
+        <div class="hero-top">
+          <img src="/IconoZ.png" alt="ZIFCOR" class="hero-logo" />
+        </div>
+
         <div class="hero-body">
-          <h1 class="hero-title">Digitaliza y conecta<br /><em class="hero-em">tu empresa en un solo lugar</em></h1>
+          <h1 class="hero-title">
+            Digitaliza y conecta<br />
+            tu empresa en<br />
+            <em class="hero-em">un solo lugar</em>
+          </h1>
           <p class="hero-sub">Crea tu cuenta empresarial con validación segura y empieza a gestionar en minutos.</p>
           <ul class="hero-list">
-            <li><span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            <li>
+              <span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="3.5">
                   <polyline points="20 6 9 17 4 12" />
-                </svg></span>Validación con RUES, DIAN</li>
-            <li><span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                </svg></span>
+              Validación con RUES, DIAN y Cámara de Comercio
+            </li>
+            <li>
+              <span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="3.5">
                   <polyline points="20 6 9 17 4 12" />
-                </svg></span>Verificación de correo corporativo</li>
-            <li><span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                </svg></span>
+              Verificación de correo corporativo
+            </li>
+            <li>
+              <span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="3.5">
                   <polyline points="20 6 9 17 4 12" />
-                </svg></span>+500 empresas registradas</li>
+                </svg></span>
+              Plataforma B2B industrial colombiana
+            </li>
           </ul>
         </div>
-        <div class="hero-foot">
-          <span class="hero-cert"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2">
+
+        <div class="hero-stats">
+          <div class="hs-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="11" width="18" height="11" rx="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>Registro 100% seguro y verificado</span>
-          <div class="hero-partners"><span class="partner">DIAN</span><span class="partner">Cámara de Comercio</span>
+            </svg>
+            <div class="hs-val">Gratis</div>
+            <div class="hs-lbl">Registro sin costo</div>
+          </div>
+          <div class="hs-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <div class="hs-val">100%</div>
+            <div class="hs-lbl">Seguro y verificado</div>
+          </div>
+          <div class="hs-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <div class="hs-val">24/7</div>
+            <div class="hs-lbl">Plataforma disponible</div>
+          </div>
+          <div class="hs-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <div class="hs-val">Conecta</div>
+            <div class="hs-lbl">Con proveedores calificados</div>
           </div>
         </div>
+
+        <div class="hero-foot">
+          <span class="hero-cert">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            Registro 100% seguro y verificado
+          </span>
+          <div class="hero-partners">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Dian_%28Colombia%29_logo.svg" alt="DIAN"
+              class="partner-logo" />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/2/22/C%C3%A1mara_de_Comercio_de_Bogot%C3%A1_logo.svg"
+              alt="Cámara de Comercio" class="partner-logo" />
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -213,7 +276,7 @@
                     reg.empresa.dv
                       }}</span></div>
                   <div class="ec-f"><span class="ec-l">Estado</span><span class="ec-v">{{ reg.empresa.estado ?? '—'
-                  }}</span></div>
+                      }}</span></div>
                   <div class="ec-f"><span class="ec-l">Tipo de sociedad</span><span class="ec-v">{{
                     reg.empresa.tipoSociedad ?? '—'
                       }}</span></div>
@@ -463,7 +526,7 @@
                   reg.empresa?.dv
                     }}</span></div>
                 <div class="sd-row"><span class="sd-l">Correo</span><span class="sd-v">{{ reg.correoEnmascarado
-                }}</span></div>
+                    }}</span></div>
               </div>
               <button class="btn-p w-full mt-16" @click="irAlLogin">Ir a iniciar sesión →</button>
             </div>
@@ -743,7 +806,10 @@ function irAlLogin() {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(150deg, rgba(4, 8, 22, .90) 0%, rgba(4, 12, 30, .70) 60%, rgba(4, 12, 30, .55) 100%);
+  background: linear-gradient(150deg,
+      rgba(2, 6, 20, .92) 0%,
+      rgba(4, 12, 34, .82) 50%,
+      rgba(4, 12, 30, .65) 100%);
 }
 
 .hero-inner {
@@ -753,19 +819,30 @@ function irAlLogin() {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: 40px 44px;
+  padding: 36px 44px 32px;
+}
+
+.hero-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .hero-body {
-  padding-top: 60px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 0 24px;
 }
 
 .hero-title {
-  font-size: clamp(26px, 3vw, 40px);
+  font-size: clamp(28px, 3.2vw, 44px);
   font-weight: 900;
   color: #fff;
-  letter-spacing: -0.6px;
-  line-height: 1.13;
+  letter-spacing: -0.8px;
+  line-height: 1.12;
   margin-bottom: 16px;
 }
 
@@ -775,11 +852,11 @@ function irAlLogin() {
 }
 
 .hero-sub {
-  font-size: 15px;
-  color: rgba(255, 255, 255, .68);
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, .65);
   line-height: 1.65;
-  margin-bottom: 28px;
-  max-width: 44ch;
+  margin-bottom: 24px;
+  max-width: 42ch;
 }
 
 .hero-list {
@@ -810,6 +887,46 @@ function irAlLogin() {
   flex-shrink: 0;
 }
 
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, .10);
+  border: 1px solid rgba(255, 255, 255, .10);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.hs-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, .06);
+  color: #4f9cf9;
+}
+
+.hs-item svg {
+  opacity: .8;
+  margin-bottom: 4px;
+}
+
+.hs-val {
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.hs-lbl {
+  font-size: 11px;
+  color: rgba(255, 255, 255, .50);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
 .hero-foot {
   display: flex;
   align-items: center;
@@ -823,25 +940,35 @@ function irAlLogin() {
   align-items: center;
   gap: 7px;
   font-size: 12.5px;
-  color: rgba(255, 255, 255, .55);
+  color: rgba(255, 255, 255, .50);
   font-weight: 600;
 }
 
 .hero-partners {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 16px;
 }
 
-.partner {
-  padding: 4px 11px;
-  border-radius: 7px;
-  background: rgba(255, 255, 255, .10);
-  border: 1px solid rgba(255, 255, 255, .18);
-  font-size: 11.5px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, .7);
-  letter-spacing: .4px;
+.partner-logo {
+  height: 24px;
+  width: auto;
+  max-width: 100px;
+  object-fit: contain;
+  opacity: .85;
+  transition: opacity 200ms;
+  filter: brightness(1.2) saturate(0) contrast(0.1) brightness(10);
 }
+
+.partner-logo:hover {
+  opacity: 1;
+}
+
+.partner-logo:last-child {
+  height: 36px;
+  max-width: 130px;
+}
+
 
 /* ── PANEL ── */
 .auth-panel {
@@ -1802,6 +1929,27 @@ function irAlLogin() {
 
   .otp-group {
     gap: 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .auth-hero {
+    min-height: 200px;
+    max-height: 240px;
+  }
+
+  .hero-body {
+    padding: 16px 0 12px;
+  }
+
+  .hero-sub,
+  .hero-list,
+  .hero-stats {
+    display: none;
+  }
+
+  .hero-inner {
+    padding: 20px 24px 16px;
   }
 }
 </style>
