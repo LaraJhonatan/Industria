@@ -313,6 +313,7 @@ onMounted(() => {
   opacity: .85;
 }
 
+/* ── BUSCADOR ─────────────────────────────────────────────────────────────*/
 .search-block {
   width: 100%;
   max-width: 760px;
@@ -321,19 +322,18 @@ onMounted(() => {
 .search-bar {
   display: flex;
   align-items: center;
-  background: #f4f6f9;
-  border: 2px solid #e4e8ef;
-  border-radius: 16px;
+  background: #fff;
+  border: 2px solid var(--blue);
+  border-radius: 14px;
   padding: 6px 6px 6px 16px;
   gap: 10px;
-  transition: border-color 200ms, box-shadow 200ms, background 200ms;
+  transition: box-shadow 200ms;
 }
 
 .search-bar.focused {
-  background: #fff;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 4px rgba(0, 113, 227, .12);
+  box-shadow: 0 0 0 5px rgba(0, 113, 227, .18);
 }
+
 
 .search-icon {
   flex-shrink: 0;
@@ -363,7 +363,7 @@ onMounted(() => {
   width: 38px;
   height: 38px;
   border: none;
-  border-radius: 10px;
+  border-radius: 999px;
   background: rgba(11, 18, 32, .06);
   color: rgba(11, 18, 32, .35);
   cursor: not-allowed;
@@ -406,7 +406,7 @@ onMounted(() => {
   background: var(--blue);
   color: #fff;
   border: none;
-  border-radius: 11px;
+  border-radius: 10px;
   padding: 10px 28px;
   font-size: 14px;
   font-weight: 700;
@@ -420,6 +420,7 @@ onMounted(() => {
   box-shadow: 0 4px 14px rgba(0, 113, 227, .32);
 }
 
+/* ── VIDEO ────────────────────────────────────────────────────────────────*/
 .video-block {
   flex: 1;
   width: 100%;
@@ -431,7 +432,7 @@ onMounted(() => {
 
 .video-wrapper {
   width: 100%;
-  max-width: 960px;
+  max-width: 680px;
   height: 100%;
   max-height: 100%;
   border-radius: 16px;
@@ -439,7 +440,7 @@ onMounted(() => {
   background: #000;
   border: 1px solid rgba(11, 18, 32, .10);
   box-shadow: 0 4px 16px rgba(11, 18, 32, .08), 0 16px 40px rgba(11, 18, 32, .12);
-  aspect-ratio: 16/9;
+  aspect-ratio: 4/3;
 }
 
 .video-iframe,
@@ -452,9 +453,10 @@ onMounted(() => {
 }
 
 .video-iframe {
-  transform: scale(1.04);
+  transform: scale(1.06);
 }
 
+/* ── CARRUSEL ─────────────────────────────────────────────────────────────*/
 .carousel-wrap {
   width: 100%;
   opacity: 0;

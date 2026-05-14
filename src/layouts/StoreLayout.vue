@@ -8,7 +8,7 @@
           <img src="/IconoZ.png" alt="ZIFCOR" class="bs-logo-img" />
         </router-link>
 
-        <router-link to="/tienda" class="bs-catalogo-link gt-sm" exact-active-class="bs-catalogo-link--active">
+        <!-- <router-link to="/tienda" class="bs-catalogo-link gt-sm" exact-active-class="bs-catalogo-link--active">
           Catálogo
         </router-link>
 
@@ -20,7 +20,7 @@
           </svg>
           <input v-model="searchQuery" class="search-inp" type="text" placeholder="Buscar empresas o productos..."
             @keydown.enter="handleSearch" />
-        </div>
+        </div> -->
 
         <q-space />
 

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- HERO TIENDA -->
     <section class="store-hero">
       <div class="sh-bg">
         <img src="/winston-chen-ZAk0UY8xYh0-unsplash.jpg" alt="" class="sh-bg-img" />
@@ -13,20 +12,25 @@
         </h1>
         <p class="sh-sub">Busca entre millones de productos y proveedores globales</p>
 
-        <div class="sh-search-bar" :class="{ focused: searchFocused }">
-          <svg class="sh-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2.2">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input v-model="searchQuery" class="sh-search-input" type="text"
-            placeholder="¿Qué producto necesitas? Ej: Drones, baterías, acero, café..." @focus="searchFocused = true"
-            @blur="searchFocused = false" @keydown.enter="goToSearch" />
-          <select v-model="selectedCategory" class="sh-select">
-            <option value="">Todas las categorías</option>
-            <option v-for="s in sectores" :key="s.id" :value="s.slug">{{ s.nombre }}</option>
-          </select>
-          <button class="sh-btn" @click="goToSearch">Buscar</button>
+        <div class="search-block">
+          <div class="search-bar" :class="{ focused: searchFocused }">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input v-model="searchQuery" class="search-input" type="text"
+              placeholder="¿Qué estás buscando? Ej: Drones, Baterías, Acero, Café..." @focus="searchFocused = true"
+              @blur="searchFocused = false" @keydown.enter="goToSearch" />
+            <button class="search-img-btn" title="Buscar por imagen (próximamente)" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+              <span class="img-tooltip">Próximamente</span>
+            </button>
+            <button class="search-btn" @click="goToSearch">Buscar</button>
+          </div>
         </div>
 
         <div class="sh-examples">
@@ -41,7 +45,6 @@
       </div>
     </section>
 
-    <!-- SECTORES -->
     <section class="catalog-section">
       <div class="bs-wrap">
         <div class="section-head">
@@ -99,7 +102,6 @@ const sectores = ref([])
 const loading = ref(true)
 const searchQuery = ref('')
 const searchFocused = ref(false)
-const selectedCategory = ref('')
 
 const examples = [
   { icon: '🚁', label: 'Drones' },
@@ -114,9 +116,7 @@ const examples = [
 function goToSearch() {
   const q = searchQuery.value.trim()
   if (!q) return
-  const query = { q }
-  if (selectedCategory.value) query.sector = selectedCategory.value
-  router.push({ path: '/buscar', query })
+  router.push({ path: '/buscar', query: { q } })
 }
 
 function quickSearch(term) {
@@ -137,15 +137,15 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* ── HERO TIENDA ──────────────────────────────────────────────────────────*/
+/* ── HERO ─────────────────────────────────────────────────────────────────*/
 .store-hero {
   position: relative;
-  min-height: 320px;
+  min-height: 420px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 64px 32px 56px;
+  padding: 72px 32px 64px;
 }
 
 .sh-bg {
@@ -197,30 +197,33 @@ onMounted(async () => {
   color: rgba(255, 255, 255, .65);
 }
 
-/* search bar */
-.sh-search-bar {
+/* ── BUSCADOR (igual al inicio) ───────────────────────────────────────────*/
+.search-block {
+  width: 100%;
+  max-width: 760px;
+}
+
+.search-bar {
   display: flex;
   align-items: center;
-  width: 100%;
   background: #fff;
-  border: 2px solid transparent;
-  border-radius: 16px;
+  border: 2px solid #0071e3;
+  border-radius: 14px;
   padding: 6px 6px 6px 16px;
   gap: 10px;
-  transition: border-color 200ms, box-shadow 200ms;
+  transition: box-shadow 200ms;
 }
 
-.sh-search-bar.focused {
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 4px rgba(96, 165, 250, .20);
+.search-bar.focused {
+  box-shadow: 0 0 0 5px rgba(0, 113, 227, .18);
 }
 
-.sh-search-icon {
+.search-icon {
   flex-shrink: 0;
-  color: rgba(11, 18, 32, .35);
+  color: rgba(11, 18, 32, .40);
 }
 
-.sh-search-input {
+.search-input {
   flex: 1;
   border: none;
   outline: none;
@@ -230,44 +233,77 @@ onMounted(async () => {
   min-width: 0;
 }
 
-.sh-search-input::placeholder {
-  color: rgba(11, 18, 32, .38);
+.search-input::placeholder {
+  color: rgba(11, 18, 32, .40);
 }
 
-.sh-select {
+.search-img-btn {
+  position: relative;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
   border: none;
-  outline: none;
-  background: #f1f5f9;
   border-radius: 10px;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #334155;
-  cursor: pointer;
-  max-width: 180px;
+  background: rgba(11, 18, 32, .06);
+  color: rgba(11, 18, 32, .35);
+  cursor: not-allowed;
 }
 
-.sh-btn {
+.search-img-btn:hover .img-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.img-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #0b1220;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 7px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms, transform 180ms;
+}
+
+.img-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #0b1220;
+}
+
+.search-btn {
   flex-shrink: 0;
   background: #0071e3;
   color: #fff;
   border: none;
-  border-radius: 11px;
+  border-radius: 10px;
   padding: 10px 28px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background 160ms, transform 160ms;
+  transition: background 160ms, transform 160ms, box-shadow 160ms;
 }
 
-.sh-btn:hover {
+.search-btn:hover {
   background: #005fcd;
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 113, 227, .32);
 }
 
-/* chips */
+/* ── CHIPS ────────────────────────────────────────────────────────────────*/
 .sh-examples {
   display: flex;
   flex-direction: column;
@@ -317,7 +353,7 @@ onMounted(async () => {
 /* ── SECTORES ─────────────────────────────────────────────────────────────*/
 .catalog-section {
   background: #fafbfc;
-  padding: 56px 0 80px;
+  padding: 32px 0 80px;
 }
 
 .bs-wrap {
@@ -509,10 +545,6 @@ onMounted(async () => {
 @media (max-width: 640px) {
   .store-hero {
     padding: 48px 16px 40px;
-  }
-
-  .sh-select {
-    display: none;
   }
 
   .categories-grid {
