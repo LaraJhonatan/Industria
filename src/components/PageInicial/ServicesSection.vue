@@ -3,7 +3,7 @@
     <div class="ps-wrap">
 
       <div class="ps-left" v-reveal>
-        <div class="ps-pill">PORTAL B2B</div>
+        <!-- <div class="ps-pill">PORTAL B2B</div> -->
         <h2 class="ps-title">
           El cerebro de<br />
           tu empresa<br />

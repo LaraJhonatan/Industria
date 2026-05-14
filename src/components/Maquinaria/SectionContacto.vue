@@ -6,7 +6,7 @@
         <!-- ══ COLUMNA IZQUIERDA ══════════════════ -->
         <div class="col-left" :class="{ ready }">
 
-          <div class="kicker">IMPORTACIÓN DE MAQUINARIA</div>
+          <!-- <div class="kicker">IMPORTACIÓN DE MAQUINARIA</div> -->
 
           <h1 class="h1">
             Importamos la maquinaria

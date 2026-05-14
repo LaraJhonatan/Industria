@@ -7,10 +7,10 @@
         <!-- ── LEFT ── -->
         <div class="left" :class="{ ready }">
 
-          <div class="kicker">
+          <!-- <div class="kicker">
             <span class="kicker-dot" />
             Maquinaria & Equipos
-          </div>
+          </div> -->
 
           <h1 class="headline">
             Suministro de<br />

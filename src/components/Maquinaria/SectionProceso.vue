@@ -2,7 +2,7 @@
   <section id="como-funciona" class="process" aria-label="Cómo funciona el proceso">
     <div class="bs-wrap">
       <div class="top" :class="{ ready }">
-        <div class="kicker">PROCESO DE SUMINISTRO</div>
+        <!-- <div class="kicker">PROCESO DE SUMINISTRO</div> -->
 
         <div class="headlineRow">
           <div class="headlineLeft">

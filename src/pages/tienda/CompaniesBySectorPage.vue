@@ -16,26 +16,17 @@
         <div class="hero" v-reveal>
           <div class="hero-text">
             <span class="kicker">Sector empresarial · ZIFCOR</span>
-
             <h1 class="hero-title">
               Empresas de
               <span class="accent">{{ sector?.nombre || sectorSlug }}</span>
             </h1>
-
             <p class="hero-sub">{{ sectorDescription }}</p>
-
             <div class="hero-pills">
               <span class="hero-pill">
                 {{ empresas.length }} {{ empresas.length === 1 ? 'empresa registrada' : 'empresas registradas' }}
               </span>
-              <!-- <span class="hero-pill hero-pill-soft">Marketplace B2B</span> -->
             </div>
-
             <div class="hero-btns">
-              <!-- <button v-if="empresas.length" class="hero-btn hero-btn-primary" @click="scrollToCompanies">
-                Ver empresas
-              </button> -->
-
               <button class="hero-btn hero-btn-secondary" @click="router.push('/auth')">
                 Registrar mi empresa
               </button>
@@ -44,7 +35,6 @@
 
           <div class="hero-map">
             <img src="/mapa.png" alt="Mapa de cobertura ZIFCOR" class="latam-map" />
-
             <div class="map-floating-card">
               <p class="mfc-kicker">Cobertura ZIFCOR</p>
               <p class="mfc-title">{{ empresas.length }} empresas</p>
@@ -75,32 +65,23 @@
         <div v-else class="companies-grid" v-reveal>
           <article v-for="empresa in empresas" :key="empresa.id" class="company-card"
             @click="router.push(`/tienda/empresa/${empresa.id}`)">
-            <div class="company-banner" :class="{ 'company-banner-fallback': !getBannerUrl(empresa) }">
-              <img v-if="getBannerUrl(empresa)" :src="getBannerUrl(empresa)"
-                :alt="`Banner de ${getCompanyName(empresa)}`" class="company-banner-img" />
-              <div class="company-banner-overlay"></div>
+
+            <div class="company-banner">
+              <div class="company-banner-overlay" />
             </div>
 
             <div class="company-content">
               <div class="company-head">
                 <div class="company-logo">
-                  <img v-if="getLogoUrl(empresa)" :src="getLogoUrl(empresa)" :alt="getCompanyName(empresa)"
-                    class="company-logo-img" />
-                  <span v-else class="company-logo-letter">
-                    {{ getCompanyName(empresa).charAt(0) }}
-                  </span>
+                  <img src="/IconoZ.png" alt="ZIFCOR" class="company-logo-img" />
                 </div>
-
                 <div class="company-main">
-                  <h3 class="company-name">{{ getCompanyName(empresa) }}</h3>
-
+                  <h3 class="company-name">ZIFCOR</h3>
                   <div v-if="empresa.profile?.ciudad || empresa.profile?.departamento" class="company-location">
                     <q-icon name="location_on" size="14px" color="grey-5" />
                     <span>
                       {{ empresa.profile?.ciudad || 'Ciudad' }}
-                      <template v-if="empresa.profile?.departamento">
-                        , {{ empresa.profile.departamento }}
-                      </template>
+                      <template v-if="empresa.profile?.departamento">, {{ empresa.profile.departamento }}</template>
                     </span>
                   </div>
                 </div>
@@ -113,23 +94,6 @@
                     : 'Empresa registrada en ZIFCOR. Ingresa para conocer su tienda, productos y datos de contacto.'
                 }}
               </p>
-
-              <div class="company-tags">
-                <span v-if="empresa.profile?.sitioWeb" class="company-tag">
-                  <q-icon name="language" size="12px" />
-                  Sitio web
-                </span>
-
-                <span v-if="empresa.profile?.whatsapp" class="company-tag company-tag-green">
-                  <q-icon name="chat" size="12px" />
-                  WhatsApp
-                </span>
-
-                <span v-if="empresa.profile?.linkedinUrl || empresa.profile?.linkedin" class="company-tag">
-                  <q-icon name="groups" size="12px" />
-                  LinkedIn
-                </span>
-              </div>
 
               <div class="company-footer">
                 <span class="company-link">
@@ -169,13 +133,11 @@ const sectorDescription = computed(() =>
 
 async function loadSectorData() {
   loading.value = true
-
   try {
     const { data } = await publicApi.getEmpresasBySector(sectorSlug.value)
     sector.value = data?.sector || null
     empresas.value = data?.empresas || []
-  } catch (error) {
-    console.error('Error al cargar datos del sector:', error)
+  } catch {
     sector.value = null
     empresas.value = []
   } finally {
@@ -183,55 +145,21 @@ async function loadSectorData() {
   }
 }
 
-// function scrollToCompanies() {
-//   companiesSection.value?.scrollIntoView({
-//     behavior: 'smooth',
-//     block: 'start',
-//   })
-// }
-
-function getCompanyName(empresa) {
-  return empresa?.profile?.nombreComercial || empresa?.razonSocial || 'Empresa'
-}
-
-function getLogoUrl(empresa) {
-  return empresa?.profile?.logoUrl || empresa?.profile?.logo || ''
-}
-
-function getBannerUrl(empresa) {
-  return empresa?.profile?.bannerUrl || empresa?.profile?.banner || ''
-}
-
-watch(
-  () => route.params.sectorSlug,
-  () => {
-    loadSectorData()
-  },
-  { immediate: true }
-)
+watch(() => route.params.sectorSlug, () => { loadSectorData() }, { immediate: true })
 
 const vReveal = {
   mounted(el) {
     el.classList.add('reveal')
     const delay = Number(el.dataset.delay || 0)
     el.style.transitionDelay = `${delay}ms`
-
     const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('is-visible')
-          obs.disconnect()
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add('is-visible'); obs.disconnect() } },
       { threshold: 0.08, rootMargin: '0px 0px -8% 0px' }
     )
-
     obs.observe(el)
     el.__obs = obs
   },
-  unmounted(el) {
-    el.__obs?.disconnect?.()
-  },
+  unmounted(el) { el.__obs?.disconnect?.() }
 }
 </script>
 
@@ -248,7 +176,6 @@ const vReveal = {
   padding: 0 32px;
 }
 
-/* breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -261,24 +188,23 @@ const vReveal = {
   color: #0071e3;
   font-weight: 800;
   cursor: pointer;
-  transition: opacity 160ms ease;
+  transition: opacity 160ms;
 }
 
 .bc-link:hover {
-  opacity: 0.82;
+  opacity: .82;
   text-decoration: underline;
 }
 
 .bc-sep {
-  color: rgba(27, 27, 27, 0.25);
+  color: rgba(27, 27, 27, .25);
 }
 
 .bc-current {
-  color: rgba(27, 27, 27, 0.58);
+  color: rgba(27, 27, 27, .58);
   font-weight: 700;
 }
 
-/* loading */
 .loading-wrap {
   min-height: 320px;
   gap: 14px;
@@ -287,11 +213,11 @@ const vReveal = {
 .loading-text {
   margin: 0;
   font-size: 14px;
-  color: rgba(27, 27, 27, 0.48);
+  color: rgba(27, 27, 27, .48);
   font-weight: 600;
 }
 
-/* hero */
+/* ── HERO ── */
 .hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -308,8 +234,8 @@ const vReveal = {
 .kicker {
   display: inline-flex;
   padding: 8px 18px;
-  background: rgba(0, 113, 227, 0.08);
-  border: 1.5px solid rgba(0, 113, 227, 0.18);
+  background: rgba(0, 113, 227, .08);
+  border: 1.5px solid rgba(0, 113, 227, .18);
   border-radius: 999px;
   font-size: 11px;
   font-weight: 900;
@@ -337,7 +263,7 @@ const vReveal = {
   margin: 0 0 20px;
   font-size: 16px;
   line-height: 1.7;
-  color: rgba(27, 27, 27, 0.55);
+  color: rgba(27, 27, 27, .55);
   max-width: 46ch;
 }
 
@@ -354,23 +280,16 @@ const vReveal = {
   height: 36px;
   padding: 0 14px;
   border-radius: 999px;
-  background: rgba(0, 113, 227, 0.08);
-  border: 1px solid rgba(0, 113, 227, 0.16);
+  background: rgba(0, 113, 227, .08);
+  border: 1px solid rgba(0, 113, 227, .16);
   color: #0071e3;
   font-size: 12px;
   font-weight: 800;
 }
 
-.hero-pill-soft {
-  background: rgba(27, 27, 27, 0.04);
-  border-color: rgba(27, 27, 27, 0.08);
-  color: rgba(27, 27, 27, 0.52);
-}
-
 .hero-btns {
   display: flex;
   gap: 12px;
-  flex-wrap: wrap;
 }
 
 .hero-btn {
@@ -381,35 +300,23 @@ const vReveal = {
   font-size: 13.5px;
   font-weight: 900;
   cursor: pointer;
-  transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
-  letter-spacing: 0;
+  transition: transform 180ms ease;
 }
 
 .hero-btn:hover {
   transform: translateY(-2px);
 }
 
-.hero-btn-primary {
-  background: #0071e3;
-  color: #fff;
-  box-shadow: 0 12px 28px rgba(0, 113, 227, 0.2);
-}
-
-.hero-btn-primary:hover {
-  filter: brightness(0.9);
-}
-
 .hero-btn-secondary {
   background: #fff;
   color: #0071e3;
-  border: 1.5px solid rgba(0, 113, 227, 0.18);
+  border: 1.5px solid rgba(0, 113, 227, .18);
 }
 
 .hero-btn-secondary:hover {
-  background: rgba(0, 113, 227, 0.04);
+  background: rgba(0, 113, 227, .04);
 }
 
-/* map */
 .hero-map {
   position: relative;
   display: flex;
@@ -420,10 +327,8 @@ const vReveal = {
 
 .latam-map {
   width: 100%;
-  height: 100%;
   max-height: 430px;
   object-fit: contain;
-  filter: saturate(1.02);
   -webkit-mask-image:
     linear-gradient(to right, transparent 0%, black 18%, black 86%, transparent 100%),
     linear-gradient(to bottom, transparent 0%, black 10%, black 92%, transparent 100%);
@@ -440,9 +345,9 @@ const vReveal = {
   bottom: 26px;
   min-width: 210px;
   padding: 18px 18px 16px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1.5px solid rgba(11, 18, 32, 0.08);
-  box-shadow: 0 18px 44px rgba(11, 18, 32, 0.1);
+  background: rgba(255, 255, 255, .92);
+  border: 1.5px solid rgba(11, 18, 32, .08);
+  box-shadow: 0 18px 44px rgba(11, 18, 32, .10);
   backdrop-filter: blur(12px);
   border-radius: 18px;
 }
@@ -468,10 +373,10 @@ const vReveal = {
   margin: 0;
   font-size: 13px;
   line-height: 1.5;
-  color: rgba(11, 18, 32, 0.5);
+  color: rgba(11, 18, 32, .5);
 }
 
-/* section head */
+/* ── SECTION HEAD ── */
 .section-head {
   margin-bottom: 22px;
 }
@@ -487,62 +392,50 @@ const vReveal = {
 .section-sub {
   margin: 0;
   font-size: 14px;
-  color: rgba(27, 27, 27, 0.5);
+  color: rgba(27, 27, 27, .5);
 }
 
-/* companies */
+/* ── CARDS ── */
 .companies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
 }
 
 .company-card {
   background: #fff;
-  border: 1.5px solid rgba(11, 18, 32, 0.08);
-  border-radius: 22px;
+  border: 1.5px solid rgba(11, 18, 32, .08);
+  border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
   transition: all 220ms ease;
   display: flex;
   flex-direction: column;
-  min-height: 320px;
 }
 
 .company-card:hover {
-  border-color: rgba(0, 113, 227, 0.2);
-  box-shadow: 0 16px 40px rgba(0, 113, 227, 0.12);
+  border-color: rgba(0, 113, 227, .2);
+  box-shadow: 0 16px 40px rgba(0, 113, 227, .12);
   transform: translateY(-4px);
 }
 
 .company-banner {
   position: relative;
-  height: 118px;
-  background: #eef3f8;
+  height: 100px;
   overflow: hidden;
-}
-
-.company-banner-fallback {
   background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 30%),
-    linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #60a5fa 100%);
-}
-
-.company-banner-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+    linear-gradient(to bottom, rgba(11, 18, 32, .35), rgba(11, 18, 32, .65)),
+    url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=1200&h=400&fit=crop&q=80') center/cover no-repeat;
 }
 
 .company-banner-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.28));
+  background: linear-gradient(to bottom, rgba(15, 23, 42, .08), rgba(15, 23, 42, .28));
 }
 
 .company-content {
-  padding: 0 20px 20px;
+  padding: 0 16px 16px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -550,104 +443,64 @@ const vReveal = {
 
 .company-head {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: flex-end;
-  margin-top: -28px;
-  margin-bottom: 14px;
+  margin-top: -24px;
+  margin-bottom: 10px;
   position: relative;
   z-index: 2;
 }
 
 .company-logo {
-  width: 78px;
-  height: 78px;
-  border-radius: 18px;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
   background: #fff;
-  border: 1.5px solid rgba(11, 18, 32, 0.08);
-  box-shadow: 0 10px 24px rgba(11, 18, 32, 0.12);
+  border: 1.5px solid rgba(11, 18, 32, .08);
+  box-shadow: 0 8px 20px rgba(11, 18, 32, .12);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  padding: 6px;
 }
 
 .company-logo-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 8px;
-  background: #fff;
   display: block;
-}
-
-.company-logo-letter {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  font-size: 28px;
-  font-weight: 900;
-  color: #fff;
-  background: linear-gradient(135deg, #0071e3, #42a5ff);
 }
 
 .company-main {
   min-width: 0;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
 }
 
 .company-name {
-  margin: 0 0 6px;
-  font-size: 17px;
+  margin: 0 0 4px;
+  font-size: 16px;
   font-weight: 900;
   color: #0b1220;
   line-height: 1.2;
-  letter-spacing: -0.2px;
 }
 
 .company-location {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12.5px;
-  color: rgba(11, 18, 32, 0.45);
+  font-size: 12px;
+  color: rgba(11, 18, 32, .45);
   font-weight: 600;
 }
 
 .company-desc {
-  margin: 0 0 14px;
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: rgba(11, 18, 32, 0.56);
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(11, 18, 32, .56);
   flex: 1;
-}
-
-.company-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-
-.company-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 30px;
-  padding: 0 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 800;
-  background: rgba(11, 18, 32, 0.05);
-  color: rgba(11, 18, 32, 0.55);
-  border: 1px solid rgba(11, 18, 32, 0.08);
-}
-
-.company-tag-green {
-  background: rgba(34, 197, 94, 0.08);
-  color: #15803d;
-  border-color: rgba(34, 197, 94, 0.18);
 }
 
 .company-footer {
@@ -665,7 +518,7 @@ const vReveal = {
   color: #0071e3;
 }
 
-/* empty */
+/* ── EMPTY ── */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -673,7 +526,7 @@ const vReveal = {
   text-align: center;
   padding: 64px 20px;
   background: #fff;
-  border: 1.5px dashed rgba(11, 18, 32, 0.12);
+  border: 1.5px dashed rgba(11, 18, 32, .12);
   border-radius: 22px;
 }
 
@@ -681,7 +534,7 @@ const vReveal = {
   width: 86px;
   height: 86px;
   border-radius: 999px;
-  background: rgba(11, 18, 32, 0.04);
+  background: rgba(11, 18, 32, .04);
   display: grid;
   place-items: center;
   margin-bottom: 16px;
@@ -699,7 +552,7 @@ const vReveal = {
   max-width: 50ch;
   font-size: 14px;
   line-height: 1.6;
-  color: rgba(11, 18, 32, 0.48);
+  color: rgba(11, 18, 32, .48);
 }
 
 .action-btn {
@@ -710,7 +563,7 @@ const vReveal = {
   padding-inline: 20px;
 }
 
-/* reveal */
+/* ── REVEAL ── */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -722,7 +575,7 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* responsive */
+/* ── RESPONSIVE ── */
 @media (max-width: 1024px) {
   .hero {
     grid-template-columns: 1fr;
@@ -753,7 +606,6 @@ const vReveal = {
 
   .hero-btns {
     flex-direction: column;
-    align-items: stretch;
   }
 
   .hero-btn {
@@ -767,18 +619,8 @@ const vReveal = {
   }
 
   .hero-map {
-    display: flex;
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .company-head {
-    align-items: center;
-  }
-
-  .company-logo {
-    width: 72px;
-    height: 72px;
   }
 }
 </style>
