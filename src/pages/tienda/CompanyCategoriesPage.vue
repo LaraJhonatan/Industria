@@ -1,54 +1,92 @@
 <template>
-  <section class="catalog-section">
-    <div class="bs-wrap">
-
-      <div class="section-head">
-        <h2 class="section-title">Explora por sector</h2>
-        <p class="section-sub">
-          {{ sectores.length }} sectores disponibles en ZIFCOR
-        </p>
+  <div>
+    <!-- HERO TIENDA -->
+    <section class="store-hero">
+      <div class="sh-bg">
+        <img src="/winston-chen-ZAk0UY8xYh0-unsplash.jpg" alt="" class="sh-bg-img" />
+        <div class="sh-overlay" />
       </div>
+      <div class="sh-content">
+        <h1 class="sh-title">
+          Encuentra lo que<br />
+          <span class="sh-title-blue">tu negocio necesita</span>
+        </h1>
+        <p class="sh-sub">Busca entre millones de productos y proveedores globales</p>
 
-      <div v-if="loading" class="column items-center q-py-xl">
-        <q-spinner color="blue-6" size="40px" />
-      </div>
+        <div class="sh-search-bar" :class="{ focused: searchFocused }">
+          <svg class="sh-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input v-model="searchQuery" class="sh-search-input" type="text"
+            placeholder="¿Qué producto necesitas? Ej: Drones, baterías, acero, café..." @focus="searchFocused = true"
+            @blur="searchFocused = false" @keydown.enter="goToSearch" />
+          <select v-model="selectedCategory" class="sh-select">
+            <option value="">Todas las categorías</option>
+            <option v-for="s in sectores" :key="s.id" :value="s.slug">{{ s.nombre }}</option>
+          </select>
+          <button class="sh-btn" @click="goToSearch">Buscar</button>
+        </div>
 
-      <div v-else class="categories-grid">
-        <div v-for="sector in sectores" :key="sector.id" class="cat-card"
-          @click="router.push(`/tienda/${sector.slug}`)">
-          <div class="cat-img-wrap">
-            <img :src="sector.imagenUrl || '/placeholder-sector.jpg'" :alt="sector.nombre" class="cat-img" />
-            <div class="cat-overlay" />
-          </div>
-          <div class="cat-body">
-            <span class="cat-kicker">Sector</span>
-            <h3 class="cat-name">{{ sector.nombre }}</h3>
-            <p class="cat-desc">{{ sector.descripcion }}</p>
-            <div class="cat-meta">
-              <span class="cat-prod-count">{{ sector.totalEmpresas || 0 }} empresas</span>
-            </div>
-            <button class="cat-btn">
-              Ver empresas
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
+        <div class="sh-examples">
+          <span class="sh-examples-label">Ejemplos de búsqueda</span>
+          <div class="sh-chips">
+            <button v-for="ex in examples" :key="ex.label" class="sh-chip" @click="quickSearch(ex.label)">
+              <span class="sh-chip-icon">{{ ex.icon }}</span>
+              {{ ex.label }}
             </button>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="cta-banner">
-        <div>
-          <p class="cta-title">¿Tu empresa no está aquí?</p>
-          <p class="cta-sub">Regístrate y empieza a vender en ZIFCOR</p>
+    <!-- SECTORES -->
+    <section class="catalog-section">
+      <div class="bs-wrap">
+        <div class="section-head">
+          <h2 class="section-title">Explora por sector</h2>
+          <p class="section-sub">{{ sectores.length }} sectores disponibles en ZIFCOR</p>
         </div>
-        <button class="cta-btn" @click="router.push('/auth')">
-          Registrar empresa →
-        </button>
-      </div>
 
-    </div>
-  </section>
+        <div v-if="loading" class="column items-center q-py-xl">
+          <q-spinner color="blue-6" size="40px" />
+        </div>
+
+        <div v-else class="categories-grid">
+          <div v-for="sector in sectores" :key="sector.id" class="cat-card"
+            @click="router.push(`/tienda/${sector.slug}`)">
+            <div class="cat-img-wrap">
+              <img :src="sector.imagenUrl || '/placeholder-sector.jpg'" :alt="sector.nombre" class="cat-img" />
+              <div class="cat-overlay" />
+            </div>
+            <div class="cat-body">
+              <span class="cat-kicker">Sector</span>
+              <h3 class="cat-name">{{ sector.nombre }}</h3>
+              <p class="cat-desc">{{ sector.descripcion }}</p>
+              <div class="cat-meta">
+                <span class="cat-prod-count">{{ sector.totalEmpresas || 0 }} empresas</span>
+              </div>
+              <button class="cat-btn">
+                Ver empresas
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cta-banner">
+          <div>
+            <p class="cta-title">¿Tu empresa no está aquí?</p>
+            <p class="cta-sub">Regístrate y empieza a vender en ZIFCOR</p>
+          </div>
+          <button class="cta-btn" @click="router.push('/auth')">Registrar empresa →</button>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script setup>
@@ -59,6 +97,32 @@ import { publicApi } from '../../api/publicCatalog'
 const router = useRouter()
 const sectores = ref([])
 const loading = ref(true)
+const searchQuery = ref('')
+const searchFocused = ref(false)
+const selectedCategory = ref('')
+
+const examples = [
+  { icon: '🚁', label: 'Drones' },
+  { icon: '🔋', label: 'Baterías' },
+  { icon: '⚙️', label: 'Acero' },
+  { icon: '☕', label: 'Café' },
+  { icon: '📱', label: 'Celulares' },
+  { icon: '🔧', label: 'Repuestos' },
+  { icon: '👕', label: 'Ropa' },
+]
+
+function goToSearch() {
+  const q = searchQuery.value.trim()
+  if (!q) return
+  const query = { q }
+  if (selectedCategory.value) query.sector = selectedCategory.value
+  router.push({ path: '/buscar', query })
+}
+
+function quickSearch(term) {
+  searchQuery.value = term
+  goToSearch()
+}
 
 onMounted(async () => {
   try {
@@ -73,10 +137,187 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* ── HERO TIENDA ──────────────────────────────────────────────────────────*/
+.store-hero {
+  position: relative;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 64px 32px 56px;
+}
+
+.sh-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.sh-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sh-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(0, 20, 60, 0.90) 0%, rgba(0, 50, 110, 0.75) 100%);
+}
+
+.sh-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.sh-title {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 48px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.sh-title-blue {
+  color: #60a5fa;
+}
+
+.sh-sub {
+  margin: 0;
+  font-size: 15px;
+  color: rgba(255, 255, 255, .65);
+}
+
+/* search bar */
+.sh-search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: #fff;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 6px 6px 6px 16px;
+  gap: 10px;
+  transition: border-color 200ms, box-shadow 200ms;
+}
+
+.sh-search-bar.focused {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, .20);
+}
+
+.sh-search-icon {
+  flex-shrink: 0;
+  color: rgba(11, 18, 32, .35);
+}
+
+.sh-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #0b1220;
+  background: transparent;
+  min-width: 0;
+}
+
+.sh-search-input::placeholder {
+  color: rgba(11, 18, 32, .38);
+}
+
+.sh-select {
+  flex-shrink: 0;
+  border: none;
+  outline: none;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  max-width: 180px;
+}
+
+.sh-btn {
+  flex-shrink: 0;
+  background: #0071e3;
+  color: #fff;
+  border: none;
+  border-radius: 11px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 160ms, transform 160ms;
+}
+
+.sh-btn:hover {
+  background: #005fcd;
+  transform: translateY(-1px);
+}
+
+/* chips */
+.sh-examples {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.sh-examples-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .45);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sh-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.sh-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, .10);
+  border: 1px solid rgba(255, 255, 255, .20);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, .85);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+
+.sh-chip:hover {
+  background: rgba(255, 255, 255, .20);
+  border-color: rgba(255, 255, 255, .40);
+}
+
+.sh-chip-icon {
+  font-size: 14px;
+}
+
+/* ── SECTORES ─────────────────────────────────────────────────────────────*/
 .catalog-section {
   background: #fafbfc;
   padding: 56px 0 80px;
-  min-height: calc(100vh - 96px);
 }
 
 .bs-wrap {
@@ -100,7 +341,7 @@ onMounted(async () => {
 .section-sub {
   margin: 0;
   font-size: 14px;
-  color: rgba(27, 27, 27, 0.5);
+  color: rgba(27, 27, 27, .5);
 }
 
 .categories-grid {
@@ -124,7 +365,7 @@ onMounted(async () => {
 
 .cat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, .18);
 }
 
 .cat-img-wrap {
@@ -147,7 +388,7 @@ onMounted(async () => {
 .cat-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(160deg, rgba(0, 30, 80, 0.88) 0%, rgba(0, 60, 120, 0.35) 100%);
+  background: linear-gradient(160deg, rgba(0, 30, 80, .88) 0%, rgba(0, 60, 120, .35) 100%);
 }
 
 .cat-body {
@@ -161,14 +402,14 @@ onMounted(async () => {
 .cat-kicker {
   display: inline-flex;
   padding: 4px 12px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, .15);
+  border: 1px solid rgba(255, 255, 255, .3);
   border-radius: 999px;
   font-size: 10.5px;
   font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, .9);
   margin-bottom: 10px;
   width: fit-content;
 }
@@ -185,7 +426,7 @@ onMounted(async () => {
 .cat-desc {
   margin: 0 0 12px;
   font-size: 13.5px;
-  color: rgba(255, 255, 255, 0.70);
+  color: rgba(255, 255, 255, .70);
   line-height: 1.55;
   max-width: 40ch;
 }
@@ -197,7 +438,7 @@ onMounted(async () => {
 .cat-prod-count {
   font-size: 12px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.50);
+  color: rgba(255, 255, 255, .50);
 }
 
 .cat-btn {
@@ -215,11 +456,10 @@ onMounted(async () => {
   width: fit-content;
   background: #0071e3;
   transition: filter 180ms, transform 180ms;
-  letter-spacing: 0;
 }
 
 .cat-btn:hover {
-  filter: brightness(0.86);
+  filter: brightness(.86);
   transform: translateY(-1px);
 }
 
@@ -244,7 +484,7 @@ onMounted(async () => {
 .cta-sub {
   margin: 0;
   font-size: 13.5px;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, .75);
 }
 
 .cta-btn {
@@ -263,10 +503,18 @@ onMounted(async () => {
 
 .cta-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
 }
 
 @media (max-width: 640px) {
+  .store-hero {
+    padding: 48px 16px 40px;
+  }
+
+  .sh-select {
+    display: none;
+  }
+
   .categories-grid {
     grid-template-columns: 1fr;
   }

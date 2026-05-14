@@ -101,9 +101,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-// import { useRouter } from 'vue-router'
 
-// const router = useRouter()
 const ready = ref(false)
 const carouselReady = ref(false)
 const useYouTube = ref(true)
@@ -118,7 +116,6 @@ const searchFocused = ref(false)
 function goToSearch() {
   const q = searchQuery.value.trim()
   if (!q) return
-  // router.push({ path: '/buscar', query: { q } })
 }
 
 const logos = ref([
@@ -151,7 +148,6 @@ onMounted(() => {
   background: var(--bg);
   color: #0b1220;
   height: calc(100svh - var(--nav-h));
-  max-height: calc(100svh - var(--nav-h));
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -167,7 +163,9 @@ onMounted(() => {
 .grid-overlay {
   position: absolute;
   inset: -20%;
-  background-image: linear-gradient(rgba(0, 0, 0, .10) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, .10) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(0, 0, 0, .10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, .10) 1px, transparent 1px);
   background-size: 72px 72px;
   transform: perspective(600px) rotateX(38deg) scale(1.6);
   transform-origin: center 30%;
@@ -184,11 +182,11 @@ onMounted(() => {
   align-items: center;
   text-align: center;
   width: 100%;
-  max-width: 980px;
-  padding: clamp(10px, 1.5svh, 20px) 24px 0;
+  max-width: 1280px;
+  padding: clamp(28px, 4svh, 56px) 40px clamp(16px, 2.5svh, 32px);
   height: 100%;
   justify-content: flex-start;
-  gap: clamp(10px, 1.6svh, 18px);
+  gap: clamp(14px, 2svh, 26px);
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 650ms ease, transform 650ms ease;
@@ -200,7 +198,7 @@ onMounted(() => {
 }
 
 .hero-title {
-  font-size: clamp(28px, 5.2svh, 60px);
+  font-size: clamp(28px, 4.4svh, 58px);
   font-weight: 900;
   line-height: 1.08;
   letter-spacing: -1.5px;
@@ -216,14 +214,12 @@ onMounted(() => {
   color: var(--yellow);
 }
 
-/* ── CTAs ──────────────────────────────────────────────────────────────────*/
 .hero-ctas {
   display: flex;
   align-items: stretch;
   gap: 12px;
-  flex-wrap: nowrap;
-  /* nunca rompe a otra línea */
   justify-content: center;
+  width: 100%;
 }
 
 .cta-primary,
@@ -231,13 +227,11 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 14px 20px;
+  padding: 13px 20px;
   border-radius: 16px;
   text-decoration: none;
-  width: 300px;
-  /* ancho fijo igual para los dos */
+  width: 310px;
   flex: none;
-  /* no crece ni encoge */
   transition: transform 160ms, box-shadow 160ms, background 160ms, border-color 160ms;
 }
 
@@ -271,8 +265,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
   flex-shrink: 0;
 }
@@ -296,14 +290,14 @@ onMounted(() => {
 }
 
 .cta-main {
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 900;
   line-height: 1.2;
   white-space: nowrap;
 }
 
 .cta-sub {
-  font-size: 11.5px;
+  font-size: 11px;
   opacity: .72;
   line-height: 1.3;
   margin-top: 2px;
@@ -319,10 +313,9 @@ onMounted(() => {
   opacity: .85;
 }
 
-/* ── BUSCADOR ──────────────────────────────────────────────────────────────*/
 .search-block {
   width: 100%;
-  max-width: 620px;
+  max-width: 760px;
 }
 
 .search-bar {
@@ -414,7 +407,7 @@ onMounted(() => {
   color: #fff;
   border: none;
   border-radius: 11px;
-  padding: 10px 24px;
+  padding: 10px 28px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -427,16 +420,20 @@ onMounted(() => {
   box-shadow: 0 4px 14px rgba(0, 113, 227, .32);
 }
 
-/* ── VIDEO ──────────────────────────────────────────────────────────────────*/
 .video-block {
+  flex: 1;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
 }
 
 .video-wrapper {
   width: 100%;
-  max-width: 640px;
-  max-height: clamp(160px, 38svh, 380px);
-  margin: 0 auto;
+  max-width: 960px;
+  height: 100%;
+  max-height: 100%;
   border-radius: 16px;
   overflow: hidden;
   background: #000;
@@ -454,14 +451,16 @@ onMounted(() => {
   border: 0;
 }
 
-/* ── CARRUSEL ───────────────────────────────────────────────────────────────*/
+.video-iframe {
+  transform: scale(1.04);
+}
+
 .carousel-wrap {
   width: 100%;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 600ms ease, transform 600ms ease;
   transition-delay: 180ms;
-  padding-bottom: 0;
 }
 
 .carousel-wrap.carouselReady {
@@ -530,16 +529,16 @@ onMounted(() => {
 
 .logo-pill {
   flex-shrink: 0;
-  height: 64px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .logo-img {
-  height: 56px;
+  height: 44px;
   width: auto;
-  max-width: 180px;
+  max-width: 160px;
   object-fit: contain;
   mix-blend-mode: multiply;
   opacity: .65;
@@ -559,7 +558,8 @@ onMounted(() => {
   }
 
   .hero-wrap {
-    padding: 8px 16px 0;
+    padding: 20px 16px 16px;
+    gap: 14px;
   }
 
   .hero-ctas {
@@ -569,7 +569,7 @@ onMounted(() => {
   .cta-primary,
   .cta-secondary {
     width: 100%;
-    max-width: 340px;
+    max-width: 360px;
     padding: 11px 14px;
   }
 
@@ -579,16 +579,12 @@ onMounted(() => {
   }
 
   .logo-pill {
-    height: 48px;
+    height: 44px;
   }
 
   .logo-img {
-    height: 40px;
-    max-width: 130px;
-  }
-
-  .video-wrapper {
-    max-height: clamp(100px, 26svh, 220px);
+    height: 36px;
+    max-width: 120px;
   }
 }
 
