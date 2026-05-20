@@ -252,7 +252,7 @@ const mobileOpen = ref({ importacion: false })
 let closeTimer = null
 
 const ZIFCOR_WHATSAPP = '573114799224'
-const whatsappMessage = 'Bienvenida a Zifcor, en que podemos ayudarte?'
+const whatsappMessage = 'Hola, me gustaría recibir más información sobre Zifcor y sus servicios.'
 
 const whatsappUrl = computed(() => {
   return `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`
