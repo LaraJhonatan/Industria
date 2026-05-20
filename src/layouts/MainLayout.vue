@@ -26,12 +26,14 @@
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
+
             <Transition name="drop">
               <div v-if="activeMenu === 'importacion'" class="bs-dropdown" @mouseenter="cancelClose"
                 @mouseleave="closeMenu()">
                 <div class="drop-header">
                   <span class="drop-label">Maquinaria disponible</span>
                 </div>
+
                 <router-link v-for="maq in maquinas" :key="maq.id" :to="`/maquinaria/${maq.id}`" class="drop-item"
                   @click="activeMenu = null">
                   <div class="drop-item-icon">
@@ -42,6 +44,7 @@
                       <line x1="10" y1="14" x2="14" y2="14" />
                     </svg>
                   </div>
+
                   <div>
                     <div class="drop-item-title">{{ maq.name }}</div>
                     <div class="drop-item-sub">{{ maq.sub }}</div>
@@ -51,14 +54,21 @@
             </Transition>
           </div>
 
-          <router-link to="/faq" class="bs-link" active-class="bs-link--active">Preguntas frecuentes</router-link>
-          <router-link to="/contacto" class="bs-link" active-class="bs-link--active">Contáctanos</router-link>
+          <router-link to="/faq" class="bs-link" active-class="bs-link--active">
+            Preguntas frecuentes
+          </router-link>
+
+          <router-link to="/contacto" class="bs-link" active-class="bs-link--active">
+            Contáctanos
+          </router-link>
         </nav>
 
         <q-space />
 
         <div class="row items-center no-wrap q-gutter-sm gt-sm">
-          <button class="bs-signup-btn" @click="router.push('/auth')">Regístrate / Inicia Sesión</button>
+          <button class="bs-signup-btn" @click="router.push('/auth')">
+            Regístrate / Inicia Sesión
+          </button>
         </div>
 
         <q-btn flat round dense icon="menu" class="lt-md bs-menu-btn" @click="drawer = !drawer" />
@@ -69,6 +79,7 @@
       <div class="drawer-inner">
         <div class="drawer-head">
           <img src="/IconoZ.png" alt="ZIFCOR" class="drawer-logo" />
+
           <button class="drawer-close" @click="drawer = false">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -78,8 +89,13 @@
         </div>
 
         <nav class="drawer-nav">
-          <router-link to="/" class="drawer-link" @click="drawer = false">Inicio</router-link>
-          <router-link to="/tienda" class="drawer-link drawer-link--tienda" @click="drawer = false">Tienda</router-link>
+          <router-link to="/" class="drawer-link" @click="drawer = false">
+            Inicio
+          </router-link>
+
+          <router-link to="/tienda" class="drawer-link drawer-link--tienda" @click="drawer = false">
+            Tienda
+          </router-link>
 
           <div class="drawer-section">
             <button class="drawer-section-btn" @click="mobileOpen.importacion = !mobileOpen.importacion">
@@ -89,6 +105,7 @@
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
+
             <div v-if="mobileOpen.importacion" class="drawer-sub">
               <router-link v-for="maq in maquinas" :key="maq.id" :to="`/maquinaria/${maq.id}`" class="drawer-sub-link"
                 @click="drawer = false">
@@ -97,13 +114,19 @@
             </div>
           </div>
 
-          <router-link to="/faq" class="drawer-link" @click="drawer = false">Preguntas frecuentes</router-link>
-          <router-link to="/contacto" class="drawer-link" @click="drawer = false">Contáctanos</router-link>
+          <router-link to="/faq" class="drawer-link" @click="drawer = false">
+            Preguntas frecuentes
+          </router-link>
+
+          <router-link to="/contacto" class="drawer-link" @click="drawer = false">
+            Contáctanos
+          </router-link>
         </nav>
 
         <div class="drawer-actions">
-          <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">Regístrate / Inicia
-            Sesión</button>
+          <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">
+            Regístrate / Inicia Sesión
+          </button>
         </div>
       </div>
     </q-drawer>
@@ -117,18 +140,28 @@
         <div class="bs-footer-top">
           <div class="bs-foot-brand">
             <img src="/IconoZ.png" alt="ZIFCOR" class="foot-logo-img" />
+
             <div class="bs-foot-brand-text">
               <div class="bs-foot-name">ZIFCOR</div>
-              <div class="bs-foot-tag">Importación de maquinaria, ingeniería a medida y soporte técnico confiable.</div>
+              <div class="bs-foot-tag">
+                Importación de maquinaria, ingeniería a medida y soporte técnico confiable.
+              </div>
             </div>
           </div>
 
           <div class="bs-foot-right">
             <div class="bs-foot-contact">
-              <a class="bs-foot-contact-link" href="tel:+576001234567">+57 (600) 123-4567</a>
-              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">hola@ZIFCOR.com</a>
+              <a class="bs-foot-contact-link" href="tel:+576001234567">
+                +57 (600) 123-4567
+              </a>
+
+              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">
+                hola@ZIFCOR.com
+              </a>
             </div>
+
             <span class="bs-vline" />
+
             <div class="bs-foot-social">
               <a class="bs-social" href="#" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -137,6 +170,7 @@
                   <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" stroke="none" />
                 </svg>
               </a>
+
               <a class="bs-social" href="#" aria-label="LinkedIn">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M6.5 9.5V19" />
@@ -145,12 +179,14 @@
                   <path d="M10 10.2V19" />
                 </svg>
               </a>
+
               <a class="bs-social" href="#" aria-label="TikTok">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path
                     d="M14 6c1.2 2.2 3.2 3.6 6 3.8v2.6c-2.6-.1-4.6-1.1-6-2.6v6.1a5.2 5.2 0 1 1-5.2-5.2c.4 0 .8 0 1.2.1v2.7a2.7 2.7 0 1 0 2.8 2.7V4h1.2z" />
                 </svg>
               </a>
+
               <a class="bs-social" href="#" aria-label="X">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M6 18L18 6" />
@@ -158,6 +194,7 @@
                   <path d="M16 18h-5l-3-4V6" />
                 </svg>
               </a>
+
               <a class="bs-social" href="#" aria-label="YouTube">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path
@@ -175,18 +212,24 @@
           <div class="bs-foot-links">
             <a class="bs-foot-link" href="#">Términos de uso</a>
             <a class="bs-foot-link" href="#">Política de privacidad</a>
+
             <a class="bs-foot-link bs-status" href="#">
-              <span class="bs-dot" />Sistema operativo
+              <span class="bs-dot" />
+              Sistema operativo
             </a>
           </div>
-          <div class="bs-foot-copy">© {{ year }} ZIFCOR S.A.S.</div>
+
+          <div class="bs-foot-copy">
+            © {{ year }} ZIFCOR S.A.S.
+          </div>
         </div>
       </div>
     </q-footer>
 
     <q-page-sticky position="bottom-right" :offset="[24, 24]" class="z-fab">
-      <a href="https://wa.me/573001234567" target="_blank" class="bs-whatsapp-float">
+      <a :href="whatsappUrl" target="_blank" rel="noopener noreferrer" class="bs-whatsapp-float">
         <div class="bs-whatsapp-pulse" />
+
         <svg viewBox="0 0 24 24" class="bs-whatsapp-icon" fill="currentColor">
           <path
             d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.659 1.437 5.634 1.437h.005c6.558 0 11.894-5.335 11.897-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -197,7 +240,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -208,13 +251,40 @@ const activeMenu = ref(null)
 const mobileOpen = ref({ importacion: false })
 let closeTimer = null
 
-function openMenu(name) { clearTimeout(closeTimer); activeMenu.value = name }
-function closeMenu() { closeTimer = setTimeout(() => { activeMenu.value = null }, 120) }
-function cancelClose() { clearTimeout(closeTimer) }
+const ZIFCOR_WHATSAPP = '573114799224'
+const whatsappMessage = 'Bienvenida a Zifcor, en que podemos ayudarte?'
 
-function onScroll() { scrolled.value = window.scrollY > 10 }
-onMounted(() => { window.addEventListener('scroll', onScroll, { passive: true }); onScroll() })
-onBeforeUnmount(() => { window.removeEventListener('scroll', onScroll) })
+const whatsappUrl = computed(() => {
+  return `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`
+})
+
+function openMenu(name) {
+  clearTimeout(closeTimer)
+  activeMenu.value = name
+}
+
+function closeMenu() {
+  closeTimer = setTimeout(() => {
+    activeMenu.value = null
+  }, 120)
+}
+
+function cancelClose() {
+  clearTimeout(closeTimer)
+}
+
+function onScroll() {
+  scrolled.value = window.scrollY > 10
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+})
 
 const maquinas = [
   { id: 'torno-cnc', name: 'Torno CNC', sub: 'Mecanizado de precisión' },
