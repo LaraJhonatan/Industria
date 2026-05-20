@@ -23,7 +23,7 @@ export default defineConfig((/* ctx */) => {
         node: 'node20',
       },
 
-      vueRouterMode: 'hash',
+      vueRouterMode: 'history',
       env: {
         productName: 'Zifcor',
         description:
