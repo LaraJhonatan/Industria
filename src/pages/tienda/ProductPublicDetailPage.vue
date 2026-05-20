@@ -130,7 +130,7 @@ import { publicApi } from '../../api/publicCatalog'
 const router = useRouter()
 const route = useRoute()
 
-const ZIFCOR_WHATSAPP = '573118086918'
+const ZIFCOR_WHATSAPP = '573114799224'
 
 const empresaId = computed(() => route.params.empresaId)
 const productoId = computed(() => route.params.productoId)

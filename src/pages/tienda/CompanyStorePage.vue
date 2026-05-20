@@ -166,7 +166,7 @@ const total = ref(0)
 const pages = ref(0)
 const selectedCategory = ref('all')
 
-const ZIFCOR_WHATSAPP = '573118086918'
+const ZIFCOR_WHATSAPP = '573114799224'
 
 let searchTimeout = null
 
