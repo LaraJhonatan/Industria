@@ -1,6 +1,8 @@
 <template>
   <q-layout view="hHh lpR fff" class="bs-layout">
-    <q-header :class="['bs-header', { 'bs-header--scrolled': scrolled }]" height-hint="72">
+
+    <q-header :class="['bs-header', { 'bs-header--scrolled': scrolled }]" height-hint="104">
+      <PreLaunchBanner />
       <q-toolbar class="bs-toolbar">
         <router-link to="/" class="bs-brand">
           <img src="/IconoZ.png" alt="ZIFCOR" class="bs-logo-img" />
@@ -18,49 +20,17 @@
             Marketplace B2B
           </router-link>
 
-          <div class="bs-dropdown-wrap" @mouseenter="openMenu('importacion')" @mouseleave="closeMenu()">
-            <button class="bs-link bs-link-arrow" :class="{ 'bs-link--active': activeMenu === 'importacion' }">
-              Importación de maquinaria
-              <svg class="arrow-ico" :class="{ 'arrow-open': activeMenu === 'importacion' }" width="12" height="12"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
+          <router-link to="/maquinaria" class="bs-link" active-class="bs-link--active">
+            Importación de maquinaria
+          </router-link>
 
-            <Transition name="drop">
-              <div v-if="activeMenu === 'importacion'" class="bs-dropdown" @mouseenter="cancelClose"
-                @mouseleave="closeMenu()">
-                <div class="drop-header">
-                  <span class="drop-label">Maquinaria disponible</span>
-                </div>
-
-                <router-link v-for="maq in maquinas" :key="maq.id" :to="`/maquinaria/${maq.id}`" class="drop-item"
-                  @click="activeMenu = null">
-                  <div class="drop-item-icon">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="2" y="7" width="20" height="14" rx="2" />
-                      <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-                      <line x1="12" y1="12" x2="12" y2="16" />
-                      <line x1="10" y1="14" x2="14" y2="14" />
-                    </svg>
-                  </div>
-
-                  <div>
-                    <div class="drop-item-title">{{ maq.name }}</div>
-                    <div class="drop-item-sub">{{ maq.sub }}</div>
-                  </div>
-                </router-link>
-              </div>
-            </Transition>
-          </div>
-
-          <router-link to="/faq" class="bs-link" active-class="bs-link--active">
+          <button class="bs-link" @click="scrollToSection('preguntas-frecuentes')">
             Preguntas frecuentes
-          </router-link>
+          </button>
 
-          <router-link to="/contacto" class="bs-link" active-class="bs-link--active">
+          <button class="bs-link" @click="scrollToSection('contacto')">
             Contáctanos
-          </router-link>
+          </button>
         </nav>
 
         <q-space />
@@ -97,30 +67,17 @@
             Tienda
           </router-link>
 
-          <div class="drawer-section">
-            <button class="drawer-section-btn" @click="mobileOpen.importacion = !mobileOpen.importacion">
-              Importación de maquinaria
-              <svg :class="{ 'rotate-180': mobileOpen.importacion }" width="14" height="14" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
+          <router-link to="/maquinaria" class="drawer-link" @click="drawer = false">
+            Importación de maquinaria
+          </router-link>
 
-            <div v-if="mobileOpen.importacion" class="drawer-sub">
-              <router-link v-for="maq in maquinas" :key="maq.id" :to="`/maquinaria/${maq.id}`" class="drawer-sub-link"
-                @click="drawer = false">
-                {{ maq.name }}
-              </router-link>
-            </div>
-          </div>
-
-          <router-link to="/faq" class="drawer-link" @click="drawer = false">
+          <button class="drawer-link" @click="scrollToSection('preguntas-frecuentes'); drawer = false">
             Preguntas frecuentes
-          </router-link>
+          </button>
 
-          <router-link to="/contacto" class="drawer-link" @click="drawer = false">
+          <button class="drawer-link" @click="scrollToSection('contacto'); drawer = false">
             Contáctanos
-          </router-link>
+          </button>
         </nav>
 
         <div class="drawer-actions">
@@ -242,14 +199,12 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import PreLaunchBanner from './PreLaunchBanner.vue'
 
 const router = useRouter()
 const drawer = ref(false)
 const scrolled = ref(false)
 const year = new Date().getFullYear()
-const activeMenu = ref(null)
-const mobileOpen = ref({ importacion: false })
-let closeTimer = null
 
 const ZIFCOR_WHATSAPP = '573114799224'
 const whatsappMessage = 'Hola, me gustaría recibir más información sobre Zifcor y sus servicios.'
@@ -258,19 +213,19 @@ const whatsappUrl = computed(() => {
   return `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`
 })
 
-function openMenu(name) {
-  clearTimeout(closeTimer)
-  activeMenu.value = name
-}
-
-function closeMenu() {
-  closeTimer = setTimeout(() => {
-    activeMenu.value = null
-  }, 120)
-}
-
-function cancelClose() {
-  clearTimeout(closeTimer)
+function scrollToSection(id) {
+  // If not on home page, navigate there first then scroll
+  if (router.currentRoute.value.path !== '/') {
+    router.push('/').then(() => {
+      setTimeout(() => {
+        const el = document.getElementById(id)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 300)
+    })
+  } else {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 }
 
 function onScroll() {
@@ -285,15 +240,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScroll)
 })
-
-const maquinas = [
-  { id: 'torno-cnc', name: 'Torno CNC', sub: 'Mecanizado de precisión' },
-  { id: 'fresadora', name: 'Fresadora CNC', sub: 'Fresado multieje' },
-  { id: 'laser-corte', name: 'Corte láser', sub: 'Lámina y tubería' },
-  { id: 'dobladora', name: 'Dobladora', sub: 'Plegado de lámina' },
-  { id: 'soldadura', name: 'Equipos de soldadura', sub: 'MIG · TIG · SMAW' },
-  { id: 'medicion', name: 'Instrumentos de medición', sub: 'CMM y calibres' },
-]
 </script>
 
 <style scoped>
@@ -378,21 +324,6 @@ const maquinas = [
   color: #0071e3 !important;
 }
 
-.bs-link-arrow {
-  font-family: inherit;
-}
-
-.arrow-ico {
-  transition: transform 200ms;
-  opacity: .55;
-  flex-shrink: 0;
-}
-
-.arrow-open {
-  transform: rotate(180deg);
-  opacity: .9;
-}
-
 .bs-tienda-link {
   display: inline-flex;
   align-items: center;
@@ -439,98 +370,7 @@ const maquinas = [
   color: rgba(11, 18, 32, 0.72) !important;
 }
 
-.bs-dropdown-wrap {
-  position: relative;
-}
-
-.bs-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: 260px;
-  background: #fff;
-  border: 1px solid rgba(15, 23, 42, 0.10);
-  border-radius: 16px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
-  padding: 8px;
-  z-index: 9999;
-}
-
-.drop-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px 10px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
-  margin-bottom: 6px;
-}
-
-.drop-label {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(11, 18, 32, 0.4);
-}
-
-.drop-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 9px 10px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #0b1220;
-  transition: background 140ms;
-}
-
-.drop-item:hover {
-  background: rgba(0, 113, 227, 0.06);
-}
-
-.drop-item-icon {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background: rgba(0, 113, 227, 0.07);
-  border: 1px solid rgba(0, 113, 227, 0.14);
-  display: grid;
-  place-items: center;
-  color: #0071e3;
-}
-
-.drop-item-title {
-  font-size: 13.5px;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.drop-item-sub {
-  font-size: 11.5px;
-  color: rgba(11, 18, 32, 0.45);
-  margin-top: 1px;
-}
-
-.drop-enter-active {
-  transition: opacity 160ms ease, transform 160ms ease;
-}
-
-.drop-leave-active {
-  transition: opacity 120ms ease, transform 120ms ease;
-}
-
-.drop-enter-from {
-  opacity: 0;
-  transform: translateY(-6px) translateX(-50%);
-}
-
-.drop-leave-to {
-  opacity: 0;
-  transform: translateY(-4px) translateX(-50%);
-}
-
+/* ── DRAWER ───────────────────────────────────────────────────────────────── */
 .bs-drawer {
   background: #fff !important;
 }
@@ -602,61 +442,6 @@ const maquinas = [
   background: #005fcd;
 }
 
-.drawer-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.drawer-section-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 11px 12px;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #0b1220;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  transition: background 140ms;
-}
-
-.drawer-section-btn svg {
-  transition: transform 200ms;
-}
-
-.rotate-180 {
-  transform: rotate(180deg);
-}
-
-.drawer-section-btn:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.drawer-sub {
-  padding: 4px 0 4px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.drawer-sub-link {
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13.5px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, 0.65);
-  text-decoration: none;
-  transition: background 140ms, color 140ms;
-}
-
-.drawer-sub-link:hover {
-  background: rgba(0, 113, 227, 0.06);
-  color: #0071e3;
-}
-
 .drawer-actions {
   padding: 16px 12px;
   border-top: 1px solid rgba(15, 23, 42, 0.08);
@@ -682,6 +467,7 @@ const maquinas = [
   background: #005fcd;
 }
 
+/* ── FOOTER ───────────────────────────────────────────────────────────────── */
 .bs-footer {
   background: #fff;
   border-top: 1px solid rgba(15, 23, 42, 0.09);
@@ -838,6 +624,7 @@ const maquinas = [
   color: rgba(11, 18, 32, 0.45);
 }
 
+/* ── WHATSAPP ─────────────────────────────────────────────────────────────── */
 .bs-whatsapp-float {
   position: relative;
   width: 56px;
@@ -883,6 +670,7 @@ const maquinas = [
   }
 }
 
+/* ── RESPONSIVE ───────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .bs-footer-top {
     flex-direction: column;

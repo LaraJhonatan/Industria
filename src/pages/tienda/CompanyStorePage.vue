@@ -36,12 +36,12 @@
             </div>
           </div>
 
-          <div class="store-actions">
+          <!-- <div class="store-actions">
             <a :href="whatsappHref" target="_blank" rel="noopener" class="btn-whatsapp">
               <q-icon name="chat" size="16px" />
               Contactar por WhatsApp
             </a>
-          </div>
+          </div> -->
         </div>
 
         <div class="content-wrap">
@@ -166,7 +166,7 @@ const total = ref(0)
 const pages = ref(0)
 const selectedCategory = ref('all')
 
-const ZIFCOR_WHATSAPP = '573114799224'
+// const ZIFCOR_WHATSAPP = '573114799224'
 
 let searchTimeout = null
 
@@ -186,10 +186,10 @@ const locationText = computed(() => {
   return ''
 })
 
-const whatsappHref = computed(() => {
-  const message = encodeURIComponent('Hola, estoy interesado en los productos que vi en ZIFCOR.')
-  return `https://wa.me/${ZIFCOR_WHATSAPP}?text=${message}`
-})
+// const whatsappHref = computed(() => {
+//   const message = encodeURIComponent('Hola, estoy interesado en los productos que vi en ZIFCOR.')
+//   return `https://wa.me/${ZIFCOR_WHATSAPP}?text=${message}`
+// })
 
 const availableCategories = computed(() => {
   const map = new Map()

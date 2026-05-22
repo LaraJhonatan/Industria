@@ -101,6 +101,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const ready = ref(false)
 const carouselReady = ref(false)
@@ -116,6 +119,7 @@ const searchFocused = ref(false)
 function goToSearch() {
   const q = searchQuery.value.trim()
   if (!q) return
+  router.push({ path: '/tienda/buscar', query: { q } })
 }
 
 const logos = ref([
@@ -142,7 +146,7 @@ onMounted(() => {
   --blue: #0071e3;
   --yellow: #fdda24;
   --bg: #ffffff;
-  --nav-h: 72px;
+  --nav-h: 104px;
   position: relative;
   overflow: hidden;
   background: var(--bg);
@@ -333,7 +337,6 @@ onMounted(() => {
 .search-bar.focused {
   box-shadow: 0 0 0 5px rgba(0, 113, 227, .18);
 }
-
 
 .search-icon {
   flex-shrink: 0;
@@ -560,8 +563,8 @@ onMounted(() => {
   }
 
   .hero-wrap {
-    padding: 20px 16px 16px;
-    gap: 14px;
+    padding: clamp(12px, 1.5svh, 24px) 40px clamp(12px, 1.5svh, 20px);
+    gap: clamp(10px, 1.4svh, 18px);
   }
 
   .hero-ctas {

@@ -52,6 +52,10 @@ const routes = [
         component: () => import('pages/tienda/ProductPublicDetailPage.vue'),
       },
       {
+        path: 'buscar',
+        component: () => import('src/components/tienda/TiendaSearchPage.vue'),
+      },
+      {
         path: ':sectorSlug',
         component: () => import('pages/tienda/CompaniesBySectorPage.vue'),
       },

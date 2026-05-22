@@ -112,17 +112,19 @@
             <span class="brand-label">Portal empresarial</span>
           </div>
           <div class="tabs" v-if="reg.step < 5">
-            <button class="tab" :class="{ 'tab--on': mode === 'login' }" @click="switchMode('login')">Iniciar
-              sesión</button>
-            <button class="tab" :class="{ 'tab--on': mode === 'register' }" @click="switchMode('register')">Registrar
-              empresa</button>
+            <button class="tab" :class="{ 'tab--on': mode === 'login' }" @click="switchMode('login')">
+              Iniciar sesión
+            </button>
+            <button class="tab" :class="{ 'tab--on': mode === 'register' }" @click="switchMode('register')">
+              Registrar empresa
+            </button>
           </div>
         </div>
 
         <!-- CONTENIDO DINÁMICO -->
         <div class="panel-body">
 
-          <!-- ════ LOGIN ════ -->
+          <!-- LOGIN -->
           <template v-if="mode === 'login'">
             <div class="fh">
               <h2 class="fh-title">Iniciar sesión</h2>
@@ -142,7 +144,8 @@
               <label class="fl">NIT o correo corporativo <span class="req">*</span></label>
               <div class="iw">
                 <input v-model="login.id" class="fi" type="text" placeholder="900123456 o correo@empresa.com"
-                  @keydown.enter="doLogin" @focus="loginErr = ''" />
+                  @keydown.enter="doLogin" />
+
                 <svg class="fi-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -155,7 +158,7 @@
               <label class="fl">Contraseña <span class="req">*</span></label>
               <div class="iw">
                 <input v-model="login.pw" class="fi" :type="showLP ? 'text' : 'password'" placeholder="Tu contraseña"
-                  @keydown.enter="doLogin" @focus="loginErr = ''" />
+                  @keydown.enter="doLogin" />
                 <button class="eye" type="button" @click="showLP = !showLP">
                   <svg v-if="!showLP" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
@@ -170,21 +173,25 @@
                   </svg>
                 </button>
               </div>
-              <div style="text-align:right;margin-top:6px"><a href="#" class="tlink">¿Olvidaste tu contraseña?</a></div>
+              <div style="text-align:right;margin-top:6px">
+                <button type="button" class="tlink" @click.prevent="() => { }">
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
             </div>
 
             <button class="btn-p w-full" :class="{ loading: loginLoading }" @click="doLogin" :disabled="loginLoading">
               <span v-if="loginLoading" class="spinner" />
               <span v-else>Iniciar sesión y continuar →</span>
             </button>
-            <p class="foot-txt">¿Aún no tienes cuenta? <button class="tlink tlink--b"
-                @click="switchMode('register')">Regístrate</button></p>
+            <p class="foot-txt">¿Aún no tienes cuenta?
+              <button class="tlink tlink--b" @click="switchMode('register')">Regístrate</button>
+            </p>
           </template>
 
-          <!-- ════ WIZARD ════ -->
+          <!-- WIZARD -->
           <template v-else>
 
-            <!-- Stepper -->
             <div class="stepper" v-if="reg.step < 5">
               <div v-for="(s, i) in steps" :key="i" class="st"
                 :class="{ 'st--done': reg.step > i + 1, 'st--on': reg.step === i + 1 }">
@@ -200,7 +207,7 @@
               </div>
             </div>
 
-            <!-- PASO 1 — NIT -->
+            <!-- PASO 1 -->
             <div v-if="reg.step === 1">
               <div class="fh">
                 <h2 class="fh-title">Registra tu empresa</h2>
@@ -246,11 +253,12 @@
                   Consultar empresa
                 </template>
               </button>
-              <p class="foot-txt">¿Ya tienes cuenta? <button class="tlink tlink--b" @click="switchMode('login')">Iniciar
-                  sesión</button></p>
+              <p class="foot-txt">¿Ya tienes cuenta?
+                <button class="tlink tlink--b" @click="switchMode('login')">Iniciar sesión</button>
+              </p>
             </div>
 
-            <!-- PASO 2 — Empresa + RUT -->
+            <!-- PASO 2 -->
             <div v-if="reg.step === 2">
               <div class="fh">
                 <h2 class="fh-title">Empresa encontrada</h2>
@@ -261,9 +269,9 @@
                   <div class="ec-avatar">{{ reg.empresa.razonSocial?.charAt(0) }}</div>
                   <div class="ec-info">
                     <p class="ec-name">{{ reg.empresa.razonSocial }}</p>
-                    <span class="ec-badge"
-                      :class="reg.empresa.estado === 'ACTIVA' ? 'ec-badge--ok' : 'ec-badge--warn'">{{
-                        reg.empresa.estado }}</span>
+                    <span class="ec-badge" :class="reg.empresa.estado === 'ACTIVA' ? 'ec-badge--ok' : 'ec-badge--warn'">
+                      {{ reg.empresa.estado }}
+                    </span>
                   </div>
                   <svg class="ec-ok" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
@@ -272,23 +280,30 @@
                   </svg>
                 </div>
                 <div class="ec-grid">
-                  <div class="ec-f"><span class="ec-l">NIT</span><span class="ec-v">{{ reg.empresa.nit }}-{{
-                    reg.empresa.dv
-                      }}</span></div>
-                  <div class="ec-f"><span class="ec-l">Estado</span><span class="ec-v">{{ reg.empresa.estado ?? '—'
-                      }}</span></div>
-                  <div class="ec-f"><span class="ec-l">Tipo de sociedad</span><span class="ec-v">{{
-                    reg.empresa.tipoSociedad ?? '—'
-                      }}</span></div>
-                  <div class="ec-f"><span class="ec-l">Cámara de comercio</span><span class="ec-v">{{ reg.empresa.camara
-                    ?? '—'
-                      }}</span></div>
-                  <div class="ec-f" style="grid-column: 1 / -1"><span class="ec-l">Representante legal</span><span
-                      class="ec-v">{{
-                        reg.empresa.representanteLegal ?? '—' }}</span></div>
-                  <div class="ec-f" style="grid-column: 1 / -1"><span class="ec-l">Tipo contribuyente</span><span
-                      class="ec-v">{{
-                        reg.empresa.tipoContribuyente ?? '—' }}</span></div>
+                  <div class="ec-f">
+                    <span class="ec-l">NIT</span>
+                    <span class="ec-v">{{ reg.empresa.nit }}-{{ reg.empresa.dv }}</span>
+                  </div>
+                  <div class="ec-f">
+                    <span class="ec-l">Estado</span>
+                    <span class="ec-v">{{ reg.empresa.estado ?? '—' }}</span>
+                  </div>
+                  <div class="ec-f">
+                    <span class="ec-l">Tipo de sociedad</span>
+                    <span class="ec-v">{{ reg.empresa.tipoSociedad ?? '—' }}</span>
+                  </div>
+                  <div class="ec-f">
+                    <span class="ec-l">Cámara de comercio</span>
+                    <span class="ec-v">{{ reg.empresa.camara ?? '—' }}</span>
+                  </div>
+                  <div class="ec-f" style="grid-column: 1 / -1">
+                    <span class="ec-l">Representante legal</span>
+                    <span class="ec-v">{{ reg.empresa.representanteLegal ?? '—' }}</span>
+                  </div>
+                  <div class="ec-f" style="grid-column: 1 / -1">
+                    <span class="ec-l">Tipo contribuyente</span>
+                    <span class="ec-v">{{ reg.empresa.tipoContribuyente ?? '—' }}</span>
+                  </div>
                 </div>
               </div>
 
@@ -353,17 +368,19 @@
 
               <div class="btn-row mt-16">
                 <button class="btn-g"
-                  @click="reg.step = 1; reg.empresa = null; reg.rutFile = null; reg.rutValidado = false">←
-                  Volver</button>
+                  @click="reg.step = 1; reg.empresa = null; reg.rutFile = null; reg.rutValidado = false">
+                  ← Volver
+                </button>
                 <button v-if="!reg.rutValidado" class="btn-p" :class="{ loading: reg.loading }"
                   :disabled="!reg.rutFile || reg.loading" @click="validarRUT">
-                  <span v-if="reg.loading" class="spinner" /><span v-else>Validar RUT</span>
+                  <span v-if="reg.loading" class="spinner" />
+                  <span v-else>Validar RUT</span>
                 </button>
                 <button v-else class="btn-p" @click="enviarCodigo">Continuar →</button>
               </div>
             </div>
 
-            <!-- PASO 3 — OTP -->
+            <!-- PASO 3 -->
             <div v-if="reg.step === 3">
               <div class="otp-icon">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -399,7 +416,8 @@
 
               <button class="btn-p w-full" :class="{ loading: reg.loading }"
                 :disabled="reg.otp.join('').length < 6 || reg.loading" @click="verificarOTP">
-                <span v-if="reg.loading" class="spinner" /><span v-else>Verificar código</span>
+                <span v-if="reg.loading" class="spinner" />
+                <span v-else>Verificar código</span>
               </button>
               <div class="resend-row">
                 <span class="resend-txt">¿No recibiste el código?</span>
@@ -408,7 +426,7 @@
               <button class="btn-g w-full mt-8" @click="reg.step = 2">← Volver</button>
             </div>
 
-            <!-- PASO 4 — Contraseña -->
+            <!-- PASO 4 -->
             <div v-if="reg.step === 4">
               <div class="fh">
                 <h2 class="fh-title">Crea tu contraseña</h2>
@@ -448,18 +466,21 @@
                   <span class="slabel" :class="`slabel--${pLabel}`">{{ pLabel }}</span>
                 </div>
                 <ul class="rules">
-                  <li :class="{ ok: reg.pw.length >= 8 }"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="3">
+                  <li :class="{ ok: reg.pw.length >= 8 }">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                       <polyline points="20 6 9 17 4 12" />
-                    </svg>Mínimo 8 caracteres</li>
-                  <li :class="{ ok: /[a-zA-Z]/.test(reg.pw) }"><svg width="10" height="10" viewBox="0 0 24 24"
-                      fill="none" stroke="currentColor" stroke-width="3">
+                    </svg>Mínimo 8 caracteres
+                  </li>
+                  <li :class="{ ok: /[a-zA-Z]/.test(reg.pw) }">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                       <polyline points="20 6 9 17 4 12" />
-                    </svg>Al menos una letra</li>
-                  <li :class="{ ok: /\d/.test(reg.pw) }"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="3">
+                    </svg>Al menos una letra
+                  </li>
+                  <li :class="{ ok: /\d/.test(reg.pw) }">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                       <polyline points="20 6 9 17 4 12" />
-                    </svg>Al menos un número</li>
+                    </svg>Al menos un número
+                  </li>
                 </ul>
               </div>
               <div class="fg">
@@ -481,7 +502,9 @@
                     </svg>
                   </button>
                 </div>
-                <span v-if="reg.pwc && reg.pw !== reg.pwc" class="fhint fhint--err">Las contraseñas no coinciden</span>
+                <span v-if="reg.pwc && reg.pw !== reg.pwc" class="fhint fhint--err">
+                  Las contraseñas no coinciden
+                </span>
               </div>
               <label class="checkbox-row">
                 <input v-model="reg.acepta" type="checkbox" class="checkbox" />
@@ -509,7 +532,7 @@
               </button>
             </div>
 
-            <!-- PASO 5 — Éxito -->
+            <!-- PASO 5 -->
             <div v-if="reg.step === 5" class="success-block">
               <div class="success-ico">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -518,15 +541,18 @@
                 </svg>
               </div>
               <h2 class="fh-title" style="text-align:center">¡Cuenta creada!</h2>
-              <p class="fh-sub" style="text-align:center">Tu empresa <strong>{{ reg.empresa?.razonSocial }}</strong> ya
-                tiene acceso
-                al sistema.</p>
+              <p class="fh-sub" style="text-align:center">
+                Tu empresa <strong>{{ reg.empresa?.razonSocial }}</strong> ya tiene acceso al sistema.
+              </p>
               <div class="success-detail">
-                <div class="sd-row"><span class="sd-l">NIT</span><span class="sd-v">{{ reg.empresa?.nit }}-{{
-                  reg.empresa?.dv
-                    }}</span></div>
-                <div class="sd-row"><span class="sd-l">Correo</span><span class="sd-v">{{ reg.correoEnmascarado
-                    }}</span></div>
+                <div class="sd-row">
+                  <span class="sd-l">NIT</span>
+                  <span class="sd-v">{{ reg.empresa?.nit }}-{{ reg.empresa?.dv }}</span>
+                </div>
+                <div class="sd-row">
+                  <span class="sd-l">Correo</span>
+                  <span class="sd-v">{{ reg.correoEnmascarado }}</span>
+                </div>
               </div>
               <button class="btn-p w-full mt-16" @click="irAlLogin">Ir a iniciar sesión →</button>
             </div>
@@ -559,7 +585,7 @@ api.interceptors.request.use(config => {
       const { accessToken } = JSON.parse(sesion)
       if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
     } catch {
-      // Si el JSON es inválido, simplemente no se agrega el header
+      // JSON inválido, no se agrega header
     }
   }
   return config
@@ -610,25 +636,34 @@ function fmtBytes(b) {
 
 function switchMode(m) {
   mode.value = m
-  loginErr.value = ''
-  if (m === 'register') Object.assign(reg, {
-    step: 1, nit: '', nitErr: '', empresa: null, loading: false,
-    rutFile: null, rutErr: '', rutValidado: false,
-    correoEnmascarado: '',
-    otp: ['', '', '', '', '', ''], otpErr: '', otpResent: false,
-    pw: '', pwc: '', passErr: '', acepta: false,
-  })
+  // NO limpiar loginErr aquí para que el error persista si el usuario
+  // accidentalmente hace clic en otra tab
+  if (m === 'register') {
+    loginErr.value = ''
+    Object.assign(reg, {
+      step: 1, nit: '', nitErr: '', empresa: null, loading: false,
+      rutFile: null, rutErr: '', rutValidado: false,
+      correoEnmascarado: '',
+      otp: ['', '', '', '', '', ''], otpErr: '', otpResent: false,
+      pw: '', pwc: '', passErr: '', acepta: false,
+    })
+  }
 }
 
 async function doLogin() {
+  console.log('CLICK LOGIN') // 👈
+
+  if (loginLoading.value) return
   loginErr.value = ''
-  if (!login.id || !login.pw) { loginErr.value = 'Completa todos los campos.'; return }
   loginLoading.value = true
+
   try {
     await authStore.login(login.id, login.pw)
+    console.log('LOGIN OK') // 👈
     router.push('/dashboard')
   } catch (err) {
-    loginErr.value = getError(err, 'NIT/correo o contraseña incorrectos.')
+    console.log('LOGIN ERROR', err) // 👈
+    loginErr.value = getError(err)
   } finally {
     loginLoading.value = false
   }
@@ -740,7 +775,7 @@ async function reenviarOTP() {
     reg.otp = ['', '', '', '', '', '']
     reg.otpErr = ''
     reg.otpResent = true
-    setTimeout(() => reg.otpResent = false, 4000)
+    setTimeout(() => { reg.otpResent = false }, 4000)
   } catch (err) {
     reg.otpErr = getError(err, 'Error al reenviar el código.')
   }
@@ -768,9 +803,11 @@ async function crearCuenta() {
 function irAlLogin() {
   login.id = reg.empresa?.nit ?? ''
   login.pw = ''
-  switchMode('login')
+  mode.value = 'login'
+  loginErr.value = ''
 }
 </script>
+
 <style scoped>
 *,
 *::before,
@@ -787,7 +824,6 @@ function irAlLogin() {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ── HERO ── */
 .auth-hero {
   position: relative;
   overflow: hidden;
@@ -806,10 +842,7 @@ function irAlLogin() {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(150deg,
-      rgba(2, 6, 20, .92) 0%,
-      rgba(4, 12, 34, .82) 50%,
-      rgba(4, 12, 30, .65) 100%);
+  background: linear-gradient(150deg, rgba(2, 6, 20, .92) 0%, rgba(4, 12, 34, .82) 50%, rgba(4, 12, 30, .65) 100%);
 }
 
 .hero-inner {
@@ -956,12 +989,7 @@ function irAlLogin() {
   max-width: 100px;
   object-fit: contain;
   opacity: .85;
-  transition: opacity 200ms;
   filter: brightness(1.2) saturate(0) contrast(0.1) brightness(10);
-}
-
-.partner-logo:hover {
-  opacity: 1;
 }
 
 .partner-logo:last-child {
@@ -969,8 +997,6 @@ function irAlLogin() {
   max-width: 130px;
 }
 
-
-/* ── PANEL ── */
 .auth-panel {
   background: #eef0f5;
   display: flex;
@@ -993,7 +1019,6 @@ function irAlLogin() {
   overflow: hidden;
 }
 
-/* Cabecera */
 .panel-head {
   background: #fff;
   padding: 28px 32px 20px;
@@ -1030,7 +1055,6 @@ function irAlLogin() {
   letter-spacing: 1px;
 }
 
-/* Tabs */
 .tabs {
   display: flex;
   background: #f1f3f7;
@@ -1052,7 +1076,6 @@ function irAlLogin() {
   cursor: pointer;
   transition: all 200ms;
   font-family: inherit;
-  letter-spacing: -.01em;
 }
 
 .tab--on {
@@ -1066,7 +1089,6 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-/* Body */
 .panel-body {
   flex: 1;
   display: flex;
@@ -1075,7 +1097,6 @@ function irAlLogin() {
   background: #fff;
 }
 
-/* Forms */
 .fh {
   margin-bottom: 20px;
 }
@@ -1181,7 +1202,6 @@ function irAlLogin() {
   font-weight: 600;
 }
 
-/* Alerts */
 .alert {
   display: flex;
   align-items: flex-start;
@@ -1211,7 +1231,6 @@ function irAlLogin() {
   margin-top: 1px;
 }
 
-/* Stepper */
 .stepper {
   display: flex;
   align-items: center;
@@ -1278,7 +1297,6 @@ function irAlLogin() {
   background: #0071e3;
 }
 
-/* Section tag */
 .section-tag {
   display: flex;
   align-items: center;
@@ -1295,7 +1313,6 @@ function irAlLogin() {
   color: #0071e3;
 }
 
-/* Empresa card */
 .empresa-card {
   background: #fff;
   border: 1.5px solid rgba(15, 23, 42, .09);
@@ -1344,7 +1361,6 @@ function irAlLogin() {
   border-radius: 999px;
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: .3px;
   text-transform: uppercase;
 }
 
@@ -1392,7 +1408,6 @@ function irAlLogin() {
   font-weight: 700;
   color: rgba(11, 18, 32, .42);
   text-transform: uppercase;
-  letter-spacing: .5px;
 }
 
 .ec-v {
@@ -1401,7 +1416,6 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-/* Dropzone */
 .dropzone {
   border: 2px dashed rgba(15, 23, 42, .17);
   border-radius: 12px;
@@ -1460,7 +1474,6 @@ function irAlLogin() {
   flex: 1;
 }
 
-
 .dz-fn {
   font-size: 13.5px;
   font-weight: 800;
@@ -1495,7 +1508,6 @@ function irAlLogin() {
   color: #ef4444;
 }
 
-/* OTP */
 .otp-icon {
   width: 52px;
   height: 52px;
@@ -1528,7 +1540,6 @@ function irAlLogin() {
   outline: none;
   font-family: inherit;
   transition: border-color 150ms, box-shadow 150ms;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, .05);
 }
 
 .otp-box:focus {
@@ -1549,7 +1560,6 @@ function irAlLogin() {
   color: rgba(11, 18, 32, .52);
 }
 
-/* Password strength */
 .strength-row {
   display: flex;
   align-items: center;
@@ -1641,7 +1651,6 @@ function irAlLogin() {
   opacity: 1;
 }
 
-/* Checkbox */
 .checkbox-row {
   display: flex;
   align-items: flex-start;
@@ -1685,7 +1694,6 @@ function irAlLogin() {
   margin-top: 1px;
 }
 
-/* Success */
 .success-block {
   display: flex;
   flex-direction: column;
@@ -1738,7 +1746,6 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-/* Buttons */
 .btn-p {
   display: inline-flex;
   align-items: center;
@@ -1754,7 +1761,6 @@ function irAlLogin() {
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
-  letter-spacing: -.01em;
   transition: all 180ms;
   box-shadow: 0 3px 14px rgba(0, 113, 227, .28);
 }
@@ -1763,10 +1769,6 @@ function irAlLogin() {
   background: linear-gradient(135deg, #005fcd, #0071e3);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 113, 227, .34);
-}
-
-.btn-p:active:not(:disabled) {
-  transform: translateY(0);
 }
 
 .btn-p:disabled {
@@ -1858,7 +1860,6 @@ function irAlLogin() {
   margin-top: 14px;
 }
 
-/* Spacing */
 .mt-8 {
   margin-top: 8px;
 }
@@ -1871,7 +1872,6 @@ function irAlLogin() {
   margin-top: 16px;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .auth-page {
     grid-template-columns: 1fr;
@@ -1882,12 +1882,17 @@ function irAlLogin() {
     max-height: 240px;
   }
 
+  .hero-inner {
+    padding: 20px 24px 16px;
+  }
+
   .hero-body {
-    padding-top: 20px;
+    padding: 16px 0 12px;
   }
 
   .hero-sub,
-  .hero-list {
+  .hero-list,
+  .hero-stats {
     display: none;
   }
 
@@ -1929,27 +1934,6 @@ function irAlLogin() {
 
   .otp-group {
     gap: 6px;
-  }
-}
-
-@media (max-width: 900px) {
-  .auth-hero {
-    min-height: 200px;
-    max-height: 240px;
-  }
-
-  .hero-body {
-    padding: 16px 0 12px;
-  }
-
-  .hero-sub,
-  .hero-list,
-  .hero-stats {
-    display: none;
-  }
-
-  .hero-inner {
-    padding: 20px 24px 16px;
   }
 }
 </style>

@@ -22,8 +22,12 @@ http.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('ZIFCOR_sesion')
-      window.location.href = '/auth'
+      const url = err.config?.url || ''
+      // No redirigir si el error viene del login o registro
+      if (!url.includes('/auth/')) {
+        localStorage.removeItem('ZIFCOR_sesion')
+        window.location.href = '/auth'
+      }
     }
     return Promise.reject(err)
   },

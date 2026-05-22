@@ -116,7 +116,7 @@ const examples = [
 function goToSearch() {
   const q = searchQuery.value.trim()
   if (!q) return
-  router.push({ path: '/buscar', query: { q } })
+  router.push({ path: '/tienda/buscar', query: { q } })  // ← corregido
 }
 
 function quickSearch(term) {
@@ -197,7 +197,7 @@ onMounted(async () => {
   color: rgba(255, 255, 255, .65);
 }
 
-/* ── BUSCADOR (igual al inicio) ───────────────────────────────────────────*/
+/* ── BUSCADOR ─────────────────────────────────────────────────────────────*/
 .search-block {
   width: 100%;
   max-width: 760px;

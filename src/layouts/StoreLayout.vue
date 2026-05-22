@@ -2,6 +2,7 @@
   <q-layout view="hHh lpR fff" class="bs-layout">
 
     <q-header :class="['bs-header', { 'bs-header--scrolled': scrolled }]" height-hint="72">
+      <PreLaunchBanner />
       <q-toolbar class="bs-toolbar">
 
         <router-link to="/" class="bs-brand">
@@ -149,7 +150,7 @@ const drawer = ref(false)
 const scrolled = ref(false)
 const searchQuery = ref('')
 const year = new Date().getFullYear()
-
+import PreLaunchBanner from './PreLaunchBanner.vue'
 function onScroll() { scrolled.value = window.scrollY > 10 }
 onMounted(() => { window.addEventListener('scroll', onScroll, { passive: true }); onScroll() })
 onBeforeUnmount(() => { window.removeEventListener('scroll', onScroll) })
