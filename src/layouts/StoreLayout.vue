@@ -174,9 +174,9 @@
           <div class="bs-foot-links">
             <a class="bs-foot-link" href="#">Términos de uso</a>
             <a class="bs-foot-link" href="#">Política de privacidad</a>
-            <a class="bs-foot-link bs-status" href="#"><span class="bs-dot" />Sistema operativo</a>
+            <!-- <a class="bs-foot-link bs-status" href="#"><span class="bs-dot" />Sistema operativo</a> -->
           </div>
-          <div class="bs-foot-copy">© {{ year }} ZIFCOR S.A.S.</div>
+          <div class="bs-foot-copy">© {{ year }} Zifcor S.A.S - Todos los derechos reservados - NIT: 902067173-6</div>
         </div>
       </div>
     </q-footer>

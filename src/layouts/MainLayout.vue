@@ -159,8 +159,8 @@
           </div>
           <div class="bs-foot-right">
             <div class="bs-foot-contact">
-              <a class="bs-foot-contact-link" href="tel:+576001234567">+57 (600) 123-4567</a>
-              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">hola@ZIFCOR.com</a>
+              <a class="bs-foot-contact-link" href="tel:+573114799224">+57 3114799224</a>
+              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">info@ZIFCOR.com</a>
             </div>
             <span class="bs-vline" />
             <div class="bs-foot-social">
@@ -207,9 +207,10 @@
           <div class="bs-foot-links">
             <a class="bs-foot-link" href="#">Términos de uso</a>
             <a class="bs-foot-link" href="#">Política de privacidad</a>
-            <a class="bs-foot-link bs-status" href="#"><span class="bs-dot" />Sistema operativo</a>
+            <!-- <a class="bs-foot-link bs-status" href="#"><span class="bs-dot" />Sistema operativo</a> -->
           </div>
-          <div class="bs-foot-copy">© {{ year }} ZIFCOR S.A.S.</div>
+          <div class="bs-foot-copy">© {{ year }} Zifcor S.A.S - Todos los derechos reservados - NIT: 902067173-6</div>
+
         </div>
       </div>
     </q-footer>
