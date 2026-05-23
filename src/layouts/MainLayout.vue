@@ -35,7 +35,59 @@
 
         <q-space />
 
-        <div class="row items-center no-wrap q-gutter-sm gt-sm">
+        <!-- Autenticado: avatar + dropdown -->
+        <div v-if="authStore.isAuthenticated" class="row items-center no-wrap q-gutter-sm gt-sm">
+          <div class="bs-avatar-wrap">
+            <button class="bs-avatar" @click="avatarMenu = !avatarMenu">
+              <img v-if="profileImage" :src="profileImage" :alt="empresaNombre" class="bs-avatar-img" />
+              <span v-else class="bs-avatar-initials">{{ initials }}</span>
+            </button>
+
+            <Transition name="avatar-drop">
+              <div v-if="avatarMenu" class="bs-avatar-dropdown">
+                <div class="avatar-drop-head">
+                  <div class="avatar-drop-avatar">
+                    <img v-if="profileImage" :src="profileImage" :alt="empresaNombre" class="avatar-drop-img" />
+                    <span v-else class="avatar-drop-initials">{{ initials }}</span>
+                  </div>
+                  <div class="avatar-drop-info">
+                    <p class="avatar-drop-name">{{ empresaNombre }}</p>
+                    <p class="avatar-drop-nit">NIT {{ authStore.empresa?.nit }}</p>
+                  </div>
+                </div>
+                <div class="avatar-drop-hr" />
+                <button class="avatar-drop-item" @click="goToDashboard">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                  </svg>
+                  Mi dashboard
+                </button>
+                <button class="avatar-drop-item" @click="goToProfile">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  Mi perfil
+                </button>
+                <div class="avatar-drop-hr" />
+                <button class="avatar-drop-item avatar-drop-item--danger" @click="doLogout">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                  Cerrar sesión
+                </button>
+              </div>
+            </Transition>
+          </div>
+        </div>
+
+        <!-- No autenticado: botón de registro -->
+        <div v-else class="row items-center no-wrap q-gutter-sm gt-sm">
           <button class="bs-signup-btn" @click="router.push('/auth')">
             Regístrate / Inicia Sesión
           </button>
@@ -49,7 +101,6 @@
       <div class="drawer-inner">
         <div class="drawer-head">
           <img src="/IconoZ.png" alt="ZIFCOR" class="drawer-logo" />
-
           <button class="drawer-close" @click="drawer = false">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -59,31 +110,35 @@
         </div>
 
         <nav class="drawer-nav">
-          <router-link to="/" class="drawer-link" @click="drawer = false">
-            Inicio
-          </router-link>
-
-          <router-link to="/tienda" class="drawer-link drawer-link--tienda" @click="drawer = false">
-            Tienda
-          </router-link>
-
-          <router-link to="/maquinaria" class="drawer-link" @click="drawer = false">
-            Importación de maquinaria
-          </router-link>
-
-          <button class="drawer-link" @click="scrollToSection('preguntas-frecuentes'); drawer = false">
-            Preguntas frecuentes
-          </button>
-
-          <button class="drawer-link" @click="scrollToSection('contacto'); drawer = false">
-            Contáctanos
-          </button>
+          <router-link to="/" class="drawer-link" @click="drawer = false">Inicio</router-link>
+          <router-link to="/tienda" class="drawer-link drawer-link--tienda" @click="drawer = false">Tienda</router-link>
+          <router-link to="/maquinaria" class="drawer-link" @click="drawer = false">Importación de
+            maquinaria</router-link>
+          <button class="drawer-link" @click="scrollToSection('preguntas-frecuentes'); drawer = false">Preguntas
+            frecuentes</button>
+          <button class="drawer-link" @click="scrollToSection('contacto'); drawer = false">Contáctanos</button>
         </nav>
 
         <div class="drawer-actions">
-          <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">
-            Regístrate / Inicia Sesión
-          </button>
+          <template v-if="authStore.isAuthenticated">
+            <div class="drawer-profile">
+              <div class="drawer-avatar">
+                <img v-if="profileImage" :src="profileImage" :alt="empresaNombre" class="drawer-avatar-img" />
+                <span v-else class="drawer-avatar-initials">{{ initials }}</span>
+              </div>
+              <div class="drawer-profile-info">
+                <p class="drawer-profile-name">{{ empresaNombre }}</p>
+                <p class="drawer-profile-nit">NIT {{ authStore.empresa?.nit }}</p>
+              </div>
+            </div>
+            <button class="drawer-btn-fill" @click="goToDashboard; drawer = false">Mi dashboard</button>
+            <button class="drawer-btn-outline" @click="doLogout">Cerrar sesión</button>
+          </template>
+          <template v-else>
+            <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">
+              Regístrate / Inicia Sesión
+            </button>
+          </template>
         </div>
       </div>
     </q-drawer>
@@ -97,28 +152,17 @@
         <div class="bs-footer-top">
           <div class="bs-foot-brand">
             <img src="/IconoZ.png" alt="ZIFCOR" class="foot-logo-img" />
-
             <div class="bs-foot-brand-text">
               <div class="bs-foot-name">ZIFCOR</div>
-              <div class="bs-foot-tag">
-                Importación de maquinaria, ingeniería a medida y soporte técnico confiable.
-              </div>
+              <div class="bs-foot-tag">Importación de maquinaria, ingeniería a medida y soporte técnico confiable.</div>
             </div>
           </div>
-
           <div class="bs-foot-right">
             <div class="bs-foot-contact">
-              <a class="bs-foot-contact-link" href="tel:+576001234567">
-                +57 (600) 123-4567
-              </a>
-
-              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">
-                hola@ZIFCOR.com
-              </a>
+              <a class="bs-foot-contact-link" href="tel:+576001234567">+57 (600) 123-4567</a>
+              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">hola@ZIFCOR.com</a>
             </div>
-
             <span class="bs-vline" />
-
             <div class="bs-foot-social">
               <a class="bs-social" href="#" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -127,7 +171,6 @@
                   <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" stroke="none" />
                 </svg>
               </a>
-
               <a class="bs-social" href="#" aria-label="LinkedIn">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M6.5 9.5V19" />
@@ -136,14 +179,12 @@
                   <path d="M10 10.2V19" />
                 </svg>
               </a>
-
               <a class="bs-social" href="#" aria-label="TikTok">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path
                     d="M14 6c1.2 2.2 3.2 3.6 6 3.8v2.6c-2.6-.1-4.6-1.1-6-2.6v6.1a5.2 5.2 0 1 1-5.2-5.2c.4 0 .8 0 1.2.1v2.7a2.7 2.7 0 1 0 2.8 2.7V4h1.2z" />
                 </svg>
               </a>
-
               <a class="bs-social" href="#" aria-label="X">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M6 18L18 6" />
@@ -151,7 +192,6 @@
                   <path d="M16 18h-5l-3-4V6" />
                 </svg>
               </a>
-
               <a class="bs-social" href="#" aria-label="YouTube">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path
@@ -162,23 +202,14 @@
             </div>
           </div>
         </div>
-
         <div class="bs-foot-hr" />
-
         <div class="bs-footer-bottom">
           <div class="bs-foot-links">
             <a class="bs-foot-link" href="#">Términos de uso</a>
             <a class="bs-foot-link" href="#">Política de privacidad</a>
-
-            <a class="bs-foot-link bs-status" href="#">
-              <span class="bs-dot" />
-              Sistema operativo
-            </a>
+            <a class="bs-foot-link bs-status" href="#"><span class="bs-dot" />Sistema operativo</a>
           </div>
-
-          <div class="bs-foot-copy">
-            © {{ year }} ZIFCOR S.A.S.
-          </div>
+          <div class="bs-foot-copy">© {{ year }} ZIFCOR S.A.S.</div>
         </div>
       </div>
     </q-footer>
@@ -186,7 +217,6 @@
     <q-page-sticky position="bottom-right" :offset="[24, 24]" class="z-fab">
       <a :href="whatsappUrl" target="_blank" rel="noopener noreferrer" class="bs-whatsapp-float">
         <div class="bs-whatsapp-pulse" />
-
         <svg viewBox="0 0 24 24" class="bs-whatsapp-icon" fill="currentColor">
           <path
             d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.659 1.437 5.634 1.437h.005c6.558 0 11.894-5.335 11.897-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -199,46 +229,67 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth-store'
 import PreLaunchBanner from './PreLaunchBanner.vue'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
 const drawer = ref(false)
 const scrolled = ref(false)
+const avatarMenu = ref(false)
 const year = new Date().getFullYear()
 
 const ZIFCOR_WHATSAPP = '573114799224'
 const whatsappMessage = 'Hola, me gustaría recibir más información sobre Zifcor y sus servicios.'
 
-const whatsappUrl = computed(() => {
-  return `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`
+const whatsappUrl = computed(() =>
+  `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`
+)
+
+const empresaNombre = computed(() =>
+  authStore.empresa?.razonSocial || authStore.empresa?.nit || 'Mi empresa'
+)
+
+const profileImage = computed(() => authStore.empresa?.logoUrl || null)
+
+const initials = computed(() => {
+  const name = empresaNombre.value
+  const words = name.trim().split(/\s+/)
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase()
+  return name.slice(0, 2).toUpperCase()
 })
 
+function goToDashboard() { avatarMenu.value = false; drawer.value = false; router.push('/dashboard') }
+function goToProfile() { avatarMenu.value = false; drawer.value = false; router.push('/dashboard/perfil') }
+function doLogout() { avatarMenu.value = false; drawer.value = false; authStore.logout(); router.push('/') }
+
 function scrollToSection(id) {
-  // If not on home page, navigate there first then scroll
   if (router.currentRoute.value.path !== '/') {
-    router.push('/').then(() => {
-      setTimeout(() => {
-        const el = document.getElementById(id)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, 300)
-    })
+    router.push('/').then(() => setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 300))
   } else {
-    const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
 
-function onScroll() {
-  scrolled.value = window.scrollY > 10
+function onScroll() { scrolled.value = window.scrollY > 10 }
+
+function onClickOutside(e) {
+  const wrap = document.querySelector('.bs-avatar-wrap')
+  if (wrap && !wrap.contains(e.target)) avatarMenu.value = false
 }
 
 onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('click', onClickOutside)
   onScroll()
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('click', onClickOutside)
 })
 </script>
 
@@ -370,7 +421,186 @@ onBeforeUnmount(() => {
   color: rgba(11, 18, 32, 0.72) !important;
 }
 
-/* ── DRAWER ───────────────────────────────────────────────────────────────── */
+/* ── AVATAR ── */
+.bs-avatar-wrap {
+  position: relative;
+}
+
+.bs-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 113, 227, 0.3);
+  background: #f0f4f8;
+  /* gris claro — no azul — para logos con fondo transparente */
+  cursor: pointer;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  transition: border-color 160ms, box-shadow 160ms;
+  padding: 0;
+}
+
+.bs-avatar:hover {
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+.bs-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* contain para no recortar logos */
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  /* evita pixelado en Chrome */
+  image-rendering: crisp-edges;
+}
+
+.bs-avatar-initials {
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  /* cuando hay iniciales sí queremos el gradiente azul */
+}
+
+/* Cuando hay iniciales, fondo azul; cuando hay imagen, fondo gris */
+.bs-avatar:has(.bs-avatar-initials) {
+  background: linear-gradient(135deg, #0071e3, #4f9cf9);
+}
+
+/* ── AVATAR DROPDOWN ── */
+.bs-avatar-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 8px;
+  z-index: 9999;
+}
+
+.avatar-drop-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 12px;
+}
+
+.avatar-drop-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  /* cuadrado redondeado para logos */
+  background: #f0f4f8;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.avatar-drop-avatar:has(.avatar-drop-initials) {
+  background: linear-gradient(135deg, #0071e3, #4f9cf9);
+  border-radius: 50%;
+}
+
+.avatar-drop-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.avatar-drop-initials {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.avatar-drop-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.avatar-drop-name {
+  font-size: 13px;
+  font-weight: 900;
+  color: #0b1220;
+  margin: 0 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.avatar-drop-nit {
+  font-size: 11px;
+  color: rgba(11, 18, 32, 0.45);
+  font-weight: 600;
+  margin: 0;
+}
+
+.avatar-drop-hr {
+  height: 1px;
+  background: rgba(15, 23, 42, 0.07);
+  margin: 4px 0;
+}
+
+.avatar-drop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0b1220;
+  cursor: pointer;
+  text-align: left;
+  transition: background 140ms;
+  font-family: inherit;
+}
+
+.avatar-drop-item:hover {
+  background: rgba(0, 113, 227, 0.06);
+}
+
+.avatar-drop-item--danger {
+  color: #dc2626;
+}
+
+.avatar-drop-item--danger:hover {
+  background: rgba(220, 38, 38, 0.06);
+}
+
+.avatar-drop-enter-active {
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.avatar-drop-leave-active {
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.avatar-drop-enter-from {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.avatar-drop-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+/* ── DRAWER ── */
 .bs-drawer {
   background: #fff !important;
 }
@@ -425,6 +655,12 @@ onBeforeUnmount(() => {
   color: #0b1220;
   text-decoration: none;
   transition: background 140ms;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
 }
 
 .drawer-link:hover {
@@ -450,6 +686,58 @@ onBeforeUnmount(() => {
   gap: 8px;
 }
 
+.drawer-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 4px 8px;
+}
+
+.drawer-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f0f4f8;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.drawer-avatar:has(.drawer-avatar-initials) {
+  background: linear-gradient(135deg, #0071e3, #4f9cf9);
+  border-radius: 50%;
+}
+
+.drawer-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.drawer-avatar-initials {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.drawer-profile-name {
+  font-size: 14px;
+  font-weight: 900;
+  color: #0b1220;
+  margin: 0 0 2px;
+}
+
+.drawer-profile-nit {
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.45);
+  font-weight: 600;
+  margin: 0;
+}
+
 .drawer-btn-fill {
   width: 100%;
   height: 44px;
@@ -461,13 +749,33 @@ onBeforeUnmount(() => {
   font-weight: 900;
   cursor: pointer;
   transition: background 160ms;
+  font-family: inherit;
 }
 
 .drawer-btn-fill:hover {
   background: #005fcd;
 }
 
-/* ── FOOTER ───────────────────────────────────────────────────────────────── */
+.drawer-btn-outline {
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  color: #dc2626;
+  border: 1.5px solid rgba(220, 38, 38, 0.25);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 160ms;
+  font-family: inherit;
+}
+
+.drawer-btn-outline:hover {
+  background: rgba(220, 38, 38, 0.05);
+  border-color: #dc2626;
+}
+
+/* ── FOOTER ── */
 .bs-footer {
   background: #fff;
   border-top: 1px solid rgba(15, 23, 42, 0.09);
@@ -624,7 +932,7 @@ onBeforeUnmount(() => {
   color: rgba(11, 18, 32, 0.45);
 }
 
-/* ── WHATSAPP ─────────────────────────────────────────────────────────────── */
+/* ── WHATSAPP ── */
 .bs-whatsapp-float {
   position: relative;
   width: 56px;
@@ -670,7 +978,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* ── RESPONSIVE ───────────────────────────────────────────────────────────── */
+/* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .bs-footer-top {
     flex-direction: column;

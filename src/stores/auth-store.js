@@ -26,5 +26,14 @@ export const useAuthStore = defineStore('auth', () => {
     if (stored) sesion.value = JSON.parse(stored)
   }
 
-  return { sesion, isAuthenticated, empresa, token, login, logout, restoreSession }
+  function updateLogoUrl(url) {
+    if (!sesion.value?.empresa) return
+    sesion.value = {
+      ...sesion.value,
+      empresa: { ...sesion.value.empresa, logoUrl: url },
+    }
+    localStorage.setItem('ZIFCOR_sesion', JSON.stringify(sesion.value))
+  }
+
+  return { sesion, isAuthenticated, empresa, token, login, logout, restoreSession, updateLogoUrl }
 })

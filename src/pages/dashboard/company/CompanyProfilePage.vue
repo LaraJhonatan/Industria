@@ -168,7 +168,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useCompanyStore } from '../../../stores/company-store'
 import { uploadsApi } from '../../../api/uploads'
-
+import { useAuthStore } from '../../../stores/auth-store'
+const authStore = useAuthStore()
 const $q = useQuasar()
 const companyStore = useCompanyStore()
 
@@ -218,9 +219,12 @@ async function uploadLogo(e) {
   uploadingLogo.value = true
   try {
     const { data } = await uploadsApi.uploadImage(file, 'empresas')
+    console.log('upload response:', data)  // ← ver estructura real
     form.value.logoUrl = data.url
+    authStore.updateLogoUrl(data.url)
     $q.notify({ type: 'positive', message: 'Logo actualizado', position: 'top-right' })
-  } catch {
+  } catch (err) {
+    console.log('upload error:', err)  // ← ver el error real
     $q.notify({ type: 'negative', message: 'Error al subir logo', position: 'top-right' })
   } finally {
     uploadingLogo.value = false

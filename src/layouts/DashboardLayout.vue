@@ -24,9 +24,12 @@
 
         <div class="header-empresa row items-center q-pl-sm"
           style="border-left:1px solid rgba(11,18,32,.08); cursor:pointer" @click="router.push('/dashboard/perfil')">
-          <q-avatar size="34px" class="empresa-avatar text-weight-bold text-white">
-            {{ empresaInicial }}
-          </q-avatar>
+          <!-- Avatar con logo o inicial -->
+          <div class="empresa-avatar-wrap">
+            <img v-if="empresaLogoUrl" :src="empresaLogoUrl" class="empresa-avatar-img" :alt="empresaNombre" />
+            <span v-else class="empresa-avatar-inicial">{{ empresaInicial }}</span>
+          </div>
+
           <div class="q-ml-sm column" style="line-height:1.2">
             <span class="text-weight-bold" style="font-size:13px;color:#0b1220">{{ empresaNombre }}</span>
             <span style="font-size:11px;color:#9ca3af">Ver perfil</span>
@@ -70,8 +73,9 @@
           <div class="plan-card q-pa-md q-mb-sm">
             <div class="row items-center justify-between q-mb-xs">
               <span
-                style="font-size:11px;font-weight:700;color:rgba(11,18,32,.42);text-transform:uppercase;letter-spacing:.5px">Plan
-                actual</span>
+                style="font-size:11px;font-weight:700;color:rgba(11,18,32,.42);text-transform:uppercase;letter-spacing:.5px">
+                Plan actual
+              </span>
               <q-chip dense outline color="blue-6" style="font-size:10px;height:20px">Free</q-chip>
             </div>
             <q-linear-progress :value="0.3" color="blue-6" track-color="grey-3" rounded size="5px" class="q-mb-xs" />
@@ -110,11 +114,15 @@ const companyStore = useCompanyStore()
 const drawer = ref(true)
 const searchQuery = ref('')
 
-const empresaNombre = computed(() => {
-  return authStore.empresa?.razonSocial || companyStore.perfil?.empresa?.razonSocial || 'Mi Empresa'
-})
+const empresaNombre = computed(() =>
+  authStore.empresa?.razonSocial || companyStore.perfil?.empresa?.razonSocial || 'Mi Empresa'
+)
 
 const empresaInicial = computed(() => empresaNombre.value.charAt(0).toUpperCase())
+
+const empresaLogoUrl = computed(() =>
+  authStore.empresa?.logoUrl || companyStore.perfil?.profile?.logoUrl || null
+)
 
 const navItems = [
   { path: '/dashboard', label: 'Inicio', icon: 'space_dashboard' },
@@ -125,6 +133,7 @@ const navItems = [
   { path: '/dashboard/alianzas', label: 'Alianzas B2B', icon: 'handshake' },
   { path: '/dashboard/oportunidades', label: 'Oportunidades', icon: 'trending_up' },
   { path: '/dashboard/analiticas', label: 'Analíticas', icon: 'bar_chart' },
+  { path: '/dashboard/perfil', label: 'Mi Perfil', icon: 'manage_accounts' },
 ]
 
 function logout() {
@@ -166,11 +175,44 @@ function logout() {
   color: #9ca3af;
 }
 
-.empresa-avatar {
-  background: linear-gradient(135deg, #0071e3, #1a87ff);
-  font-size: 15px;
+/* ── AVATAR EMPRESA ── */
+.empresa-avatar-wrap {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  /* cuadrado redondeado para logos */
+  background: #f0f4f8;
+  border: 1.5px solid rgba(11, 18, 32, .10);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
 }
 
+/* Cuando hay imagen: contain para no recortar */
+.empresa-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+/* Cuando hay inicial: fondo azul */
+.empresa-avatar-inicial {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.empresa-avatar-wrap:has(.empresa-avatar-inicial) {
+  background: linear-gradient(135deg, #0071e3, #1a87ff);
+  border-color: transparent;
+}
+
+/* ── SIDEBAR ── */
 .dash-sidebar {
   background: #ffffff;
   border-right: 1.5px solid rgba(11, 18, 32, .08);

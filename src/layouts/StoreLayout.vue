@@ -9,35 +9,73 @@
           <img src="/IconoZ.png" alt="ZIFCOR" class="bs-logo-img" />
         </router-link>
 
-        <!-- <router-link to="/tienda" class="bs-catalogo-link gt-sm" exact-active-class="bs-catalogo-link--active">
-          Catálogo
-        </router-link>
-
-        <div class="bs-search gt-sm">
-          <svg class="search-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input v-model="searchQuery" class="search-inp" type="text" placeholder="Buscar empresas o productos..."
-            @keydown.enter="handleSearch" />
-        </div> -->
-
         <q-space />
 
         <div class="row items-center no-wrap q-gutter-sm gt-sm">
-          <button class="bs-cart-btn" @click="router.push('/tienda/carrito')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
-            </svg>
-          </button>
-          <button class="bs-signup-btn" @click="router.push('/auth')">Regístrate / Inicia Sesión</button>
+          <!-- Autenticado -->
+          <template v-if="authStore.isAuthenticated">
+
+            <!-- Carrito -->
+            <button class="bs-cart-btn" @click="router.push('/tienda/carrito')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="9" cy="21" r="1" fill="currentColor" stroke="none" />
+                <circle cx="20" cy="21" r="1" fill="currentColor" stroke="none" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+            </button>
+
+            <!-- Avatar -->
+            <div class="bs-avatar-wrap">
+              <button class="bs-avatar" @click="avatarMenu = !avatarMenu">
+                <img v-if="empresaLogoUrl" :src="empresaLogoUrl" :alt="empresaNombre" class="bs-avatar-img" />
+                <span v-else class="bs-avatar-initials">{{ initials }}</span>
+              </button>
+
+              <Transition name="avatar-drop">
+                <div v-if="avatarMenu" class="bs-avatar-dropdown">
+                  <div class="avatar-drop-head">
+                    <div class="avatar-drop-avatar">
+                      <img v-if="empresaLogoUrl" :src="empresaLogoUrl" class="avatar-drop-img" />
+                      <span v-else class="avatar-drop-initials">{{ initials }}</span>
+                    </div>
+                    <div class="avatar-drop-info">
+                      <p class="avatar-drop-name">{{ empresaNombre }}</p>
+                      <p class="avatar-drop-nit">NIT {{ authStore.empresa?.nit }}</p>
+                    </div>
+                  </div>
+                  <div class="avatar-drop-hr" />
+                  <button class="avatar-drop-item" @click="goToDashboard">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="7" height="7" rx="1" />
+                      <rect x="14" y="3" width="7" height="7" rx="1" />
+                      <rect x="3" y="14" width="7" height="7" rx="1" />
+                      <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    Mi dashboard
+                  </button>
+                  <div class="avatar-drop-hr" />
+                  <button class="avatar-drop-item avatar-drop-item--danger" @click="doLogout">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Cerrar sesión
+                  </button>
+                </div>
+              </Transition>
+            </div>
+          </template>
+
+          <!-- No autenticado -->
+          <template v-else>
+            <button class="bs-signup-btn" @click="router.push('/auth')">
+              Regístrate / Inicia Sesión
+            </button>
+          </template>
         </div>
 
         <q-btn flat round dense icon="menu" class="lt-md bs-menu-btn" @click="drawer = !drawer" />
-
       </q-toolbar>
     </q-header>
 
@@ -53,16 +91,6 @@
           </button>
         </div>
 
-        <div class="mob-search">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            style="position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input v-model="searchQuery" class="mob-search-inp" placeholder="Buscar..."
-            @keydown.enter="handleSearch(); drawer = false" />
-        </div>
-
         <nav class="drawer-nav">
           <router-link to="/tienda" class="drawer-link drawer-link--tienda"
             @click="drawer = false">Catálogo</router-link>
@@ -72,8 +100,33 @@
         </nav>
 
         <div class="drawer-actions">
-          <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">Regístrate / Inicia
-            Sesión</button>
+          <template v-if="authStore.isAuthenticated">
+            <div class="drawer-profile">
+              <div class="drawer-avatar">
+                <img v-if="empresaLogoUrl" :src="empresaLogoUrl" class="drawer-avatar-img" />
+                <span v-else class="drawer-avatar-initials">{{ initials }}</span>
+              </div>
+              <div class="drawer-profile-info">
+                <p class="drawer-profile-name">{{ empresaNombre }}</p>
+                <p class="drawer-profile-nit">NIT {{ authStore.empresa?.nit }}</p>
+              </div>
+            </div>
+            <button class="drawer-btn-secondary" @click="router.push('/tienda/carrito'); drawer = false">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="9" cy="21" r="1" fill="currentColor" stroke="none" />
+                <circle cx="20" cy="21" r="1" fill="currentColor" stroke="none" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              Mi carrito
+            </button>
+            <button class="drawer-btn-fill" @click="goToDashboard">Mi dashboard</button>
+            <button class="drawer-btn-outline" @click="doLogout">Cerrar sesión</button>
+          </template>
+          <template v-else>
+            <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">
+              Regístrate / Inicia Sesión
+            </button>
+          </template>
         </div>
       </div>
     </q-drawer>
@@ -137,29 +190,56 @@
         </svg>
       </a>
     </q-page-sticky>
-
   </q-layout>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth-store'
+import PreLaunchBanner from './PreLaunchBanner.vue'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
 const drawer = ref(false)
 const scrolled = ref(false)
-const searchQuery = ref('')
+const avatarMenu = ref(false)
 const year = new Date().getFullYear()
-import PreLaunchBanner from './PreLaunchBanner.vue'
-function onScroll() { scrolled.value = window.scrollY > 10 }
-onMounted(() => { window.addEventListener('scroll', onScroll, { passive: true }); onScroll() })
-onBeforeUnmount(() => { window.removeEventListener('scroll', onScroll) })
 
-function handleSearch() {
-  const q = searchQuery.value.trim()
-  if (!q) return
-  router.push(`/tienda?q=${encodeURIComponent(q)}`)
+const empresaNombre = computed(() =>
+  authStore.empresa?.razonSocial || authStore.empresa?.nit || 'Mi empresa'
+)
+
+const empresaLogoUrl = computed(() => authStore.empresa?.logoUrl || null)
+
+const initials = computed(() => {
+  const name = empresaNombre.value
+  const words = name.trim().split(/\s+/)
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase()
+  return name.slice(0, 2).toUpperCase()
+})
+
+function goToDashboard() { avatarMenu.value = false; drawer.value = false; router.push('/dashboard') }
+function doLogout() { avatarMenu.value = false; drawer.value = false; authStore.logout(); router.push('/') }
+
+function onClickOutside(e) {
+  const wrap = document.querySelector('.bs-avatar-wrap')
+  if (wrap && !wrap.contains(e.target)) avatarMenu.value = false
 }
+
+function onScroll() { scrolled.value = window.scrollY > 10 }
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('click', onClickOutside)
+  onScroll()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('click', onClickOutside)
+})
 </script>
 
 <style scoped>
@@ -209,91 +289,6 @@ function handleSearch() {
   display: block;
 }
 
-.bs-catalogo-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 14px;
-  height: 38px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, 0.72);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 160ms, background 160ms;
-  flex-shrink: 0;
-}
-
-.bs-catalogo-link:hover {
-  color: #0b1220;
-  background: rgba(0, 113, 227, 0.06);
-}
-
-.bs-catalogo-link--active {
-  color: #0071e3 !important;
-  background: rgba(0, 113, 227, 0.06);
-}
-
-.bs-search {
-  flex: 1;
-  max-width: 420px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-left: 4px;
-}
-
-.search-ico {
-  position: absolute;
-  left: 11px;
-  opacity: .38;
-  pointer-events: none;
-}
-
-.search-inp {
-  width: 100%;
-  height: 38px;
-  padding: 0 14px 0 34px;
-  border: 1px solid rgba(15, 23, 42, 0.13);
-  border-radius: 10px;
-  font-size: 13.5px;
-  color: #0b1220;
-  background: rgba(0, 0, 0, 0.025);
-  outline: none;
-  font-family: inherit;
-  transition: border-color 150ms, box-shadow 150ms;
-}
-
-.search-inp:focus {
-  border-color: #0071e3;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.10);
-}
-
-.search-inp::placeholder {
-  color: rgba(11, 18, 32, 0.35);
-}
-
-.bs-cart-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  border: 1px solid rgba(15, 23, 42, 0.13);
-  background: rgba(0, 0, 0, 0.025);
-  color: rgba(11, 18, 32, 0.65);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: border-color 150ms, background 150ms, color 150ms;
-  flex-shrink: 0;
-}
-
-.bs-cart-btn:hover {
-  border-color: #0071e3;
-  background: rgba(0, 113, 227, 0.06);
-  color: #0071e3;
-}
-
 .bs-signup-btn {
   height: 38px;
   padding: 0 24px;
@@ -317,6 +312,202 @@ function handleSearch() {
   color: rgba(11, 18, 32, 0.72) !important;
 }
 
+/* ── CARRITO ── */
+.bs-cart-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(15, 23, 42, 0.12);
+  background: rgba(0, 0, 0, 0.025);
+  color: rgba(11, 18, 32, 0.65);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 150ms, background 150ms, color 150ms;
+}
+
+.bs-cart-btn:hover {
+  border-color: #0071e3;
+  background: rgba(0, 113, 227, 0.06);
+  color: #0071e3;
+}
+
+/* ── AVATAR ── */
+.bs-avatar-wrap {
+  position: relative;
+}
+
+.bs-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(15, 23, 42, 0.12);
+  background: #f0f4f8;
+  cursor: pointer;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  transition: border-color 160ms, box-shadow 160ms;
+  padding: 0;
+}
+
+.bs-avatar:has(.bs-avatar-initials) {
+  background: linear-gradient(135deg, #0071e3, #4f9cf9);
+  border-color: transparent;
+}
+
+.bs-avatar:hover {
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+.bs-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+.bs-avatar-initials {
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+/* ── DROPDOWN ── */
+.bs-avatar-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  z-index: 9999;
+}
+
+.avatar-drop-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 12px;
+}
+
+.avatar-drop-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #f0f4f8;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatar-drop-avatar:has(.avatar-drop-initials) {
+  background: linear-gradient(135deg, #0071e3, #4f9cf9);
+  border-color: transparent;
+  border-radius: 50%;
+}
+
+.avatar-drop-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.avatar-drop-initials {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.avatar-drop-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.avatar-drop-name {
+  font-size: 13px;
+  font-weight: 900;
+  color: #0b1220;
+  margin: 0 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.avatar-drop-nit {
+  font-size: 11px;
+  color: rgba(11, 18, 32, 0.45);
+  font-weight: 600;
+  margin: 0;
+}
+
+.avatar-drop-hr {
+  height: 1px;
+  background: rgba(15, 23, 42, 0.07);
+  margin: 4px 0;
+}
+
+.avatar-drop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0b1220;
+  cursor: pointer;
+  text-align: left;
+  transition: background 140ms;
+  font-family: inherit;
+}
+
+.avatar-drop-item:hover {
+  background: rgba(0, 113, 227, 0.06);
+}
+
+.avatar-drop-item--danger {
+  color: #dc2626;
+}
+
+.avatar-drop-item--danger:hover {
+  background: rgba(220, 38, 38, 0.06);
+}
+
+.avatar-drop-enter-active {
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.avatar-drop-leave-active {
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.avatar-drop-enter-from {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.avatar-drop-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+/* ── DRAWER ── */
 .bs-drawer {
   background: #fff !important;
 }
@@ -349,27 +540,6 @@ function handleSearch() {
   display: grid;
   place-items: center;
   cursor: pointer;
-}
-
-.mob-search {
-  position: relative;
-  margin: 12px 14px 4px;
-}
-
-.mob-search-inp {
-  width: 100%;
-  height: 38px;
-  padding: 0 14px 0 33px;
-  border: 1px solid rgba(15, 23, 42, 0.13);
-  border-radius: 8px;
-  font-size: 14px;
-  background: rgba(0, 0, 0, 0.025);
-  outline: none;
-  font-family: inherit;
-}
-
-.mob-search-inp::placeholder {
-  color: rgba(11, 18, 32, 0.35);
 }
 
 .drawer-nav {
@@ -422,6 +592,61 @@ function handleSearch() {
 .drawer-actions {
   padding: 16px 12px;
   border-top: 1px solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drawer-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 4px 8px;
+}
+
+.drawer-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #f0f4f8;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.drawer-avatar:has(.drawer-avatar-initials) {
+  background: linear-gradient(135deg, #0071e3, #4f9cf9);
+  border-color: transparent;
+  border-radius: 50%;
+}
+
+.drawer-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: crisp-edges;
+}
+
+.drawer-avatar-initials {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.drawer-profile-name {
+  font-size: 14px;
+  font-weight: 900;
+  color: #0b1220;
+  margin: 0 0 2px;
+}
+
+.drawer-profile-nit {
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.45);
+  font-weight: 600;
+  margin: 0;
 }
 
 .drawer-btn-fill {
@@ -435,12 +660,56 @@ function handleSearch() {
   font-weight: 900;
   cursor: pointer;
   transition: background 160ms;
+  font-family: inherit;
 }
 
 .drawer-btn-fill:hover {
   background: #005fcd;
 }
 
+.drawer-btn-secondary {
+  width: 100%;
+  height: 44px;
+  background: #f7f8fb;
+  color: #0b1220;
+  border: 1.5px solid rgba(15, 23, 42, 0.10);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 160ms;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.drawer-btn-secondary:hover {
+  background: #eef0f5;
+  border-color: rgba(15, 23, 42, 0.18);
+}
+
+.drawer-btn-outline {
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  color: #dc2626;
+  border: 1.5px solid rgba(220, 38, 38, 0.25);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 160ms;
+  font-family: inherit;
+}
+
+.drawer-btn-outline:hover {
+  background: rgba(220, 38, 38, 0.05);
+  border-color: #dc2626;
+}
+
+/* ── FOOTER ── */
 .bs-footer {
   background: #fff;
   border-top: 1px solid rgba(15, 23, 42, 0.09);

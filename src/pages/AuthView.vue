@@ -659,13 +659,12 @@ async function doLogin() {
 
   try {
     await authStore.login(login.id, login.pw)
-    console.log('LOGIN OK') // 👈
-    router.push('/dashboard')
+    console.log('LOGIN OK')
+    const result = await router.push('/dashboard')
+    console.log('ROUTER RESULT', result)
   } catch (err) {
-    console.log('LOGIN ERROR', err) // 👈
+    console.log('LOGIN ERROR', err)
     loginErr.value = getError(err)
-  } finally {
-    loginLoading.value = false
   }
 }
 

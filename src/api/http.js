@@ -19,11 +19,13 @@ http.interceptors.request.use((config) => {
 })
 
 http.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    // console.log('HTTP response url:', res.config.url, 'data:', res.data)
+    return res
+  },
   (err) => {
     if (err.response?.status === 401) {
       const url = err.config?.url || ''
-      // No redirigir si el error viene del login o registro
       if (!url.includes('/auth/')) {
         localStorage.removeItem('ZIFCOR_sesion')
         window.location.href = '/auth'

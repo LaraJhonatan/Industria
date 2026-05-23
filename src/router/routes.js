@@ -1,8 +1,14 @@
-import { useAuthStore } from '../stores/auth-store'
-
 const dashboardGuard = () => {
-  const auth = useAuthStore()
-  if (!auth.isAuthenticated) return '/auth'
+  try {
+    const raw = localStorage.getItem('ZIFCOR_sesion')
+    const sesion = JSON.parse(raw || 'null')
+    // console.log('GUARD raw:', raw)
+    // console.log('GUARD accessToken:', sesion?.accessToken)
+    if (!sesion?.accessToken) return '/auth'
+  } catch (e) {
+    console.log('GUARD ERROR:', e)
+    return '/auth'
+  }
 }
 
 const routes = [
