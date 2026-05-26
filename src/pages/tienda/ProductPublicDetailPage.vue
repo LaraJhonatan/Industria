@@ -15,8 +15,10 @@
           <span class="bc-current">{{ product.nombre }}</span>
         </nav>
 
+        <!-- LAYOUT PRINCIPAL: galería + info -->
         <div class="detail-layout">
-          <!-- GALERÍA -->
+
+          <!-- GALERÍA sticky -->
           <div class="gallery-col">
             <div class="gallery-shell">
               <div class="gallery-main" @click="zoomOpen = true">
@@ -68,6 +70,14 @@
 
             <p v-if="product.descripcion" class="product-desc">{{ product.descripcion }}</p>
 
+            <!-- Resumen rápido de specs clave (primeras 4) -->
+            <div v-if="specsSummary.length" class="specs-summary">
+              <div v-for="sp in specsSummary" :key="sp.id" class="spec-pill">
+                <span class="spec-pill-key">{{ sp.atributo?.nombre }}</span>
+                <span class="spec-pill-val">{{ sp.valor }}</span>
+              </div>
+            </div>
+
             <div v-if="product.variantes?.length" class="variants-section">
               <p class="section-label">Selecciona una opción</p>
               <div class="variants-grid">
@@ -75,16 +85,6 @@
                   :class="{ 'variant-btn-active': selectedVariante?.id === v.id }" @click="selectedVariante = v">
                   {{ varianteLabel(v) }}
                 </button>
-              </div>
-            </div>
-
-            <div v-if="product.atributos?.length" class="attrs-section">
-              <p class="section-label">Especificaciones</p>
-              <div class="attrs-grid">
-                <div v-for="av in product.atributos" :key="av.id" class="attr-item">
-                  <span class="attr-key">{{ av.atributo?.nombre }}</span>
-                  <span class="attr-val">{{ av.valor || '—' }}</span>
-                </div>
               </div>
             </div>
 
@@ -103,6 +103,28 @@
           </div>
         </div>
 
+        <!-- ESPECIFICACIONES COMPLETAS - full width debajo -->
+        <div v-if="atributosUnicos.length" class="specs-full">
+          <div class="specs-full-header">
+            <h2 class="specs-full-title">Especificaciones técnicas</h2>
+            <p class="specs-full-sub">{{ atributosUnicos.length }} características detalladas</p>
+          </div>
+
+          <div v-for="grupo in atributosAgrupados" :key="grupo.titulo" class="specs-group">
+            <div class="specs-group-label">
+              <span class="specs-group-icon">{{ grupo.icono }}</span>
+              {{ grupo.titulo }}
+            </div>
+            <div class="specs-group-grid">
+              <div v-for="av in grupo.items" :key="av.id" class="spec-card">
+                <span class="spec-card-key">{{ av.atributo?.nombre }}</span>
+                <span class="spec-card-val">{{ av.valor || '—' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZOOM MODAL -->
         <q-dialog v-model="zoomOpen">
           <div class="zoom-modal">
             <button class="zoom-close" @click="zoomOpen = false">
@@ -142,21 +164,97 @@ const selectedVariante = ref(null)
 const zoomOpen = ref(false)
 
 const productImages = computed(() => product.value?.imagenes || [])
-
 const selectedImageUrl = computed(() => {
   if (!productImages.value.length) return ''
   return productImages.value[selectedImageIndex.value]?.url || ''
 })
 
-function selectImage(index) { selectedImageIndex.value = index }
+// Deduplica atributos por atributoId
+const atributosUnicos = computed(() => {
+  if (!product.value?.atributos?.length) return []
+  const seen = new Set()
+  return product.value.atributos.filter(av => {
+    const key = av.atributo?.id || av.atributoId || av.id
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+})
 
+// Primeras 4 specs para mostrar como píldoras rápidas en la info-col
+const specsSummary = computed(() => atributosUnicos.value.slice(0, 4))
+
+// Grupos de atributos por clave
+const GRUPOS = [
+  {
+    titulo: 'Vuelo',
+    icono: '✈',
+    claves: ['tiempo_vuelo', 'velocidad_max', 'resistencia_viento', 'techo_servicio']
+  },
+  {
+    titulo: 'Protección',
+    icono: '🛡',
+    claves: ['proteccion_ip', 'temp_operacion']
+  },
+  {
+    titulo: 'Cámaras',
+    icono: '📷',
+    claves: ['cam_gran_angular', 'zoom_optico', 'zoom_hibrido', 'resolucion_termica', 'rango_termica']
+  },
+  {
+    titulo: 'Transmisión',
+    icono: '📡',
+    claves: ['dist_transmision', 'sistema_com']
+  },
+  {
+    titulo: 'Navegación',
+    icono: '🧭',
+    claves: ['telemetro_laser', 'evasion_obstaculos', 'nav_sin_gps']
+  },
+  {
+    titulo: 'Seguridad',
+    icono: '🔒',
+    claves: ['cifrado_datos']
+  },
+  {
+    titulo: 'General',
+    icono: '📋',
+    claves: ['marca', 'modelo', 'certificacion', 'origen', 'color']
+  }
+]
+
+const atributosAgrupados = computed(() => {
+  const attrs = atributosUnicos.value
+  const clavesUsadas = new Set()
+  const grupos = []
+
+  for (const g of GRUPOS) {
+    const items = attrs.filter(av => {
+      const clave = av.atributo?.clave
+      return g.claves.includes(clave)
+    })
+    if (items.length) {
+      items.forEach(av => clavesUsadas.add(av.atributo?.clave))
+      grupos.push({ ...g, items })
+    }
+  }
+
+  // Resto de atributos no clasificados
+  const resto = attrs.filter(av => !clavesUsadas.has(av.atributo?.clave))
+  if (resto.length) {
+    grupos.push({ titulo: 'Otros', icono: '⚙', items: resto })
+  }
+
+  return grupos
+})
+
+function selectImage(index) { selectedImageIndex.value = index }
 function prevImage() {
   if (!productImages.value.length) return
   selectedImageIndex.value = selectedImageIndex.value === 0
     ? productImages.value.length - 1
     : selectedImageIndex.value - 1
 }
-
 function nextImage() {
   if (!productImages.value.length) return
   selectedImageIndex.value = selectedImageIndex.value === productImages.value.length - 1
@@ -252,6 +350,7 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   font-weight: 700;
 }
 
+/* ── LAYOUT ── */
 .detail-layout {
   display: grid;
   grid-template-columns: 1.02fr 0.98fr;
@@ -260,6 +359,11 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
 }
 
 /* ── GALLERY ── */
+.gallery-col {
+  position: sticky;
+  top: 24px;
+}
+
 .gallery-shell {
   background: #fff;
   border: 1.5px solid rgba(11, 18, 32, .08);
@@ -384,7 +488,7 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   display: block;
 }
 
-/* ── INFO ── */
+/* ── INFO COL ── */
 .info-col {
   display: flex;
   flex-direction: column;
@@ -448,10 +552,10 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
 }
 
 .product-title {
-  font-size: clamp(28px, 3.2vw, 46px);
+  font-size: clamp(22px, 2.8vw, 38px);
   font-weight: 900;
-  line-height: 1.08;
-  letter-spacing: -1px;
+  line-height: 1.1;
+  letter-spacing: -0.8px;
   color: #0b1220;
   margin: 0 0 14px;
 }
@@ -479,11 +583,41 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
 }
 
 .product-desc {
-  font-size: 15px;
-  color: rgba(11, 18, 32, .66);
+  font-size: 14px;
+  color: rgba(11, 18, 32, .62);
   line-height: 1.8;
-  margin: 0 0 24px;
-  max-width: 62ch;
+  margin: 0 0 20px;
+}
+
+/* Píldoras resumen rápido */
+.specs-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.spec-pill {
+  background: #fff;
+  border: 1.5px solid rgba(11, 18, 32, .08);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.spec-pill-key {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, .38);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-bottom: 3px;
+}
+
+.spec-pill-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0b1220;
 }
 
 .section-label {
@@ -526,40 +660,6 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   background: rgba(0, 113, 227, .06);
   color: #0071e3;
   box-shadow: 0 10px 20px rgba(0, 113, 227, .10);
-}
-
-.attrs-section {
-  margin-bottom: 28px;
-}
-
-.attrs-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.attr-item {
-  background: #fff;
-  border: 1.5px solid rgba(11, 18, 32, .08);
-  border-radius: 14px;
-  padding: 14px;
-}
-
-.attr-key {
-  font-size: 10.5px;
-  font-weight: 800;
-  color: rgba(11, 18, 32, .42);
-  text-transform: uppercase;
-  letter-spacing: .7px;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.attr-val {
-  font-size: 14px;
-  font-weight: 800;
-  color: #0b1220;
-  line-height: 1.5;
 }
 
 .cta-card {
@@ -614,6 +714,91 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
 .btn-back:hover {
   border-color: rgba(0, 113, 227, .2);
   color: #0071e3;
+}
+
+/* ── SPECS FULL WIDTH ── */
+.specs-full {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1.5px solid rgba(11, 18, 32, .08);
+}
+
+.specs-full-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.specs-full-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0b1220;
+  margin: 0;
+  letter-spacing: -0.4px;
+}
+
+.specs-full-sub {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .38);
+  margin: 0;
+}
+
+.specs-group {
+  margin-bottom: 32px;
+}
+
+.specs-group-label {
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(11, 18, 32, .42);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.specs-group-icon {
+  font-size: 15px;
+}
+
+.specs-group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.spec-card {
+  background: #fff;
+  border: 1.5px solid rgba(11, 18, 32, .08);
+  border-radius: 16px;
+  padding: 16px 18px;
+  transition: box-shadow 160ms, border-color 160ms;
+}
+
+.spec-card:hover {
+  border-color: rgba(0, 113, 227, .18);
+  box-shadow: 0 8px 20px rgba(0, 113, 227, .06);
+}
+
+.spec-card-key {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, .38);
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  margin-bottom: 6px;
+}
+
+.spec-card-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0b1220;
+  line-height: 1.4;
 }
 
 /* ── ZOOM ── */
@@ -677,18 +862,23 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   right: 16px;
 }
 
+/* ── RESPONSIVE ── */
 @media (max-width: 980px) {
   .detail-layout {
     grid-template-columns: 1fr;
     gap: 30px;
   }
 
-  .attrs-grid {
-    grid-template-columns: 1fr;
+  .gallery-col {
+    position: static;
+  }
+
+  .specs-summary {
+    grid-template-columns: 1fr 1fr;
   }
 
   .product-title {
-    font-size: 34px;
+    font-size: 28px;
   }
 }
 
@@ -708,6 +898,14 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   .thumb-btn {
     width: 64px;
     height: 64px;
+  }
+
+  .specs-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .specs-group-grid {
+    grid-template-columns: 1fr 1fr;
   }
 
   .zoom-modal {
