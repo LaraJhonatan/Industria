@@ -62,10 +62,10 @@
                 <p class="mini-label">Productos publicados</p>
                 <p class="mini-value">{{ total }}</p>
               </div>
-              <div class="about-mini-card">
+              <!-- <div class="about-mini-card">
                 <p class="mini-label">Estado</p>
                 <p class="mini-value mini-value-green">Activo</p>
-              </div>
+              </div> -->
             </div>
           </div>
 
