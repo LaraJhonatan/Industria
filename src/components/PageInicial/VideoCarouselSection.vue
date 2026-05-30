@@ -239,6 +239,7 @@ onMounted(() => {
   transition: transform 160ms, box-shadow 160ms, background 160ms, border-color 160ms;
 }
 
+/* ── BOTÓN PRIMARIO (azul) ────────────────────────────────────────────────*/
 .cta-primary {
   background: var(--blue);
   color: #fff;
@@ -251,18 +252,19 @@ onMounted(() => {
   box-shadow: 0 10px 28px rgba(0, 113, 227, .38);
 }
 
+/* ── BOTÓN SECUNDARIO (negro) ─────────────────────────────────────────────*/
 .cta-secondary {
-  background: #fff;
-  color: #0b1220;
-  border: 1.5px solid rgba(15, 23, 42, .13);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, .07);
+  background: #0b1220;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, .10);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .20);
 }
 
 .cta-secondary:hover {
-  border-color: rgba(0, 113, 227, .35);
-  background: rgba(0, 113, 227, .03);
+  border-color: rgba(255, 255, 255, .20);
+  background: #1a2540;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, .10);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
 }
 
 .cta-icon-wrap {
@@ -280,9 +282,10 @@ onMounted(() => {
   color: #fff;
 }
 
+/* ── ícono secundario sobre negro ─────────────────────────────────────────*/
 .cta-icon-wrap--secondary {
-  background: rgba(0, 113, 227, .08);
-  color: var(--blue);
+  background: rgba(255, 255, 255, .10);
+  color: #fff;
 }
 
 .cta-texts {
