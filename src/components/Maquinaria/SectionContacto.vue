@@ -6,8 +6,6 @@
         <!-- ══ COLUMNA IZQUIERDA ══════════════════ -->
         <div class="col-left" :class="{ ready }">
 
-          <!-- <div class="kicker">IMPORTACIÓN DE MAQUINARIA</div> -->
-
           <h1 class="h1">
             Importamos la maquinaria
             <span>que tu operación necesita</span>,
@@ -19,7 +17,6 @@
             Nuestro equipo lo gestiona desde la selección hasta la puesta en marcha.
           </p>
 
-          <!-- Calendly card -->
           <a href="https://calendly.com/ZIFCOR/llamada" target="_blank" class="calendly-card" rel="noopener">
             <div class="cal-inner">
               <div class="cal-icon">
@@ -48,7 +45,15 @@
         <!-- ══ COLUMNA DERECHA — FORMULARIO ══════ -->
         <q-form ref="formRef" class="contact-form" :class="{ ready }" @submit.prevent="onSubmit">
 
-          <!-- Fila 1: Empresa + NIT -->
+          <div v-if="success" class="success-msg">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            ¡Solicitud enviada! Te contactaremos pronto.
+          </div>
+
+          <div v-if="error" class="error-msg">{{ error }}</div>
+
           <div class="form-grid">
             <div class="field">
               <label class="label">Nombre de la empresa *</label>
@@ -61,7 +66,6 @@
             </div>
           </div>
 
-          <!-- Fila 2: Contacto + Teléfono -->
           <div class="form-grid">
             <div class="field">
               <label class="label">Nombre de contacto *</label>
@@ -75,14 +79,12 @@
             </div>
           </div>
 
-          <!-- Correo -->
           <div class="field">
             <label class="label">Correo corporativo *</label>
             <q-input v-model="form.correo" outlined dense class="inp" type="email" placeholder="nombre@empresa.com"
               :rules="[required, emailRule]" />
           </div>
 
-          <!-- ¿Qué maquinaria necesita? + imagen -->
           <div class="field">
             <label class="label">¿Qué maquinaria necesitas? *</label>
             <q-input v-model="form.maquinaria" outlined class="ta" type="textarea" autogrow
@@ -90,7 +92,6 @@
               :rules="[required]" />
           </div>
 
-          <!-- Adjuntar imagen -->
           <div class="field">
             <label class="label">Adjuntar imagen de referencia (opcional)</label>
             <q-file v-model="form.imagen" outlined dense class="inp" accept="image/*" :max-files="5" multiple use-chips
@@ -101,14 +102,12 @@
             </q-file>
           </div>
 
-          <!-- Cuántas unidades -->
           <div class="field">
             <label class="label">¿Cuántas unidades necesitas? *</label>
             <q-input v-model="form.unidades" outlined dense class="inp" type="number" min="1" placeholder="Ej: 2"
               :rules="[required, positivo]" />
           </div>
 
-          <!-- Footer -->
           <div class="form-footer">
             <q-checkbox v-model="form.aceptaDatos" class="chk">
               <span class="check-lbl">
@@ -118,7 +117,7 @@
             </q-checkbox>
 
             <q-btn unelevated type="submit" class="submit-btn" label="Enviar solicitud" icon-right="send"
-              :loading="sending" />
+              :loading="sending" :disable="!form.aceptaDatos" />
           </div>
 
         </q-form>
@@ -129,10 +128,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
+import { publicApi } from '../../api/publicCatalog'
 
 const ready = ref(false)
 const sending = ref(false)
+const success = ref(false)
+const error = ref('')
 const formRef = ref(null)
 
 const form = ref({
@@ -157,26 +159,43 @@ const positivo = (v) => (!v || Number(v) >= 1) || 'Debe ser al menos 1'
 async function onSubmit() {
   const ok = await formRef.value?.validate?.()
   if (!ok) return
+  if (!form.value.aceptaDatos) return
+
   sending.value = true
+  error.value = ''
+  success.value = false
+
   try {
-    const to = 'comercial@ZIFCOR.com'
-    const subject = `Importación maquinaria — ${form.value.empresa}`
-    const lines = [
-      `Empresa: ${form.value.empresa}`,
-      `NIT: ${form.value.nit}`,
-      `Contacto: ${form.value.contacto}`,
-      `Teléfono: ${form.value.telefono}`,
-      `Correo: ${form.value.correo}`,
-      ``,
-      `Maquinaria requerida:`,
-      form.value.maquinaria,
-      ``,
-      `Unidades: ${form.value.unidades}`,
-    ]
-    window.location.href =
-      `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${lines.join('%0D%0A')}`
+    await publicApi.enviarSolicitudMaquinaria({
+      empresa: form.value.empresa,
+      nit: form.value.nit,
+      contacto: form.value.contacto,
+      telefono: form.value.telefono,
+      correo: form.value.correo,
+      maquinaria: form.value.maquinaria,
+      unidades: Number(form.value.unidades),
+    })
+
+    success.value = true
+    form.value = {
+      empresa: '',
+      nit: '',
+      contacto: '',
+      telefono: '',
+      correo: '',
+      maquinaria: '',
+      imagen: [],
+      unidades: '',
+      aceptaDatos: false,
+    }
+    await nextTick()
+    formRef.value?.resetValidation()
+
+  } catch (e) {
+    console.error('Error al enviar solicitud:', e)
+    error.value = 'Ocurrió un error al enviar la solicitud. Intenta de nuevo.'
   } finally {
-    setTimeout(() => { sending.value = false }, 400)
+    sending.value = false
   }
 }
 
@@ -184,22 +203,18 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 </script>
 
 <style scoped>
-/* ══ Page ════════════════════════════════════════ */
 .page {
   background: #ffffff;
 }
 
-/* ══ Section ═════════════════════════════════════ */
 .projects {
   --blue: #0071e3;
   --blue-dark: #005fcd;
-
   padding: 100px 0;
   background: #ffffff;
   color: #0b1220;
 }
 
-/* ══ Wrap — 2 columnas ═══════════════════════════ */
 .bs-wrap {
   width: 100%;
   max-width: 1180px;
@@ -211,7 +226,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   align-items: start;
 }
 
-/* ══ Columna izquierda ═══════════════════════════ */
 .col-left {
   display: flex;
   flex-direction: column;
@@ -224,20 +238,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 .col-left.ready {
   opacity: 1;
   transform: translateY(0);
-}
-
-.kicker {
-  display: inline-flex;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  color: var(--blue);
-  background: rgba(0, 113, 227, 0.08);
-  border: 1.5px solid rgba(0, 113, 227, 0.20);
-  width: fit-content;
 }
 
 .h1 {
@@ -259,7 +259,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   color: rgba(11, 18, 32, 0.55);
 }
 
-/* ══ Calendly card ═══════════════════════════════ */
 .calendly-card {
   display: flex;
   flex-direction: column;
@@ -270,16 +269,12 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   border: 1.5px solid rgba(11, 18, 32, 0.10);
   text-decoration: none;
   transition: border-color 220ms, box-shadow 220ms, transform 220ms;
-  box-shadow:
-    0 2px 8px rgba(11, 18, 32, 0.06),
-    0 8px 24px rgba(11, 18, 32, 0.08);
+  box-shadow: 0 2px 8px rgba(11, 18, 32, 0.06), 0 8px 24px rgba(11, 18, 32, 0.08);
 }
 
 .calendly-card:hover {
   border-color: rgba(0, 113, 227, 0.35);
-  box-shadow:
-    0 4px 16px rgba(11, 18, 32, 0.08),
-    0 12px 32px rgba(0, 113, 227, 0.10);
+  box-shadow: 0 4px 16px rgba(11, 18, 32, 0.08), 0 12px 32px rgba(0, 113, 227, 0.10);
   transform: translateY(-2px);
 }
 
@@ -336,22 +331,22 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 }
 
 .av:first-child {
-  margin-left: 0
+  margin-left: 0;
 }
 
 .av1 {
   background: #0071e3;
-  color: #fff
+  color: #fff;
 }
 
 .av2 {
   background: #fdda24;
-  color: #0b1220
+  color: #0b1220;
 }
 
 .av3 {
   background: #22c55e;
-  color: #fff
+  color: #fff;
 }
 
 .cal-team {
@@ -361,19 +356,38 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   margin-left: 4px;
 }
 
-/* ══ Formulario ══════════════════════════════════ */
+.success-msg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.30);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.error-msg {
+  padding: 14px 18px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.30);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #dc2626;
+}
+
 .contact-form {
   background: #ffffff;
   border: 1.5px solid rgba(11, 18, 32, 0.10);
   border-radius: 20px;
   padding: 36px;
-  box-shadow:
-    0 2px 8px rgba(11, 18, 32, 0.05),
-    0 20px 56px rgba(11, 18, 32, 0.08);
+  box-shadow: 0 2px 8px rgba(11, 18, 32, 0.05), 0 20px 56px rgba(11, 18, 32, 0.08);
   display: flex;
   flex-direction: column;
   gap: 18px;
-
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 700ms ease 80ms, transform 700ms ease 80ms;
@@ -402,7 +416,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   color: #0b1220;
 }
 
-/* Inputs */
 .inp :deep(.q-field__control),
 .ta :deep(.q-field__control) {
   background: #ffffff !important;
@@ -439,7 +452,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   min-height: 100px !important;
 }
 
-/* Footer */
 .form-footer {
   display: flex;
   flex-direction: column;
@@ -460,7 +472,7 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 }
 
 .link:hover {
-  text-decoration: underline
+  text-decoration: underline;
 }
 
 .submit-btn {
@@ -468,7 +480,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   border-radius: 12px;
   font-weight: 600;
   font-size: 15px;
-  letter-spacing: 0;
   background: var(--blue);
   color: #fff;
   box-shadow: 0 4px 18px rgba(0, 113, 227, 0.32);
@@ -487,7 +498,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   transform: translateY(-1px);
 }
 
-/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 960px) {
   .bs-wrap {
     grid-template-columns: 1fr;
@@ -497,15 +507,15 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 
 @media (max-width: 600px) {
   .projects {
-    padding: 64px 0
+    padding: 64px 0;
   }
 
   .contact-form {
-    padding: 24px 20px
+    padding: 24px 20px;
   }
 
   .form-grid {
-    grid-template-columns: 1fr
+    grid-template-columns: 1fr;
   }
 }
 </style>

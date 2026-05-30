@@ -3,7 +3,6 @@
     <div class="ps-wrap">
 
       <div class="ps-left" v-reveal>
-        <!-- <div class="ps-pill">PORTAL B2B</div> -->
         <h2 class="ps-title">
           El cerebro de<br />
           tu empresa<br />
@@ -82,26 +81,21 @@
         <div class="ps-mockup">
           <div class="ps-mockup-bar">
             <span class="dot-r" /><span class="dot-y" /><span class="dot-g" />
-            <div class="ps-mockup-url">portal.ZIFCOR.com/dashboard</div>
+            <div class="ps-mockup-url">portal.zifcor.com/dashboard</div>
           </div>
           <div class="ps-mockup-screen">
             <div class="ps-screen-fallback">
+
               <div class="db-topbar">
                 <div class="db-logo">
                   <img src="/IconoZ.png" alt="ZIFCOR" style="height:20px" />
                   <span style="font-size:11px;font-weight:900;opacity:.5;margin-left:4px">PORTAL B2B</span>
                 </div>
-                <div class="db-search">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
-                  Buscar productos, pedidos...
-                </div>
+                <div style="flex:1" />
                 <div class="db-user">
-                  <div class="db-avatar">AS</div>
+                  <div class="db-avatar">ZF</div>
                   <div style="line-height:1.2">
-                    <div style="font-size:10px;font-weight:800">ACERO LAB SAS</div>
+                    <div style="font-size:10px;font-weight:800">ZIFCOR S.A.S</div>
                     <div style="font-size:9px;opacity:.5">Mi perfil</div>
                   </div>
                 </div>
@@ -123,7 +117,7 @@
                 <div class="db-main">
                   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
                     <div>
-                      <div style="font-size:13px;font-weight:900;color:#0b1220">Bienvenido, ACERO LAB SAS</div>
+                      <div style="font-size:13px;font-weight:900;color:#0b1220">Bienvenido, ZIFCOR S.A.S</div>
                       <div style="font-size:9px;opacity:.45;margin-top:2px">Aquí tienes un resumen de tu actividad hoy
                       </div>
                     </div>
@@ -238,20 +232,6 @@ const recentProducts = [
   gap: 64px;
 }
 
-.ps-pill {
-  display: inline-flex;
-  padding: 6px 16px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border: 1px solid rgba(0, 113, 227, .20);
-  color: #0071e3;
-  background: rgba(0, 113, 227, .06);
-  margin-bottom: 20px;
-}
-
 .ps-title {
   font-size: clamp(32px, 3.8vw, 52px);
   font-weight: 900;
@@ -331,7 +311,6 @@ const recentProducts = [
   margin-top: 2px;
 }
 
-/* ══ Mockup 3D ════════════════════════════════════ */
 .ps-right {
   display: flex;
   justify-content: center;
@@ -344,11 +323,7 @@ const recentProducts = [
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(11, 18, 32, .10);
-  box-shadow:
-    -8px 8px 0px rgba(11, 18, 32, .04),
-    -16px 16px 0px rgba(11, 18, 32, .03),
-    0 24px 60px rgba(11, 18, 32, .16),
-    0 48px 80px -16px rgba(11, 18, 32, .12);
+  box-shadow: -8px 8px 0px rgba(11, 18, 32, .04), -16px 16px 0px rgba(11, 18, 32, .03), 0 24px 60px rgba(11, 18, 32, .16), 0 48px 80px -16px rgba(11, 18, 32, .12);
   background: #fff;
   transform: perspective(1200px) rotateY(-8deg) rotateX(3deg);
   transition: transform 500ms cubic-bezier(0.34, 1.2, 0.64, 1), box-shadow 500ms ease;
@@ -356,10 +331,7 @@ const recentProducts = [
 
 .ps-right:hover .ps-mockup {
   transform: perspective(1200px) rotateY(-3deg) rotateX(1deg);
-  box-shadow:
-    -4px 4px 0px rgba(11, 18, 32, .03),
-    0 24px 60px rgba(11, 18, 32, .12),
-    0 48px 80px -16px rgba(11, 18, 32, .08);
+  box-shadow: -4px 4px 0px rgba(11, 18, 32, .03), 0 24px 60px rgba(11, 18, 32, .12), 0 48px 80px -16px rgba(11, 18, 32, .08);
 }
 
 .ps-mockup-bar {
@@ -399,7 +371,6 @@ const recentProducts = [
   font-weight: 700;
 }
 
-/* ── Dashboard ── */
 .ps-screen-fallback {
   background: #fff;
   font-family: inherit;
@@ -418,20 +389,6 @@ const recentProducts = [
   display: flex;
   align-items: center;
   flex-shrink: 0;
-}
-
-.db-search {
-  flex: 1;
-  height: 26px;
-  border: 1px solid rgba(11, 18, 32, .10);
-  border-radius: 6px;
-  background: rgba(0, 0, 0, .025);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 10px;
-  font-size: 9.5px;
-  color: rgba(11, 18, 32, .35);
 }
 
 .db-user {
@@ -622,7 +579,6 @@ const recentProducts = [
   color: #ea580c;
 }
 
-/* ══ Reveal ══════════════════════════════════════ */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -634,7 +590,6 @@ const recentProducts = [
   transform: translateY(0);
 }
 
-/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 1024px) {
   .ps-wrap {
     grid-template-columns: 1fr;
@@ -642,7 +597,7 @@ const recentProducts = [
   }
 
   .ps-right {
-    order: -1;
+    order: 1;
     padding: 0;
   }
 

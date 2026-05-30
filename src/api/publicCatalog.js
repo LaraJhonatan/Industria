@@ -17,4 +17,6 @@ export const publicApi = {
   getProducto: (productoId) => http.get(`/public/productos/${productoId}`),
 
   searchProductos: (params) => http.get('/public/productos/search', { params }),
+  enviarContacto: (data) => http.post('/public/contacto', data),
+  enviarSolicitudMaquinaria: (data) => http.post('/public/maquinaria', data),
 }

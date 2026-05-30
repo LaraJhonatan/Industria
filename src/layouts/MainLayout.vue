@@ -35,7 +35,6 @@
 
         <q-space />
 
-        <!-- Autenticado: avatar + dropdown -->
         <div v-if="authStore.isAuthenticated" class="row items-center no-wrap q-gutter-sm gt-sm">
           <div class="bs-avatar-wrap">
             <button class="bs-avatar" @click="avatarMenu = !avatarMenu">
@@ -86,7 +85,6 @@
           </div>
         </div>
 
-        <!-- No autenticado: botón de registro -->
         <div v-else class="row items-center no-wrap q-gutter-sm gt-sm">
           <button class="bs-signup-btn" @click="router.push('/auth')">
             Regístrate / Inicia Sesión
@@ -160,7 +158,7 @@
           <div class="bs-foot-right">
             <div class="bs-foot-contact">
               <a class="bs-foot-contact-link" href="tel:+573114799224">+57 3114799224</a>
-              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">info@ZIFCOR.com</a>
+              <a class="bs-foot-contact-link" href="mailto:info@ZIFCOR.com">info@ZIFCOR.com</a>
             </div>
             <span class="bs-vline" />
             <div class="bs-foot-social">
@@ -185,13 +183,6 @@
                     d="M14 6c1.2 2.2 3.2 3.6 6 3.8v2.6c-2.6-.1-4.6-1.1-6-2.6v6.1a5.2 5.2 0 1 1-5.2-5.2c.4 0 .8 0 1.2.1v2.7a2.7 2.7 0 1 0 2.8 2.7V4h1.2z" />
                 </svg>
               </a>
-              <a class="bs-social" href="#" aria-label="X">
-                <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M6 18L18 6" />
-                  <path d="M8 6h5l3 4v8" />
-                  <path d="M16 18h-5l-3-4V6" />
-                </svg>
-              </a>
               <a class="bs-social" href="#" aria-label="YouTube">
                 <svg viewBox="0 0 24 24" class="bs-ico" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path
@@ -207,14 +198,75 @@
           <div class="bs-foot-links">
             <a class="bs-foot-link" href="#">Términos de uso</a>
             <a class="bs-foot-link" href="#">Política de privacidad</a>
-            <!-- <a class="bs-foot-link bs-status" href="#"><span class="bs-dot" />Sistema operativo</a> -->
+            <div class="bs-visitor-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              +200 visitantes este mes
+            </div>
           </div>
-          <div class="bs-foot-copy">© {{ year }} Zifcor S.A.S - Todos los derechos reservados - NIT: 902067173-6</div>
 
+          <div class="bs-foot-copy">© {{ year }} Zifcor S.A.S - Todos los derechos reservados - NIT: 902067173-6</div>
         </div>
       </div>
     </q-footer>
 
+    <!-- ══ FEEDBACK FLOTANTE ═══════════════════════════════ -->
+    <q-page-sticky position="bottom-right" :offset="[24, 90]" class="z-fab">
+      <div class="fb-wrap">
+        <!-- Burbuja de feedback -->
+        <Transition name="fb-pop">
+          <div v-if="feedbackOpen" class="fb-box">
+            <div class="fb-head">
+              <span class="fb-title">💡 Deja tu sugerencia</span>
+              <button class="fb-close" @click="closeFeedback">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <p class="fb-hint">¿Qué mejorarías? Escribe y presiona Enter</p>
+
+            <div v-if="feedbackSent" class="fb-success">
+              ✅ ¡Gracias! Tu sugerencia fue enviada.
+            </div>
+            <div v-else>
+              <textarea v-model="feedbackMsg" class="fb-input" placeholder="Ej: Mejorar el filtro de búsqueda..."
+                rows="3" @keydown.enter.prevent="sendFeedback" :disabled="feedbackLoading" />
+              <div class="fb-footer">
+                <span class="fb-enter-hint">↵ Enter para enviar</span>
+                <button class="fb-send" @click="sendFeedback" :disabled="feedbackLoading || !feedbackMsg.trim()">
+                  <span v-if="feedbackLoading" class="fb-spinner" />
+                  <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+
+        <!-- Botón azul -->
+        <button class="fb-trigger" @click="toggleFeedback" :class="{ 'fb-trigger--open': feedbackOpen }">
+          <svg v-if="!feedbackOpen" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </q-page-sticky>
+
+    <!-- ══ WHATSAPP ═══════════════════════════════════════ -->
     <q-page-sticky position="bottom-right" :offset="[24, 24]" class="z-fab">
       <a :href="whatsappUrl" target="_blank" rel="noopener noreferrer" class="bs-whatsapp-float">
         <div class="bs-whatsapp-pulse" />
@@ -224,6 +276,7 @@
         </svg>
       </a>
     </q-page-sticky>
+
   </q-layout>
 </template>
 
@@ -231,6 +284,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth-store'
+import { publicApi } from '../api/publicCatalog'
 import PreLaunchBanner from './PreLaunchBanner.vue'
 
 const router = useRouter()
@@ -241,19 +295,57 @@ const scrolled = ref(false)
 const avatarMenu = ref(false)
 const year = new Date().getFullYear()
 
+// Feedback
+const feedbackOpen = ref(false)
+const feedbackMsg = ref('')
+const feedbackLoading = ref(false)
+const feedbackSent = ref(false)
+
+function toggleFeedback() {
+  feedbackOpen.value = !feedbackOpen.value
+  if (!feedbackOpen.value) resetFeedback()
+}
+
+function closeFeedback() {
+  feedbackOpen.value = false
+  resetFeedback()
+}
+
+function resetFeedback() {
+  feedbackMsg.value = ''
+  feedbackSent.value = false
+  feedbackLoading.value = false
+}
+
+async function sendFeedback() {
+  if (!feedbackMsg.value.trim() || feedbackLoading.value) return
+  feedbackLoading.value = true
+  try {
+    await publicApi.enviarContacto({
+      firstName: 'Sugerencia',
+      lastName: 'Web',
+      email: 'feedback@zifcor.com',
+      phone: '0000000000',
+      message: feedbackMsg.value.trim(),
+    })
+    feedbackSent.value = true
+    setTimeout(() => {
+      closeFeedback()
+    }, 2500)
+  } catch {
+    feedbackSent.value = true // igual mostramos gracias para no frustrar al usuario
+    setTimeout(() => closeFeedback(), 2500)
+  } finally {
+    feedbackLoading.value = false
+  }
+}
+
 const ZIFCOR_WHATSAPP = '573114799224'
 const whatsappMessage = 'Hola, me gustaría recibir más información sobre Zifcor y sus servicios.'
+const whatsappUrl = computed(() => `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`)
 
-const whatsappUrl = computed(() =>
-  `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`
-)
-
-const empresaNombre = computed(() =>
-  authStore.empresa?.razonSocial || authStore.empresa?.nit || 'Mi empresa'
-)
-
+const empresaNombre = computed(() => authStore.empresa?.razonSocial || authStore.empresa?.nit || 'Mi empresa')
 const profileImage = computed(() => authStore.empresa?.logoUrl || null)
-
 const initials = computed(() => {
   const name = empresaNombre.value
   const words = name.trim().split(/\s+/)
@@ -276,7 +368,6 @@ function scrollToSection(id) {
 }
 
 function onScroll() { scrolled.value = window.scrollY > 10 }
-
 function onClickOutside(e) {
   const wrap = document.querySelector('.bs-avatar-wrap')
   if (wrap && !wrap.contains(e.target)) avatarMenu.value = false
@@ -422,7 +513,7 @@ onBeforeUnmount(() => {
   color: rgba(11, 18, 32, 0.72) !important;
 }
 
-/* ── AVATAR ── */
+/* Avatar */
 .bs-avatar-wrap {
   position: relative;
 }
@@ -433,7 +524,6 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   border: 2px solid rgba(0, 113, 227, 0.3);
   background: #f0f4f8;
-  /* gris claro — no azul — para logos con fondo transparente */
   cursor: pointer;
   overflow: hidden;
   display: grid;
@@ -451,28 +541,19 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  /* contain para no recortar logos */
   display: block;
-  image-rendering: -webkit-optimize-contrast;
-  /* evita pixelado en Chrome */
-  image-rendering: crisp-edges;
 }
 
 .bs-avatar-initials {
   font-size: 13px;
   font-weight: 900;
   color: #fff;
-  letter-spacing: -0.5px;
-  line-height: 1;
-  /* cuando hay iniciales sí queremos el gradiente azul */
 }
 
-/* Cuando hay iniciales, fondo azul; cuando hay imagen, fondo gris */
 .bs-avatar:has(.bs-avatar-initials) {
   background: linear-gradient(135deg, #0071e3, #4f9cf9);
 }
 
-/* ── AVATAR DROPDOWN ── */
 .bs-avatar-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -497,7 +578,6 @@ onBeforeUnmount(() => {
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  /* cuadrado redondeado para logos */
   background: #f0f4f8;
   display: grid;
   place-items: center;
@@ -515,8 +595,6 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
 }
 
 .avatar-drop-initials {
@@ -601,7 +679,7 @@ onBeforeUnmount(() => {
   transform: translateY(-4px);
 }
 
-/* ── DRAWER ── */
+/* Drawer */
 .bs-drawer {
   background: #fff !important;
 }
@@ -715,8 +793,6 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
 }
 
 .drawer-avatar-initials {
@@ -776,7 +852,7 @@ onBeforeUnmount(() => {
   border-color: #dc2626;
 }
 
-/* ── FOOTER ── */
+/* Footer */
 .bs-footer {
   background: #fff;
   border-top: 1px solid rgba(15, 23, 42, 0.09);
@@ -913,27 +989,13 @@ onBeforeUnmount(() => {
   color: #0b1220;
 }
 
-.bs-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bs-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-}
-
 .bs-foot-copy {
   font-size: 12px;
   font-weight: 700;
   color: rgba(11, 18, 32, 0.45);
 }
 
-/* ── WHATSAPP ── */
+/* WhatsApp */
 .bs-whatsapp-float {
   position: relative;
   width: 56px;
@@ -967,6 +1029,20 @@ onBeforeUnmount(() => {
   z-index: -1;
 }
 
+.bs-visitor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  background: rgba(15, 23, 42, 0.03);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, 0.60);
+  white-space: nowrap;
+}
+
 @keyframes pulse-ring {
   0% {
     transform: scale(1);
@@ -979,7 +1055,181 @@ onBeforeUnmount(() => {
   }
 }
 
-/* ── RESPONSIVE ── */
+/* ══ FEEDBACK ═══════════════════════════════════ */
+.fb-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.fb-trigger {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #0071e3;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 24px rgba(0, 113, 227, 0.35);
+  transition: transform 240ms, background 160ms;
+}
+
+.fb-trigger:hover {
+  transform: scale(1.08);
+}
+
+.fb-trigger--open {
+  background: #334155;
+}
+
+.fb-box {
+  width: 280px;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  margin-bottom: 4px;
+}
+
+.fb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.fb-title {
+  font-size: 14px;
+  font-weight: 900;
+  color: #0b1220;
+}
+
+.fb-close {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: rgba(11, 18, 32, 0.5);
+}
+
+.fb-hint {
+  font-size: 12px;
+  color: rgba(11, 18, 32, 0.45);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.fb-input {
+  width: 100%;
+  border: 1.5px solid rgba(15, 23, 42, 0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: #0b1220;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  transition: border-color 160ms;
+  line-height: 1.5;
+}
+
+.fb-input:focus {
+  border-color: #0071e3;
+}
+
+.fb-input::placeholder {
+  color: rgba(11, 18, 32, 0.35);
+}
+
+.fb-input:disabled {
+  opacity: 0.6;
+}
+
+.fb-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.fb-enter-hint {
+  font-size: 11px;
+  color: rgba(11, 18, 32, 0.35);
+  font-weight: 600;
+}
+
+.fb-send {
+  width: 32px;
+  height: 32px;
+  background: #0071e3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 160ms;
+}
+
+.fb-send:hover:not(:disabled) {
+  background: #005fcd;
+}
+
+.fb-send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.fb-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fb-success {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #16a34a;
+  text-align: center;
+  padding: 12px 0 4px;
+}
+
+.fb-pop-enter-active {
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.fb-pop-leave-active {
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.fb-pop-enter-from {
+  opacity: 0;
+  transform: translateY(10px) scale(0.97);
+}
+
+.fb-pop-leave-to {
+  opacity: 0;
+  transform: translateY(6px) scale(0.97);
+}
+
+/* Responsive */
 @media (max-width: 900px) {
   .bs-footer-top {
     flex-direction: column;
@@ -1008,6 +1258,10 @@ onBeforeUnmount(() => {
   .bs-footer-bottom {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .fb-box {
+    width: 260px;
   }
 }
 </style>

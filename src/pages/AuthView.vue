@@ -145,7 +145,6 @@
               <div class="iw">
                 <input v-model="login.id" class="fi" type="text" placeholder="900123456 o correo@empresa.com"
                   @keydown.enter="doLogin" />
-
                 <svg class="fi-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -585,7 +584,7 @@ api.interceptors.request.use(config => {
       const { accessToken } = JSON.parse(sesion)
       if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
     } catch {
-      // JSON inválido, no se agrega header
+      console.warn('Error parsing session from localStorage')
     }
   }
   return config
@@ -636,8 +635,6 @@ function fmtBytes(b) {
 
 function switchMode(m) {
   mode.value = m
-  // NO limpiar loginErr aquí para que el error persista si el usuario
-  // accidentalmente hace clic en otra tab
   if (m === 'register') {
     loginErr.value = ''
     Object.assign(reg, {
@@ -651,20 +648,16 @@ function switchMode(m) {
 }
 
 async function doLogin() {
-  console.log('CLICK LOGIN') // 👈
-
   if (loginLoading.value) return
   loginErr.value = ''
   loginLoading.value = true
-
   try {
     await authStore.login(login.id, login.pw)
-    console.log('LOGIN OK')
-    const result = await router.push('/dashboard')
-    console.log('ROUTER RESULT', result)
+    await router.push('/dashboard')
   } catch (err) {
-    console.log('LOGIN ERROR', err)
     loginErr.value = getError(err)
+  } finally {
+    loginLoading.value = false
   }
 }
 
@@ -823,6 +816,7 @@ function irAlLogin() {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+/* ══ HERO ════════════════════════════════════════ */
 .auth-hero {
   position: relative;
   overflow: hidden;
@@ -996,6 +990,7 @@ function irAlLogin() {
   max-width: 130px;
 }
 
+/* ══ PANEL ═══════════════════════════════════════ */
 .auth-panel {
   background: #eef0f5;
   display: flex;
@@ -1871,40 +1866,86 @@ function irAlLogin() {
   margin-top: 16px;
 }
 
+/* ══ RESPONSIVE MÓVIL ════════════════════════════ */
 @media (max-width: 900px) {
   .auth-page {
     grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
   }
 
   .auth-hero {
-    min-height: 200px;
-    max-height: 240px;
+    min-height: unset;
+    max-height: unset;
+    height: auto;
   }
 
   .hero-inner {
-    padding: 20px 24px 16px;
+    padding: 20px 24px 20px;
+    gap: 0;
+  }
+
+  .hero-top {
+    margin-bottom: 16px;
   }
 
   .hero-body {
-    padding: 16px 0 12px;
+    padding: 0;
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-size: clamp(22px, 5vw, 32px);
+    margin-bottom: 10px;
   }
 
   .hero-sub,
-  .hero-list,
+  .hero-list {
+    display: none;
+  }
+
   .hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 16px;
+  }
+
+  .hs-item {
+    padding: 10px 12px;
+  }
+
+  .hs-val {
+    font-size: 15px;
+  }
+
+  .hs-lbl {
+    font-size: 10px;
+  }
+
+  .hero-foot {
     display: none;
   }
 
   .auth-panel {
-    padding: 24px 16px;
+    min-height: unset;
+    padding: 0;
+    background: #eef0f5;
+    align-items: flex-start;
+  }
+
+  .auth-box {
+    border-radius: 20px 20px 0 0;
+    border: none;
+    border-top: 1px solid rgba(15, 23, 42, .09);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, .08);
+    width: 100%;
+    max-width: 100%;
   }
 
   .panel-head {
-    padding: 22px 22px 16px;
+    padding: 20px 20px 16px;
   }
 
   .panel-body {
-    padding: 22px 22px 28px;
+    padding: 20px 20px 32px;
   }
 }
 
@@ -1933,6 +1974,14 @@ function irAlLogin() {
 
   .otp-group {
     gap: 6px;
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .hs-lbl {
+    display: none;
   }
 }
 </style>

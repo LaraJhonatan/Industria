@@ -20,34 +20,22 @@
           con una propuesta clara y sin compromisos.
         </p>
 
-        <!-- Bloque Calendly -->
-        <a href="https://calendly.com/ZIFCOR/llamada" target="_blank" class="calendly-card" rel="noopener">
-          <div class="calendly-card-inner">
-            <div class="calendly-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-            </div>
-            <div class="calendly-text">
-              <div class="calendly-question">¿Prefieres que te llamemos?</div>
-              <div class="calendly-cta">Agenda una llamada gratuita →</div>
-            </div>
-          </div>
-          <div class="calendly-avatars">
-            <div class="avatar av1">JR</div>
-            <div class="avatar av2">MC</div>
-            <div class="avatar av3">SA</div>
-            <div class="calendly-team">Nuestro equipo te atiende</div>
-          </div>
-        </a>
-
       </div>
 
       <!-- ══ COLUMNA DERECHA — FORMULARIO ══════════ -->
       <q-form ref="formRef" class="contact-form" @submit.prevent="onSubmit" v-reveal data-delay="100">
+
+        <div v-if="success" class="success-msg">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          ¡Mensaje enviado! Te responderemos en menos de 24 horas.
+        </div>
+
+        <div v-if="error" class="error-msg">
+          {{ error }}
+        </div>
+
         <div class="form-grid">
           <div class="field">
             <label class="label">Nombres *</label>
@@ -62,7 +50,7 @@
           </div>
 
           <div class="field">
-            <label class="label">Email corporativo *</label>
+            <label class="label">Email *</label>
             <q-input v-model="form.email" outlined dense type="email" class="input" placeholder="nombre@empresa.com"
               :rules="[required, emailRule]" />
           </div>
@@ -88,8 +76,8 @@
             </span>
           </q-checkbox>
 
-          <q-btn unelevated type="submit" class="submit-btn" label="Enviar mensaje" icon-right="send"
-            :loading="sending" />
+          <q-btn unelevated type="submit" class="submit-btn" label="Enviar mensaje" icon-right="send" :loading="sending"
+            :disable="!form.acceptTerms" />
         </div>
       </q-form>
 
@@ -98,10 +86,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
+import { publicApi } from '../../api/publicCatalog'
 
 const formRef = ref(null)
 const sending = ref(false)
+const success = ref(false)
+const error = ref('')
 
 const form = ref({
   firstName: '',
@@ -121,24 +112,38 @@ const emailRule = (v) => {
 async function onSubmit() {
   const ok = await formRef.value?.validate?.()
   if (!ok) return
+  if (!form.value.acceptTerms) return
 
   sending.value = true
-  try {
-    const to = 'comercial@ZIFCOR.com'
-    const subject = `Contacto web: ${form.value.firstName} ${form.value.lastName}`
-    const body = [
-      `Nombres: ${form.value.firstName}`,
-      `Apellidos: ${form.value.lastName}`,
-      `Email: ${form.value.email}`,
-      `Celular: ${form.value.phone}`,
-      ``,
-      `Mensaje:`,
-      `${form.value.message}`
-    ].join('%0D%0A')
+  error.value = ''
+  success.value = false
 
-    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${body}`
+  try {
+    await publicApi.enviarContacto({
+      firstName: form.value.firstName,
+      lastName: form.value.lastName,
+      email: form.value.email,
+      phone: form.value.phone,
+      message: form.value.message,
+    })
+
+    success.value = true
+    form.value = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      message: '',
+      acceptTerms: false
+    }
+    await nextTick()
+    formRef.value?.resetValidation()
+
+  } catch (e) {
+    console.error('Error al enviar contacto:', e)
+    error.value = 'Ocurrió un error al enviar el mensaje. Intenta de nuevo.'
   } finally {
-    setTimeout(() => { sending.value = false }, 400)
+    sending.value = false
   }
 }
 </script>
@@ -173,7 +178,6 @@ async function onSubmit() {
   gap: 28px;
 }
 
-/* Badge de estado */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -196,7 +200,6 @@ async function onSubmit() {
   flex-shrink: 0;
 }
 
-/* Título */
 .title {
   margin: 0;
   font-size: clamp(32px, 3.5vw, 50px);
@@ -211,7 +214,6 @@ async function onSubmit() {
   color: var(--blue);
 }
 
-/* Subtítulo */
 .subtitle {
   margin: 0;
   font-size: 16px;
@@ -220,106 +222,30 @@ async function onSubmit() {
   max-width: 420px;
 }
 
-/* ══ Tarjeta Calendly ════════════════════════════ */
-.calendly-card {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 24px;
-  border-radius: 16px;
-  background: #ffffff;
-  border: 1.5px solid rgba(11, 18, 32, 0.10);
-  text-decoration: none;
-  transition: border-color 220ms, box-shadow 220ms, transform 220ms;
-  box-shadow:
-    0 2px 8px rgba(11, 18, 32, 0.06),
-    0 8px 24px rgba(11, 18, 32, 0.08);
-}
-
-.calendly-card:hover {
-  border-color: rgba(0, 113, 227, 0.35);
-  box-shadow:
-    0 4px 16px rgba(11, 18, 32, 0.08),
-    0 12px 32px rgba(0, 113, 227, 0.10);
-  transform: translateY(-2px);
-}
-
-.calendly-card-inner {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-
-.calendly-icon {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: rgba(0, 113, 227, 0.08);
-  border: 1px solid rgba(0, 113, 227, 0.20);
-  display: grid;
-  place-items: center;
-  color: var(--blue);
-}
-
-.calendly-question {
-  font-size: 15px;
-  font-weight: 800;
-  color: #0b1220;
-  margin-bottom: 4px;
-}
-
-.calendly-cta {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--blue);
-}
-
-.calendly-avatars {
+/* ══ Mensajes ════════════════════════════════════ */
+.success-msg {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(11, 18, 32, 0.08);
+  padding: 14px 18px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.30);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #16a34a;
+  margin-bottom: 20px;
 }
 
-.avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 10px;
-  font-weight: 900;
-  border: 2px solid #ffffff;
-  margin-left: -8px;
-  flex-shrink: 0;
-}
-
-.avatar:first-child {
-  margin-left: 0
-}
-
-.av1 {
-  background: #0071e3;
-  color: #fff
-}
-
-.av2 {
-  background: #fdda24;
-  color: #0b1220
-}
-
-.av3 {
-  background: #22c55e;
-  color: #fff
-}
-
-.calendly-team {
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, 0.42);
-  margin-left: 4px;
+.error-msg {
+  padding: 14px 18px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.30);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #dc2626;
+  margin-bottom: 20px;
 }
 
 /* ══ Formulario ══════════════════════════════════ */
@@ -352,7 +278,6 @@ async function onSubmit() {
   color: #0b1220;
 }
 
-/* Inputs sobre fondo blanco */
 .input :deep(.q-field__control),
 .textarea :deep(.q-field__control) {
   background: #ffffff !important;
@@ -389,7 +314,6 @@ async function onSubmit() {
   min-height: 110px !important;
 }
 
-/* Footer del form */
 .form-footer {
   margin-top: 22px;
   display: flex;
@@ -413,13 +337,11 @@ async function onSubmit() {
   text-decoration: underline
 }
 
-/* Botón submit */
 .submit-btn {
   height: 52px;
   border-radius: 12px;
   font-weight: 600;
   font-size: 15px;
-  letter-spacing: 0;
   background: var(--blue);
   color: #fff;
   box-shadow: 0 4px 18px rgba(0, 113, 227, 0.32);

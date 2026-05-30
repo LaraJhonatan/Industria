@@ -116,7 +116,7 @@ const examples = [
 function goToSearch() {
   const q = searchQuery.value.trim()
   if (!q) return
-  router.push({ path: '/tienda/buscar', query: { q } })  // ← corregido
+  router.push({ path: '/tienda/buscar', query: { q } })
 }
 
 function quickSearch(term) {
@@ -357,9 +357,9 @@ onMounted(async () => {
 }
 
 .bs-wrap {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 48px;
 }
 
 .section-head {
@@ -382,7 +382,7 @@ onMounted(async () => {
 
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 22px;
   margin-bottom: 72px;
 }
@@ -392,7 +392,7 @@ onMounted(async () => {
   border-radius: 22px;
   overflow: hidden;
   cursor: pointer;
-  min-height: 360px;
+  min-height: 260px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -540,6 +540,12 @@ onMounted(async () => {
 .cta-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+}
+
+@media (max-width: 900px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 640px) {

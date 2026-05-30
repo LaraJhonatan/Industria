@@ -174,8 +174,17 @@
           <div class="bs-foot-links">
             <a class="bs-foot-link" href="#">Términos de uso</a>
             <a class="bs-foot-link" href="#">Política de privacidad</a>
-            <!-- <a class="bs-foot-link bs-status" href="#"><span class="bs-dot" />Sistema operativo</a> -->
+            <div class="bs-visitor-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              +200 visitantes este mes
+            </div>
           </div>
+
           <div class="bs-foot-copy">© {{ year }} Zifcor S.A.S - Todos los derechos reservados - NIT: 902067173-6</div>
         </div>
       </div>
@@ -733,6 +742,20 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: flex-start;
   gap: 14px;
+}
+
+.bs-visitor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  background: rgba(15, 23, 42, 0.03);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, 0.60);
+  white-space: nowrap;
 }
 
 .foot-logo-img {
