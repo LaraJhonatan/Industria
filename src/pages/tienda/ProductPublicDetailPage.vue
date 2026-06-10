@@ -47,17 +47,6 @@
 
           <!-- INFO -->
           <div class="info-col">
-            <!-- <div class="empresa-chip" @click="goBackToStore()">
-              <div class="empresa-chip-logo">
-                <img src="/IconoZ.png" alt="ZIFCOR" class="empresa-chip-logo-img" />
-              </div>
-              <div class="empresa-chip-meta">
-                <span class="empresa-chip-name">{{ empresaNombreDisplay }}</span>
-                <span class="empresa-chip-sub">Ver tienda</span>
-              </div>
-              <q-icon name="chevron_right" size="16px" color="grey-5" />
-            </div> -->
-
             <h1 class="product-title">{{ product.nombre }}</h1>
 
             <p v-if="product.precioBase" class="product-price">
@@ -144,6 +133,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { publicApi } from '../../api/publicCatalog'
 import { slugify } from '../../utils/slugify'
 
@@ -151,12 +141,9 @@ const router = useRouter()
 const route = useRoute()
 
 const ZIFCOR_WHATSAPP = '573114799224'
+const SITE_URL = 'https://www.zifcor.com'
 
-// El ID real viene de:
-// 1. ?pid=GUID  — navegación interna desde CompanyStorePage
-// 2. route.params.productoId — cuando el param ES un GUID (link directo legacy)
 const productoSlug = computed(() => route.params.productoSlug)
-
 
 const product = ref(null)
 const loading = ref(true)
@@ -179,27 +166,150 @@ const empresaNombreDisplay = computed(() =>
 
 const empresaSlug = computed(() => slugify(empresaNombreDisplay.value))
 
-// Tras cargar el producto limpia ?eid y ?pid de la URL
-// → queda /tienda/empresa/zifcor/producto/nombre-producto
+/* ============================================================
+   SEO DINÁMICO — useHead + JSON-LD (Schema.org)
+   ============================================================ */
+
+// URL canónica jerárquica: /tienda/:sectorSlug/:empresaSlug/producto/:productoSlug
+const canonicalUrl = computed(() => {
+  if (!product.value) return `${SITE_URL}/tienda`
+  const sector = route.params.sectorSlug || 'tienda'
+  const slug = product.value.slug || slugify(product.value.nombre)
+  return `${SITE_URL}/tienda/${sector}/${empresaSlug.value}/producto/${slug}`
+})
+
+// <title>: máx ~60 caracteres para que Google no lo corte
+const pageTitle = computed(() => {
+  if (loading.value) return 'Cargando producto... | ZIFCOR'
+  if (!product.value) return 'Producto no encontrado | ZIFCOR'
+
+  const empresa = empresaNombreDisplay.value
+  // Si la empresa es ZIFCOR (o variantes), evita "ZIFCOR | ZIFCOR"
+  const esZifcor = /^zifcor/i.test(empresa.trim())
+  return esZifcor
+    ? `${product.value.nombre} | ZIFCOR`
+    : `${product.value.nombre} | ${empresa} | ZIFCOR`
+})
+
+// <meta description>: máx ~155 caracteres, con fallback si no hay descripción
+const metaDescription = computed(() => {
+  if (!product.value) return 'Marketplace industrial B2B en Colombia. Encuentra productos y maquinaria de empresas verificadas.'
+  const base = product.value.descripcion?.trim() ||
+    `Compra ${product.value.nombre} en ZIFCOR, marketplace industrial B2B en Colombia. Cotiza directo con ${empresaNombreDisplay.value}.`
+  return base.length > 155 ? `${base.slice(0, 152)}...` : base
+})
+
+// Marca: primero el atributo "marca", si no existe usa la empresa
+const productBrand = computed(() => {
+  const attr = product.value?.atributos?.find(a => a.atributo?.clave === 'marca')
+  return attr?.valor || empresaNombreDisplay.value
+})
+
+// JSON-LD: Schema.org Product
+const productJsonLd = computed(() => {
+  if (!product.value) return null
+  const p = product.value
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: p.nombre,
+    description: metaDescription.value,
+    url: canonicalUrl.value,
+    image: (p.imagenes || []).map(i => i.url).filter(Boolean),
+    brand: { '@type': 'Brand', name: productBrand.value },
+  }
+  if (p.sku || p.variantes?.[0]?.sku) ld.sku = p.sku || p.variantes[0].sku
+  // Solo incluir offers si hay precio; si es "por cotización" Google penaliza price: 0
+  if (p.precioBase && Number(p.precioBase) > 0) {
+    const stockTotal = (p.variantes || []).reduce((acc, v) => acc + (Number(v.stock) || 0), 0)
+    ld.offers = {
+      '@type': 'Offer',
+      url: canonicalUrl.value,
+      price: Number(p.precioBase),
+      priceCurrency: p.moneda || 'COP',
+      availability: stockTotal > 0
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/PreOrder',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: { '@type': 'Organization', name: empresaNombreDisplay.value },
+    }
+  }
+  return ld
+})
+
+// JSON-LD: BreadcrumbList (refuerza la jerarquía sector > empresa > producto)
+const breadcrumbJsonLd = computed(() => {
+  if (!product.value) return null
+  const sector = route.params.sectorSlug || 'tienda'
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Sectores', item: `${SITE_URL}/tienda` },
+      { '@type': 'ListItem', position: 2, name: empresaNombreDisplay.value, item: `${SITE_URL}/tienda/${sector}/${empresaSlug.value}` },
+      { '@type': 'ListItem', position: 3, name: product.value.nombre, item: canonicalUrl.value },
+    ],
+  }
+})
+
+useHead({
+  title: () => pageTitle.value,
+  meta: [
+    { name: 'description', content: () => metaDescription.value },
+    { name: 'robots', content: () => (product.value ? 'index, follow' : 'noindex') },
+    // Open Graph (WhatsApp, Facebook, LinkedIn)
+    { property: 'og:type', content: 'product' },
+    { property: 'og:site_name', content: 'ZIFCOR' },
+    { property: 'og:title', content: () => pageTitle.value },
+    { property: 'og:description', content: () => metaDescription.value },
+    { property: 'og:url', content: () => canonicalUrl.value },
+    { property: 'og:image', content: () => productImages.value[0]?.url || `${SITE_URL}/IconoZ.png` },
+    { property: 'og:locale', content: 'es_CO' },
+    { property: 'product:price:amount', content: () => product.value?.precioBase ? String(product.value.precioBase) : undefined },
+    { property: 'product:price:currency', content: () => product.value?.moneda || 'COP' },
+    // Twitter
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: () => pageTitle.value },
+    { name: 'twitter:description', content: () => metaDescription.value },
+    { name: 'twitter:image', content: () => productImages.value[0]?.url || `${SITE_URL}/IconoZ.png` },
+  ],
+  link: [
+    { rel: 'canonical', href: () => canonicalUrl.value },
+  ],
+  script: [
+    {
+      key: 'ld-product',
+      type: 'application/ld+json',
+      innerHTML: () => (productJsonLd.value ? JSON.stringify(productJsonLd.value) : '{}'),
+    },
+    {
+      key: 'ld-breadcrumb',
+      type: 'application/ld+json',
+      innerHTML: () => (breadcrumbJsonLd.value ? JSON.stringify(breadcrumbJsonLd.value) : '{}'),
+    },
+  ],
+})
+
+/* ============================================================ */
+
+// Tras cargar el producto normaliza la URL jerárquica
+// → /tienda/:sectorSlug/:empresaSlug/producto/:productoSlug
 function cleanUrl() {
   if (!product.value) return
-  const productoSlug = product.value.slug || slugify(product.value.nombre)
+  const slug = product.value.slug || slugify(product.value.nombre)
   const sector = route.params.sectorSlug
   history.replaceState(
     history.state,
     '',
-    `/tienda/${sector}/${empresaSlug.value}/producto/${productoSlug}`
+    `/tienda/${sector}/${empresaSlug.value}/producto/${slug}`
   )
 }
 
-
-
-// Vuelve a la tienda pasando el empresaId por query para que CompanyStorePage lo use
+// Vuelve a la tienda manteniendo la jerarquía sector/empresa
 function goBackToStore() {
   const sector = route.params.sectorSlug
   router.push(`/tienda/${sector}/${empresaSlug.value}`)
 }
-
 
 const atributosUnicos = computed(() => {
   if (!product.value?.atributos?.length) return []
@@ -288,7 +398,6 @@ async function loadProduct() {
     loading.value = false
   }
 }
-
 
 watch(
   () => route.params.productoSlug || route.query.pid,
@@ -489,63 +598,6 @@ watch(
 .info-col {
   display: flex;
   flex-direction: column;
-}
-
-.empresa-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1.5px solid rgba(11, 18, 32, .08);
-  background: #fff;
-  cursor: pointer;
-  margin-bottom: 18px;
-  width: fit-content;
-  transition: all 160ms;
-}
-
-.empresa-chip:hover {
-  border-color: rgba(0, 113, 227, .2);
-  box-shadow: 0 8px 18px rgba(0, 113, 227, .08);
-}
-
-.empresa-chip-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid rgba(11, 18, 32, .08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 3px;
-}
-
-.empresa-chip-logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.empresa-chip-meta {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-}
-
-.empresa-chip-name {
-  font-size: 12.5px;
-  font-weight: 800;
-  color: #0b1220;
-}
-
-.empresa-chip-sub {
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, .42);
 }
 
 .product-title {
