@@ -147,7 +147,7 @@
           </div>
           <div class="bs-foot-right">
             <div class="bs-foot-contact">
-              <a class="bs-foot-contact-link" href="mailto:hola@ZIFCOR.com">hola@ZIFCOR.com</a>
+              <a class="bs-foot-contact-link" href="mailto:contacto@zifcor.com">contacto@zifcor.com</a>
             </div>
             <span class="bs-vline" />
             <div class="bs-foot-social">
