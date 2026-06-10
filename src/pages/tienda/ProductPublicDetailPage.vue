@@ -15,9 +15,7 @@
           <span class="bc-current">{{ product.nombre }}</span>
         </nav>
 
-        <!-- LAYOUT PRINCIPAL: galería + info -->
         <div class="detail-layout">
-
           <!-- GALERÍA sticky -->
           <div class="gallery-col">
             <div class="gallery-shell">
@@ -49,7 +47,7 @@
 
           <!-- INFO -->
           <div class="info-col">
-            <div class="empresa-chip" @click="goBackToStore()">
+            <!-- <div class="empresa-chip" @click="goBackToStore()">
               <div class="empresa-chip-logo">
                 <img src="/IconoZ.png" alt="ZIFCOR" class="empresa-chip-logo-img" />
               </div>
@@ -58,7 +56,7 @@
                 <span class="empresa-chip-sub">Ver tienda</span>
               </div>
               <q-icon name="chevron_right" size="16px" color="grey-5" />
-            </div>
+            </div> -->
 
             <h1 class="product-title">{{ product.nombre }}</h1>
 
@@ -70,7 +68,6 @@
 
             <p v-if="product.descripcion" class="product-desc">{{ product.descripcion }}</p>
 
-            <!-- Resumen rápido de specs clave (primeras 4) -->
             <div v-if="specsSummary.length" class="specs-summary">
               <div v-for="sp in specsSummary" :key="sp.id" class="spec-pill">
                 <span class="spec-pill-key">{{ sp.atributo?.nombre }}</span>
@@ -103,7 +100,7 @@
           </div>
         </div>
 
-        <!-- ESPECIFICACIONES COMPLETAS - full width debajo -->
+        <!-- ESPECIFICACIONES COMPLETAS -->
         <div v-if="atributosUnicos.length" class="specs-full">
           <div class="specs-full-header">
             <h2 class="specs-full-title">Especificaciones técnicas</h2>
@@ -155,9 +152,11 @@ const route = useRoute()
 
 const ZIFCOR_WHATSAPP = '573114799224'
 
-// IDs reales: vienen de history.state (navegación interna) o del param (link con GUID)
-const empresaId = computed(() => history.state?.empresaIdReal || route.params.empresaId)
-const productoId = computed(() => history.state?.productoIdReal || route.params.productoId)
+// El ID real viene de:
+// 1. ?pid=GUID  — navegación interna desde CompanyStorePage
+// 2. route.params.productoId — cuando el param ES un GUID (link directo legacy)
+const productoSlug = computed(() => route.params.productoSlug)
+
 
 const product = ref(null)
 const loading = ref(true)
@@ -172,7 +171,6 @@ const selectedImageUrl = computed(() => {
   return productImages.value[selectedImageIndex.value]?.url || ''
 })
 
-// Nombre de la empresa para mostrar en breadcrumb y chip
 const empresaNombreDisplay = computed(() =>
   product.value?.empresa?.profile?.nombreComercial ||
   product.value?.empresa?.razonSocial ||
@@ -181,38 +179,28 @@ const empresaNombreDisplay = computed(() =>
 
 const empresaSlug = computed(() => slugify(empresaNombreDisplay.value))
 
-// Reemplaza la URL con slugs amigables sin recargar
-function prettifyUrl() {
+// Tras cargar el producto limpia ?eid y ?pid de la URL
+// → queda /tienda/empresa/zifcor/producto/nombre-producto
+function cleanUrl() {
   if (!product.value) return
-  const productoSlug = slugify(product.value.nombre)
-  const currentPath = route.path
-  // actúa solo si la URL todavía expone algún GUID
-  const tieneGuid = currentPath.includes(product.value.id) || currentPath.includes(route.params.productoId)
-  if (tieneGuid) {
-    const newPath = `/tienda/empresa/${empresaSlug.value}/producto/${productoSlug}`
-    history.replaceState(
-      {
-        ...history.state,
-        empresaIdReal: product.value.empresaId,
-        productoIdReal: product.value.id,
-      },
-      '',
-      newPath
-    )
-  }
+  const productoSlug = product.value.slug || slugify(product.value.nombre)
+  const sector = route.params.sectorSlug
+  history.replaceState(
+    history.state,
+    '',
+    `/tienda/${sector}/${empresaSlug.value}/producto/${productoSlug}`
+  )
 }
 
-// Vuelve a la tienda de la empresa con URL amigable
+
+
+// Vuelve a la tienda pasando el empresaId por query para que CompanyStorePage lo use
 function goBackToStore() {
-  const id = product.value?.empresaId || empresaId.value
-  // const slug = empresaSlug.value || id
-  router.push({
-    path: `/tienda/empresa/${id}`,
-    state: { empresaIdReal: id },
-  })
+  const sector = route.params.sectorSlug
+  router.push(`/tienda/${sector}/${empresaSlug.value}`)
 }
 
-// Deduplica atributos por atributoId
+
 const atributosUnicos = computed(() => {
   if (!product.value?.atributos?.length) return []
   const seen = new Set()
@@ -224,7 +212,6 @@ const atributosUnicos = computed(() => {
   })
 })
 
-// Primeras 4 specs como píldoras rápidas
 const specsSummary = computed(() => atributosUnicos.value.slice(0, 4))
 
 const GRUPOS = [
@@ -241,7 +228,6 @@ const atributosAgrupados = computed(() => {
   const attrs = atributosUnicos.value
   const clavesUsadas = new Set()
   const grupos = []
-
   for (const g of GRUPOS) {
     const items = attrs.filter(av => g.claves.includes(av.atributo?.clave))
     if (items.length) {
@@ -249,10 +235,8 @@ const atributosAgrupados = computed(() => {
       grupos.push({ ...g, items })
     }
   }
-
   const resto = attrs.filter(av => !clavesUsadas.has(av.atributo?.clave))
   if (resto.length) grupos.push({ titulo: 'Otros', icono: '⚙', items: resto })
-
   return grupos
 })
 
@@ -288,7 +272,7 @@ function onCotizar() {
 async function loadProduct() {
   loading.value = true
   try {
-    const { data } = await publicApi.getProducto(productoId.value)
+    const { data } = await publicApi.getProductoPorSlug(productoSlug.value)
     product.value = data || null
     if (data?.imagenes?.length) {
       const pi = data.imagenes.findIndex(i => i.esPrincipal)
@@ -297,7 +281,7 @@ async function loadProduct() {
       selectedImageIndex.value = 0
     }
     selectedVariante.value = data?.variantes?.length ? data.variantes[0] : null
-    prettifyUrl()
+    cleanUrl()
   } catch {
     product.value = null
   } finally {
@@ -305,7 +289,12 @@ async function loadProduct() {
   }
 }
 
-watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct() }, { immediate: true })
+
+watch(
+  () => route.params.productoSlug || route.query.pid,
+  () => { zoomOpen.value = false; loadProduct() },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
@@ -361,7 +350,6 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   font-weight: 700;
 }
 
-/* ── LAYOUT ── */
 .detail-layout {
   display: grid;
   grid-template-columns: 1.02fr 0.98fr;
@@ -369,7 +357,6 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   align-items: start;
 }
 
-/* ── GALLERY ── */
 .gallery-col {
   position: sticky;
   top: 24px;
@@ -499,7 +486,6 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   display: block;
 }
 
-/* ── INFO COL ── */
 .info-col {
   display: flex;
   flex-direction: column;
@@ -726,7 +712,6 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   color: #0071e3;
 }
 
-/* ── SPECS FULL WIDTH ── */
 .specs-full {
   margin-top: 56px;
   padding-top: 40px;
@@ -811,7 +796,6 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   line-height: 1.4;
 }
 
-/* ── ZOOM ── */
 .zoom-modal {
   position: relative;
   display: flex;
@@ -872,7 +856,6 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   right: 16px;
 }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 980px) {
   .detail-layout {
     grid-template-columns: 1fr;

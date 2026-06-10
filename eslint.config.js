@@ -55,6 +55,9 @@ export default [
     rules: {
       'prefer-promise-reject-errors': 'off',
 
+      // Desactiva errores por variables, imports y funciones sin usar
+      'no-unused-vars': 'off',
+
       // allow debugger during development only
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     },

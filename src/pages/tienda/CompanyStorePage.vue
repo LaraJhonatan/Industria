@@ -6,16 +6,12 @@
     </div>
 
     <template v-else-if="empresa">
-
-      <!-- ── BANNER ── -->
       <div class="store-banner"
         :style="empresa.profile?.bannerUrl ? { backgroundImage: `url('${empresa.profile.bannerUrl}')` } : {}">
         <div class="banner-overlay" />
       </div>
 
       <div class="bs-wrap">
-
-        <!-- ── PERFIL ── -->
         <div class="profile-card">
           <div class="profile-logo-wrap">
             <div class="profile-logo">
@@ -30,7 +26,6 @@
           </div>
         </div>
 
-        <!-- ── CONTENIDO ── -->
         <div class="content-wrap">
           <nav class="breadcrumb">
             <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
@@ -38,7 +33,6 @@
             <span class="bc-current">{{ empresaNombre }}</span>
           </nav>
 
-          <!-- Productos -->
           <div class="products-section">
             <div class="products-head">
               <div class="products-head-left">
@@ -134,9 +128,12 @@ const selectedCategory = ref('all')
 
 let searchTimeout = null
 
-// ID real: puede venir de history.state (navegación interna con slug)
-// o directo del param (link legacy con GUID o recarga de página con GUID)
-const empresaId = computed(() => history.state?.empresaIdReal || route.params.empresaId)
+// El ID real viene de:
+// 1. ?eid=GUID  — navegación interna desde CompanyCategoriesPage o CompaniesBySectorPage
+// 2. route.params.empresaId — cuando el param ES un GUID (link directo legacy)
+const sectorSlug = computed(() => route.params.sectorSlug)
+const empresaSlug = computed(() => route.params.empresaSlug)
+
 
 const empresaNombre = computed(() =>
   empresa.value?.profile?.nombreComercial ||
@@ -144,7 +141,6 @@ const empresaNombre = computed(() =>
   'Empresa ZIFCOR'
 )
 
-const empresaSlug = computed(() => slugify(empresaNombre.value))
 
 const companyDescription = computed(() =>
   empresa.value?.profile?.descripcion ||
@@ -169,27 +165,16 @@ const filteredProducts = computed(() => {
   )
 })
 
-// Reemplaza la URL con slug amigable sin recargar la página
-function prettifyUrl() {
+// Tras cargar la empresa limpia el ?eid de la URL → queda /tienda/empresa/zifcor
+function cleanUrl() {
   if (!empresa.value) return
-  const slug = empresaSlug.value
-  const currentPath = route.path
-  // solo actúa si la URL todavía expone el GUID
-  if (currentPath.includes(empresa.value.id)) {
-    history.replaceState(
-      { ...history.state, empresaIdReal: empresa.value.id },
-      '',
-      `/tienda/empresa/${slug}`
-    )
-  }
+  history.replaceState(history.state, '', `/tienda/empresa/${empresaSlug.value}`)
 }
-
 async function loadEmpresa() {
   loading.value = true
   try {
-    const { data } = await publicApi.getEmpresa(empresaId.value)
+    const { data } = await publicApi.getEmpresaPorSlug(empresaSlug.value)
     empresa.value = data
-    prettifyUrl()
   } catch {
     empresa.value = null
   } finally {
@@ -200,56 +185,46 @@ async function loadEmpresa() {
 async function loadProductos() {
   loadingProducts.value = true
   try {
-    const { data } = await publicApi.getProductosEmpresa(empresaId.value, {
+    const { data } = await publicApi.getProductosEmpresaPorSlug(empresaSlug.value, {
       page: page.value,
       limit: 12,
       q: search.value || undefined,
       estado: 'published',
+      sectorSlug: sectorSlug.value, // 👈 aquí ya lo tienes directo
     })
     productos.value = data?.data || []
     total.value = data?.total || 0
     pages.value = data?.pages || 0
-    if (!availableCategories.value.some(c => c.id === selectedCategory.value)) {
-      selectedCategory.value = 'all'
-    }
   } catch {
     productos.value = []
     total.value = 0
     pages.value = 0
-    selectedCategory.value = 'all'
   } finally {
     loadingProducts.value = false
   }
 }
+
+
 
 function onSearch() {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => { page.value = 1; loadProductos() }, 400)
 }
 
-// Navega al producto con URL amigable; el ID real viaja en history.state
+// Navega al producto con URL bonita + IDs en query params ocultos
+// URL visible:  /tienda/empresa/zifcor/producto/nombre-del-producto
+// IDs internos: ?eid=GUID-empresa&pid=GUID-producto  (se limpian al cargar)
 function goToProducto(p) {
-  const productoSlug = slugify(p.nombre)
-  const slug = empresaSlug.value
-  const prettyPath = `/tienda/empresa/${slug}/producto/${productoSlug}`
-  const state = {
-    empresaIdReal: empresa.value.id,
-    productoIdReal: p.id,
-  }
-
-  // 1. Cambia la URL ANTES de navegar — nunca se verá el GUID
-  history.replaceState(state, '', prettyPath)
-
-  // 2. Navega internamente con los IDs reales en el path
-  //    (Vue Router no cambia la URL porque ya la cambiamos)
+  const sector = route.params.sectorSlug
   router.push({
-    path: `/tienda/empresa/${empresa.value.id}/producto/${p.id}`,
-    state,
+    path: `/tienda/${sector}/${empresaSlug.value}/producto/${p.slug}`,
   })
 }
 
+
+
 watch(
-  () => route.params.empresaId,
+  () => route.query.eid || route.params.empresaId,
   async () => {
     page.value = 1
     selectedCategory.value = 'all'
@@ -278,7 +253,6 @@ watch(
   font-weight: 600;
 }
 
-/* ── BANNER ── */
 .store-banner {
   height: 300px;
   width: 100%;
@@ -294,7 +268,6 @@ watch(
   background: linear-gradient(to bottom, rgba(11, 18, 32, .18), rgba(11, 18, 32, .55));
 }
 
-/* ── WRAP ── */
 .bs-wrap {
   max-width: 1400px;
   width: 100%;
@@ -303,7 +276,6 @@ watch(
   box-sizing: border-box;
 }
 
-/* ── PERFIL ── */
 .profile-card {
   position: relative;
   margin-top: -72px;
@@ -380,7 +352,6 @@ watch(
   max-width: 72ch;
 }
 
-/* ── CONTENIDO ── */
 .content-wrap {
   padding: 24px 0 70px;
 }
@@ -412,7 +383,6 @@ watch(
   font-weight: 700;
 }
 
-/* ── PRODUCTOS ── */
 .products-section {
   background: #fff;
   border: 1px solid rgba(11, 18, 32, .08);
@@ -456,7 +426,6 @@ watch(
   width: 240px;
 }
 
-/* Categorías */
 .category-filters {
   display: flex;
   gap: 8px;
@@ -515,7 +484,6 @@ watch(
   min-height: 200px;
 }
 
-/* Grid productos */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -642,12 +610,10 @@ watch(
   font-size: 13px;
 }
 
-/* Paginación */
 .pagination-wrap {
   margin-top: 28px;
 }
 
-/* Empty */
 .empty-state {
   text-align: center;
   padding: 48px 20px;
@@ -676,14 +642,9 @@ watch(
   color: rgba(11, 18, 32, .45);
 }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .bs-wrap {
     padding: 0 16px;
-  }
-
-  .profile-card {
-    border-radius: 14px;
   }
 
   .store-banner {
@@ -696,6 +657,7 @@ watch(
     margin-top: -40px;
     padding: 20px;
     gap: 16px;
+    border-radius: 14px;
   }
 
   .search-input {

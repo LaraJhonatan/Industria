@@ -45,8 +45,8 @@
           </div>
 
           <div v-else class="companies-grid">
-            <article v-for="empresa in empresas" :key="empresa.id" class="company-card"
-              @click="router.push(`/tienda/empresa/${empresa.id}`)">
+            <article v-for="empresa in empresas" :key="empresa.slug" class="company-card"
+              @click="router.push(`/tienda/${route.params.sectorSlug}/${empresa.profile?.slug || empresa.id}`)">
               <div class="card-banner" :style="{ backgroundImage: `url('${getCardBg(empresa)}')` }">
                 <div class="card-banner-overlay" />
                 <div v-if="empresa.profile?.logoUrl" class="card-logo">
@@ -142,6 +142,7 @@ async function loadSectorData() {
   loading.value = true
   try {
     const { data } = await publicApi.getEmpresasBySector(sectorSlug.value)
+
     sector.value = data?.sector || null
     empresas.value = data?.empresas || []
   } catch {

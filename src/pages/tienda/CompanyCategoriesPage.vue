@@ -95,7 +95,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { publicApi } from '../../api/publicCatalog'
-// import { slugify } from '../../utils/slugify'
+import { slugify } from '../../utils/slugify'
 
 const router = useRouter()
 const sectores = ref([])
@@ -124,16 +124,16 @@ function quickSearch(term) {
   goToSearch()
 }
 
-// Navega a la tienda de una empresa con URL amigable
-// El ID real viaja en history.state para que CompanyStorePage lo use
-// function goToEmpresa(empresa) {
-//   const nombre = empresa.profile?.nombreComercial || empresa.razonSocial || empresa.id
-//   const slug = slugify(nombre)
-//   router.push({
-//     path: `/tienda/empresa/${slug}`,
-//     state: { empresaIdReal: empresa.id },
-//   })
-// }
+// Navega a la tienda de una empresa:
+// URL visible:  /tienda/empresa/nombre-empresa
+// ID real:      ?eid=GUID  (CompanyStorePage lo lee y lo limpia)
+function goToEmpresa(empresa) {
+  const nombre = empresa.profile?.nombreComercial || empresa.razonSocial || empresa.id
+  router.push({
+    path: `/tienda/empresa/${slugify(nombre)}`,
+    query: { eid: empresa.id },
+  })
+}
 
 onMounted(async () => {
   try {
@@ -148,7 +148,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* ── HERO ─────────────────────────────────────────────────────────────────*/
 .store-hero {
   position: relative;
   min-height: 420px;
@@ -208,7 +207,6 @@ onMounted(async () => {
   color: rgba(255, 255, 255, .65);
 }
 
-/* ── BUSCADOR ─────────────────────────────────────────────────────────────*/
 .search-block {
   width: 100%;
   max-width: 760px;
@@ -314,7 +312,6 @@ onMounted(async () => {
   box-shadow: 0 4px 14px rgba(0, 113, 227, .32);
 }
 
-/* ── CHIPS ────────────────────────────────────────────────────────────────*/
 .sh-examples {
   display: flex;
   flex-direction: column;
@@ -361,7 +358,6 @@ onMounted(async () => {
   font-size: 14px;
 }
 
-/* ── SECTORES ─────────────────────────────────────────────────────────────*/
 .catalog-section {
   background: #fafbfc;
   padding: 32px 0 80px;

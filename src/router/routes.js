@@ -32,16 +32,23 @@ const routes = [
     component: () => import('layouts/StoreLayout.vue'),
     children: [
       { path: '', component: () => import('pages/tienda/CompanyCategoriesPage.vue') },
+
+      // Empresa por slug (URL amigable)
       {
-        // acepta tanto el GUID legacy como el slug nuevo
-        path: 'empresa/:empresaId',
+        path: '/tienda/:sectorSlug/:empresaSlug',
         component: () => import('pages/tienda/CompanyStorePage.vue'),
       },
+
+      // Producto por slug (URL amigable)
       {
-        path: 'empresa/:empresaId/producto/:productoId',
+        path: '/tienda/:sectorSlug/:empresaSlug/producto/:productoSlug',
         component: () => import('pages/tienda/ProductPublicDetailPage.vue'),
       },
+
+      // Buscador global de productos
       { path: 'buscar', component: () => import('src/components/tienda/TiendaSearchPage.vue') },
+
+      // Empresas por sector
       { path: ':sectorSlug', component: () => import('pages/tienda/CompaniesBySectorPage.vue') },
     ],
   },
