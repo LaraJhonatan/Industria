@@ -227,16 +227,18 @@ const productJsonLd = computed(() => {
       url: canonicalUrl.value,
       price: Number(p.precioBase),
       priceCurrency: p.moneda || 'COP',
-      availability: stockTotal > 0
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/PreOrder',
+      availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@type': 'Organization', name: empresaNombreDisplay.value },
     }
   }
   return ld
 })
-
+const sectorNombreDisplay = computed(() => {
+  const slug = route.params.sectorSlug || ''
+  // Capitaliza la primera letra: "manufacturero" → "Manufacturero"
+  return slug.charAt(0).toUpperCase() + slug.slice(1)
+})
 // JSON-LD: BreadcrumbList (refuerza la jerarquía sector > empresa > producto)
 const breadcrumbJsonLd = computed(() => {
   if (!product.value) return null
@@ -246,8 +248,9 @@ const breadcrumbJsonLd = computed(() => {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Sectores', item: `${SITE_URL}/tienda` },
-      { '@type': 'ListItem', position: 2, name: empresaNombreDisplay.value, item: `${SITE_URL}/tienda/${sector}/${empresaSlug.value}` },
-      { '@type': 'ListItem', position: 3, name: product.value.nombre, item: canonicalUrl.value },
+      { '@type': 'ListItem', position: 2, name: sectorNombreDisplay.value, item: `${SITE_URL}/tienda/${sector}` },
+      { '@type': 'ListItem', position: 3, name: empresaNombreDisplay.value, item: `${SITE_URL}/tienda/${sector}/${empresaSlug.value}` },
+      { '@type': 'ListItem', position: 4, name: product.value.nombre, item: canonicalUrl.value },
     ],
   }
 })
