@@ -1,113 +1,79 @@
 <template>
-  <section class="sector-section">
-    <div class="bs-wrap">
-      <nav class="breadcrumb" aria-label="breadcrumb">
-        <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
-        <span class="bc-sep">›</span>
-        <span class="bc-current">{{ sector?.nombre || sectorSlug }}</span>
-      </nav>
+  <section class="sector-page">
 
-      <div v-if="loading" class="loading-wrap column items-center justify-center">
-        <q-spinner color="blue-6" size="42px" />
-        <p class="loading-text">Cargando empresas del sector...</p>
-      </div>
-
-      <template v-else>
-        <div class="hero" v-reveal>
-          <div class="hero-text">
-            <span class="kicker">Sector empresarial · ZIFCOR</span>
-            <h1 class="hero-title">
-              Empresas de
-              <span class="accent">{{ sector?.nombre || sectorSlug }}</span>
-            </h1>
-            <p class="hero-sub">{{ sectorDescription }}</p>
-            <div class="hero-pills">
-              <span class="hero-pill">
-                {{ empresas.length }} {{ empresas.length === 1 ? 'empresa registrada' : 'empresas registradas' }}
-              </span>
-            </div>
-            <div class="hero-btns">
-              <button class="hero-btn hero-btn-secondary" @click="router.push('/auth')">
-                Registrar mi empresa
+    <div class="sector-hero">
+      <div class="hero-img" :style="sector?.imagenUrl ? { backgroundImage: `url('${sector.imagenUrl}')` } : {}" />
+      <div class="hero-blue" />
+      <div class="hero-content">
+        <nav class="breadcrumb">
+          <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
+          <span class="bc-sep">›</span>
+          <span class="bc-current">{{ sector?.nombre || sectorSlug }}</span>
+        </nav>
+        <div v-if="loading" class="loading-wrap">
+          <q-spinner color="white" size="36px" />
+        </div>
+        <template v-else>
+          <h1 class="hero-title">Sector<br />{{ sector?.nombre || sectorSlug }}</h1>
+          <div class="hero-divider" />
+          <div v-if="sectorCategories.length" class="hero-cats">
+            <span class="cats-label">CATEGORÍAS DENTRO DEL SECTOR</span>
+            <div class="cats-row">
+              <button v-for="cat in sectorCategories" :key="cat.slug" class="cat-chip">
+                <i :class="`ti ${cat.icon}`" aria-hidden="true" />
+                {{ cat.label }}
               </button>
             </div>
           </div>
-
-          <div class="hero-map">
-            <img src="/mapa.png" alt="Mapa de cobertura ZIFCOR" class="latam-map" />
-            <div class="map-floating-card">
-              <p class="mfc-kicker">Cobertura ZIFCOR</p>
-              <p class="mfc-title">{{ empresas.length }} empresas</p>
-              <p class="mfc-sub">con presencia en este sector</p>
-            </div>
-          </div>
-        </div>
-
-        <div ref="companiesSection" class="section-head" v-reveal>
-          <h2 class="section-title">Empresas en este sector</h2>
-          <p class="section-sub">
-            {{ empresas.length }} {{ empresas.length === 1 ? 'empresa disponible' : 'empresas disponibles' }}
-          </p>
-        </div>
-
-        <div v-if="!empresas.length" class="empty-state" v-reveal>
-          <div class="empty-icon">
-            <q-icon name="storefront" size="56px" color="grey-4" />
-          </div>
-          <h3 class="empty-title">Aún no hay empresas en este sector</h3>
-          <p class="empty-sub">
-            Cuando nuevas empresas se registren en esta categoría, aparecerán aquí con su tienda pública y sus
-            productos.
-          </p>
-          <q-btn unelevated label="Registrar empresa" color="blue-6" class="action-btn" @click="router.push('/auth')" />
-        </div>
-
-        <div v-else class="companies-grid" v-reveal>
-          <article v-for="empresa in empresas" :key="empresa.id" class="company-card"
-            @click="router.push(`/tienda/empresa/${empresa.id}`)">
-
-            <div class="company-banner">
-              <div class="company-banner-overlay" />
-            </div>
-
-            <div class="company-content">
-              <div class="company-head">
-                <div class="company-logo">
-                  <img src="/IconoZ.png" alt="ZIFCOR" class="company-logo-img" />
-                </div>
-                <div class="company-main">
-                  <h3 class="company-name">ZIFCOR</h3>
-                  <div v-if="empresa.profile?.ciudad || empresa.profile?.departamento" class="company-location">
-                    <q-icon name="location_on" size="14px" color="grey-5" />
-                    <span>
-                      {{ empresa.profile?.ciudad || 'Ciudad' }}
-                      <template v-if="empresa.profile?.departamento">, {{ empresa.profile.departamento }}</template>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <p class="company-desc">
-                {{
-                  empresa.profile?.descripcion
-                    ? `${empresa.profile.descripcion.slice(0, 150)}${empresa.profile.descripcion.length > 150 ? '...' : ''}`
-                    : 'Empresa registrada en ZIFCOR. Ingresa para conocer su tienda, productos y datos de contacto.'
-                }}
-              </p>
-
-              <div class="company-footer">
-                <span class="company-link">
-                  Ver tienda
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </span>
-              </div>
-            </div>
-          </article>
-        </div>
-      </template>
+        </template>
+      </div>
     </div>
+
+    <div class="page-body">
+      <div class="body-wrap">
+        <template v-if="!loading">
+          <div class="section-header">
+            <h2 class="section-title">Empresas en este sector</h2>
+            <p class="section-sub">{{ empresasSub }}</p>
+          </div>
+
+          <div v-if="!empresas.length" class="empty-state">
+            <div class="empty-icon"><q-icon name="storefront" size="44px" color="grey-4" /></div>
+            <h3 class="empty-title">Aún no hay empresas en este sector</h3>
+            <p class="empty-sub">Cuando nuevas empresas se registren, aparecerán aquí.</p>
+            <button class="btn-primary" @click="router.push('/auth')">Registrar empresa</button>
+          </div>
+
+          <div v-else class="companies-grid">
+            <article v-for="empresa in empresas" :key="empresa.id" class="company-card"
+              @click="router.push(`/tienda/empresa/${empresa.id}`)">
+              <div class="card-banner" :style="{ backgroundImage: `url('${getCardBg(empresa)}')` }">
+                <div class="card-banner-overlay" />
+                <div v-if="empresa.profile?.logoUrl" class="card-logo">
+                  <img :src="empresa.profile.logoUrl" :alt="getEmpresaNombre(empresa)" />
+                </div>
+                <div v-else class="card-logo-placeholder">
+                  <i class="ti ti-building-factory-2" aria-hidden="true" />
+                </div>
+              </div>
+              <div class="card-body">
+                <h3 class="card-name">{{ getEmpresaNombre(empresa) }}</h3>
+                <p class="card-desc">{{ getDesc(empresa) }}</p>
+                <div class="card-footer">
+                  <span v-if="empresa.profile?.ciudad" class="card-location">
+                    <i class="ti ti-map-pin" aria-hidden="true" />
+                    {{ empresa.profile.ciudad }}<template v-if="empresa.profile?.departamento">, {{
+                      empresa.profile.departamento }}</template>
+                  </span>
+                  <span class="card-cta">Ver empresa <i class="ti ti-arrow-right" aria-hidden="true" /></span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </template>
+      </div>
+    </div>
+
   </section>
 </template>
 
@@ -118,18 +84,59 @@ import { publicApi } from '../../api/publicCatalog'
 
 const router = useRouter()
 const route = useRoute()
-
 const sector = ref(null)
 const empresas = ref([])
 const loading = ref(true)
-const companiesSection = ref(null)
-
 const sectorSlug = computed(() => route.params.sectorSlug)
+const empresasSub = computed(() => {
+  const n = empresas.value.length
+  return n + ' ' + (n === 1 ? 'empresa registrada' : 'empresas registradas')
+})
 
-const sectorDescription = computed(() =>
-  sector.value?.descripcion ||
-  'Explora empresas registradas en este sector y conoce sus productos, servicios y datos comerciales dentro de ZIFCOR.'
-)
+const SECTOR_CATEGORIES = {
+  manufacturero: [
+    { slug: 'metalmecanica', label: 'Metalmecánica', icon: 'ti-tool' },
+    { slug: 'plasticos', label: 'Plásticos', icon: 'ti-box' },
+    { slug: 'textiles', label: 'Textiles', icon: 'ti-shirt' },
+    { slug: 'electronica', label: 'Electrónica', icon: 'ti-cpu' },
+    { slug: 'empaques', label: 'Empaques', icon: 'ti-package' },
+    { slug: 'automotriz', label: 'Automotriz', icon: 'ti-car' },
+    { slug: 'muebles', label: 'Muebles', icon: 'ti-armchair' },
+  ],
+  agroindustria: [
+    { slug: 'flores', label: 'Flores', icon: 'ti-plant' },
+    { slug: 'lacteos', label: 'Lácteos', icon: 'ti-droplet' },
+    { slug: 'carnicos', label: 'Cárnicos', icon: 'ti-meat' },
+    { slug: 'cereales', label: 'Cereales', icon: 'ti-grain' },
+    { slug: 'frutas', label: 'Frutas y verduras', icon: 'ti-salad' },
+  ],
+  comercio: [
+    { slug: 'mayorista', label: 'Mayorista', icon: 'ti-building-store' },
+    { slug: 'minorista', label: 'Minorista', icon: 'ti-shopping-cart' },
+    { slug: 'importacion', label: 'Importación', icon: 'ti-world-download' },
+    { slug: 'exportacion', label: 'Exportación', icon: 'ti-world-upload' },
+  ],
+  servicios: [
+    { slug: 'logistica', label: 'Logística', icon: 'ti-truck' },
+    { slug: 'consultoria', label: 'Consultoría', icon: 'ti-briefcase' },
+    { slug: 'mantenimiento', label: 'Mantenimiento', icon: 'ti-settings' },
+    { slug: 'capacitacion', label: 'Capacitación', icon: 'ti-school' },
+  ],
+  tecnologia: [
+    { slug: 'software', label: 'Software', icon: 'ti-code' },
+    { slug: 'hardware', label: 'Hardware', icon: 'ti-cpu' },
+    { slug: 'telecomunicaciones', label: 'Telecomunicaciones', icon: 'ti-wifi' },
+    { slug: 'ia', label: 'IA & Datos', icon: 'ti-brain' },
+  ],
+  construccion: [
+    { slug: 'civil', label: 'Obra civil', icon: 'ti-building-skyscraper' },
+    { slug: 'materiales', label: 'Materiales', icon: 'ti-wall' },
+    { slug: 'acabados', label: 'Acabados', icon: 'ti-paint' },
+    { slug: 'diseno', label: 'Diseño y arquitectura', icon: 'ti-pencil-ruler' },
+  ],
+}
+
+const sectorCategories = computed(() => SECTOR_CATEGORIES[sectorSlug.value?.toLowerCase()] || [])
 
 async function loadSectorData() {
   loading.value = true
@@ -147,375 +154,348 @@ async function loadSectorData() {
 
 watch(() => route.params.sectorSlug, () => { loadSectorData() }, { immediate: true })
 
-const vReveal = {
-  mounted(el) {
-    el.classList.add('reveal')
-    const delay = Number(el.dataset.delay || 0)
-    el.style.transitionDelay = `${delay}ms`
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { el.classList.add('is-visible'); obs.disconnect() } },
-      { threshold: 0.08, rootMargin: '0px 0px -8% 0px' }
-    )
-    obs.observe(el)
-    el.__obs = obs
-  },
-  unmounted(el) { el.__obs?.disconnect?.() }
+function getEmpresaNombre(e) {
+  return e.profile?.nombreComercial || e.profile?.razonSocial || 'Empresa en este sector'
+}
+
+function getCardBg(e) {
+  if (e.profile?.bannerUrl) return e.profile.bannerUrl
+  if (sector.value?.imagenUrl) return sector.value.imagenUrl
+  return ''
+}
+
+function getDesc(e) {
+  const d = e.profile?.descripcion
+  if (!d) return 'Empresa registrada en ZIFCOR. Ingresa para conocer su tienda y productos.'
+  return d.length > 120 ? d.slice(0, 120) + '...' : d
 }
 </script>
 
 <style scoped>
-.sector-section {
-  background: #fafbfc;
-  padding: 40px 0 84px;
-  min-height: calc(100vh - 96px);
+/* ── HERO ── */
+.sector-hero {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+  background: #1354d3;
+  display: flex;
+  align-items: stretch;
 }
 
-.bs-wrap {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 32px;
+/* Imagen ocupa la mitad derecha */
+.hero-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 58%;
+  height: 100%;
+  background: #0b1a35;
+  background-size: cover;
+  background-position: center;
+  /* Corte diagonal desde arriba-izquierda */
+  clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+/* Oscurecer ligeramente la imagen para que el contraste sea limpio */
+.hero-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* El panel azul no necesita elemento extra — es el fondo del hero */
+.hero-blue {
+  display: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 52%;
+  padding: 32px 40px 40px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  margin-bottom: 28px;
+  gap: 6px;
+  font-size: 12.5px;
+  margin-bottom: 22px;
 }
 
 .bc-link {
-  color: #0071e3;
-  font-weight: 800;
+  color: rgba(255, 255, 255, 0.60);
+  font-weight: 700;
   cursor: pointer;
-  transition: opacity 160ms;
+  transition: color 150ms;
 }
 
 .bc-link:hover {
-  opacity: .82;
-  text-decoration: underline;
+  color: #fff;
 }
 
 .bc-sep {
-  color: rgba(27, 27, 27, .25);
+  color: rgba(255, 255, 255, 0.30);
+  font-size: 14px;
 }
 
 .bc-current {
-  color: rgba(27, 27, 27, .58);
+  color: rgba(255, 255, 255, 0.90);
   font-weight: 700;
 }
 
 .loading-wrap {
-  min-height: 320px;
-  gap: 14px;
-}
-
-.loading-text {
-  margin: 0;
-  font-size: 14px;
-  color: rgba(27, 27, 27, .48);
-  font-weight: 600;
-}
-
-/* ── HERO ── */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: center;
-  margin-bottom: 72px;
-}
-
-.hero-text {
+  min-height: 160px;
   display: flex;
-  flex-direction: column;
-}
-
-.kicker {
-  display: inline-flex;
-  padding: 8px 18px;
-  background: rgba(0, 113, 227, .08);
-  border: 1.5px solid rgba(0, 113, 227, .18);
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  color: #0071e3;
-  margin-bottom: 18px;
-  width: fit-content;
+  align-items: center;
 }
 
 .hero-title {
-  margin: 0 0 14px;
-  font-size: clamp(30px, 4vw, 50px);
+  margin: 0 0 16px;
+  font-size: clamp(30px, 4vw, 52px);
   font-weight: 900;
-  color: #1b1b1b;
-  letter-spacing: -1px;
-  line-height: 1.06;
+  color: #fff;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
 }
 
-.accent {
-  color: #0071e3;
+.hero-divider {
+  width: 36px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.40);
+  border-radius: 2px;
+  margin-bottom: 20px;
 }
 
-.hero-sub {
-  margin: 0 0 20px;
-  font-size: 16px;
-  line-height: 1.7;
-  color: rgba(27, 27, 27, .55);
-  max-width: 46ch;
-}
-
-.hero-pills {
+.hero-cats {
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 26px;
 }
 
-.hero-pill {
+.cats-label {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.cats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.cat-chip {
   display: inline-flex;
   align-items: center;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 999px;
-  background: rgba(0, 113, 227, .08);
-  border: 1px solid rgba(0, 113, 227, .16);
-  color: #0071e3;
+  gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
+  cursor: default;
+  transition: background 140ms;
+  font-family: inherit;
 }
 
-.hero-btns {
-  display: flex;
-  gap: 12px;
+.cat-chip:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-.hero-btn {
-  height: 46px;
-  padding: 0 20px;
-  border-radius: 12px;
-  border: none;
-  font-size: 13.5px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform 180ms ease;
-}
-
-.hero-btn:hover {
-  transform: translateY(-2px);
-}
-
-.hero-btn-secondary {
-  background: #fff;
-  color: #0071e3;
-  border: 1.5px solid rgba(0, 113, 227, .18);
-}
-
-.hero-btn-secondary:hover {
-  background: rgba(0, 113, 227, .04);
-}
-
-.hero-map {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 420px;
-}
-
-.latam-map {
-  width: 100%;
-  max-height: 430px;
-  object-fit: contain;
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 0%, black 18%, black 86%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, black 10%, black 92%, transparent 100%);
-  -webkit-mask-composite: destination-in;
-  mask-image:
-    linear-gradient(to right, transparent 0%, black 18%, black 86%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, black 10%, black 92%, transparent 100%);
-  mask-composite: intersect;
-}
-
-.map-floating-card {
-  position: absolute;
-  right: 24px;
-  bottom: 26px;
-  min-width: 210px;
-  padding: 18px 18px 16px;
-  background: rgba(255, 255, 255, .92);
-  border: 1.5px solid rgba(11, 18, 32, .08);
-  box-shadow: 0 18px 44px rgba(11, 18, 32, .10);
-  backdrop-filter: blur(12px);
-  border-radius: 18px;
-}
-
-.mfc-kicker {
-  margin: 0 0 6px;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: #0071e3;
-}
-
-.mfc-title {
-  margin: 0 0 4px;
-  font-size: 24px;
-  font-weight: 900;
-  color: #0b1220;
-  letter-spacing: -0.5px;
-}
-
-.mfc-sub {
-  margin: 0;
+.cat-chip .ti {
   font-size: 13px;
-  line-height: 1.5;
-  color: rgba(11, 18, 32, .5);
+  opacity: 0.70;
 }
 
-/* ── SECTION HEAD ── */
-.section-head {
-  margin-bottom: 22px;
+/* ── BODY ── */
+.page-body {
+  background: #f2f3f6;
+  padding: 44px 0 80px;
+}
+
+.body-wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.section-header {
+  margin-bottom: 24px;
 }
 
 .section-title {
-  margin: 0 0 6px;
-  font-size: clamp(20px, 2.3vw, 28px);
+  margin: 0 0 4px;
+  font-size: clamp(20px, 2.2vw, 28px);
   font-weight: 900;
-  color: #1b1b1b;
-  letter-spacing: -0.5px;
+  color: #0b1220;
+  letter-spacing: -0.4px;
 }
 
 .section-sub {
   margin: 0;
   font-size: 14px;
-  color: rgba(27, 27, 27, .5);
+  color: rgba(11, 18, 32, 0.42);
+  font-weight: 600;
 }
 
 /* ── CARDS ── */
 .companies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
 
 .company-card {
   background: #fff;
-  border: 1.5px solid rgba(11, 18, 32, .08);
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 220ms ease;
+  transition: transform 200ms ease, box-shadow 200ms ease;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 1px 4px rgba(11, 18, 32, 0.07), 0 4px 12px rgba(11, 18, 32, 0.05);
 }
 
 .company-card:hover {
-  border-color: rgba(0, 113, 227, .2);
-  box-shadow: 0 16px 40px rgba(0, 113, 227, .12);
   transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(11, 18, 32, 0.12);
 }
 
-.company-banner {
+/* Banner con imagen real de la empresa */
+.card-banner {
   position: relative;
-  height: 100px;
+  height: 150px;
+  background: #0d1f3c;
+  background-size: cover;
+  background-position: center;
   overflow: hidden;
-  background:
-    linear-gradient(to bottom, rgba(11, 18, 32, .35), rgba(11, 18, 32, .65)),
-    url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=1200&h=400&fit=crop&q=80') center/cover no-repeat;
 }
 
-.company-banner-overlay {
+.card-banner-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(15, 23, 42, .08), rgba(15, 23, 42, .28));
+  background: linear-gradient(to top, rgba(8, 14, 30, 0.75) 0%, rgba(8, 14, 30, 0.15) 60%, transparent 100%);
 }
 
-.company-content {
-  padding: 0 16px 16px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.company-head {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  margin-top: -24px;
-  margin-bottom: 10px;
-  position: relative;
-  z-index: 2;
-}
-
-.company-logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 14px;
+/* Logo flotante esquina inferior izquierda */
+.card-logo {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   background: #fff;
-  border: 1.5px solid rgba(11, 18, 32, .08);
-  box-shadow: 0 8px 20px rgba(11, 18, 32, .12);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  padding: 6px;
+  padding: 4px;
 }
 
-.company-logo-img {
+.card-logo img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
 }
 
-.company-main {
-  min-width: 0;
-  padding-bottom: 6px;
-}
-
-.company-name {
-  margin: 0 0 4px;
-  font-size: 16px;
-  font-weight: 900;
-  color: #0b1220;
-  line-height: 1.2;
-}
-
-.company-location {
+.card-logo-placeholder {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: rgba(11, 18, 32, .45);
-  font-weight: 600;
+  justify-content: center;
 }
 
-.company-desc {
-  margin: 0 0 12px;
+.card-logo-placeholder .ti {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Cuerpo */
+.card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 7px;
+}
+
+.card-name {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #0b1220;
+  line-height: 1.3;
+  letter-spacing: -0.1px;
+}
+
+.card-desc {
+  margin: 0;
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(11, 18, 32, .56);
+  color: rgba(11, 18, 32, 0.50);
   flex: 1;
 }
 
-.company-footer {
-  margin-top: auto;
+.card-footer {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid rgba(11, 18, 32, 0.06);
+  margin-top: 2px;
 }
 
-.company-link {
+.card-location {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11.5px;
+  color: rgba(11, 18, 32, 0.35);
+  font-weight: 600;
+}
+
+.card-location .ti {
+  font-size: 12px;
+}
+
+.card-cta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #1354d3;
+  margin-left: auto;
+}
+
+.card-cta .ti {
   font-size: 13px;
-  font-weight: 900;
-  color: #0071e3;
+  transition: transform 150ms;
+}
+
+.company-card:hover .card-cta .ti {
+  transform: translateX(3px);
 }
 
 /* ── EMPTY ── */
@@ -524,17 +504,16 @@ const vReveal = {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 64px 20px;
+  padding: 64px 24px;
   background: #fff;
-  border: 1.5px dashed rgba(11, 18, 32, .12);
-  border-radius: 22px;
+  border-radius: 16px;
 }
 
 .empty-icon {
-  width: 86px;
-  height: 86px;
+  width: 76px;
+  height: 76px;
   border-radius: 999px;
-  background: rgba(11, 18, 32, .04);
+  background: #f2f3f6;
   display: grid;
   place-items: center;
   margin-bottom: 16px;
@@ -542,85 +521,75 @@ const vReveal = {
 
 .empty-title {
   margin: 0 0 8px;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 900;
   color: #0b1220;
 }
 
 .empty-sub {
-  margin: 0 0 18px;
-  max-width: 50ch;
-  font-size: 14px;
+  margin: 0 0 20px;
+  max-width: 44ch;
+  font-size: 13.5px;
   line-height: 1.6;
-  color: rgba(11, 18, 32, .48);
+  color: rgba(11, 18, 32, 0.45);
 }
 
-.action-btn {
-  border-radius: 12px;
+.btn-primary {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 10px;
+  border: none;
+  background: #1354d3;
+  color: #fff;
+  font-size: 13px;
   font-weight: 800;
-  text-transform: none;
-  letter-spacing: 0;
-  padding-inline: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 150ms;
 }
 
-/* ── REVEAL ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 600ms ease, transform 600ms ease;
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+.btn-primary:hover {
+  background: #0f44b0;
 }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 1024px) {
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 30px;
+@media (max-width: 900px) {
+  .hero-img {
+    width: 100%;
+    clip-path: none;
   }
 
-  .hero-map {
+  .hero-img::after {
+    background: rgba(19, 84, 211, 0.55);
+  }
+
+  .hero-content {
+    width: 100%;
+    padding: 24px 24px 36px;
+  }
+
+  .sector-hero {
+    height: auto;
     min-height: 300px;
-  }
-
-  .latam-map {
-    max-height: 320px;
   }
 }
 
 @media (max-width: 640px) {
-  .bs-wrap {
+  .body-wrap {
     padding: 0 16px;
   }
 
-  .sector-section {
-    padding: 28px 0 60px;
+  .page-body {
+    padding: 32px 0 60px;
   }
 
   .companies-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
 
-  .hero-btns {
-    flex-direction: column;
-  }
-
-  .hero-btn {
-    width: 100%;
-  }
-
-  .map-floating-card {
-    position: static;
-    margin-top: 14px;
-    width: 100%;
-  }
-
-  .hero-map {
-    flex-direction: column;
-    align-items: stretch;
+  .hero-content {
+    padding: 20px 16px 32px;
   }
 }
 </style>

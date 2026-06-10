@@ -48,8 +48,8 @@
     <section class="catalog-section">
       <div class="bs-wrap">
         <div class="section-head">
-          <h2 class="section-title">Explora por sector</h2>
-          <p class="section-sub">{{ sectores.length }} sectores disponibles en ZIFCOR</p>
+          <h2 class="section-title">Explora empresas por sector</h2>
+          <!-- <p class="section-sub">{{ sectores.length }} sectores disponibles en ZIFCOR</p> -->
         </div>
 
         <div v-if="loading" class="column items-center q-py-xl">
