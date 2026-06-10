@@ -76,8 +76,7 @@
             </div>
 
             <div v-else class="products-grid">
-              <article v-for="p in filteredProducts" :key="p.id" class="product-card"
-                @click="router.push(`/tienda/empresa/${empresa.id}/producto/${p.id}`)">
+              <article v-for="p in filteredProducts" :key="p.id" class="product-card" @click="goToProducto(p)">
                 <div class="product-img">
                   <img v-if="p.imagenes?.[0]?.url" :src="p.imagenes[0].url" :alt="p.nombre" />
                   <div v-else class="product-img-empty">
@@ -95,8 +94,7 @@
                       ${{ Number(p.precioBase).toLocaleString('es-CO') }} {{ p.moneda }}
                     </span>
                     <span v-else class="product-price-na">Consultar precio</span>
-                    <button class="product-btn"
-                      @click.stop="router.push(`/tienda/empresa/${empresa.id}/producto/${p.id}`)">
+                    <button class="product-btn" @click.stop="goToProducto(p)">
                       Ver detalles
                       <i class="ti ti-arrow-right" aria-hidden="true" />
                     </button>
@@ -119,6 +117,7 @@
 import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { publicApi } from '../../api/publicCatalog'
+import { slugify } from '../../utils/slugify'
 
 const router = useRouter()
 const route = useRoute()
@@ -135,13 +134,17 @@ const selectedCategory = ref('all')
 
 let searchTimeout = null
 
-const empresaId = computed(() => route.params.empresaId)
+// ID real: puede venir de history.state (navegación interna con slug)
+// o directo del param (link legacy con GUID o recarga de página con GUID)
+const empresaId = computed(() => history.state?.empresaIdReal || route.params.empresaId)
 
 const empresaNombre = computed(() =>
   empresa.value?.profile?.nombreComercial ||
   empresa.value?.profile?.razonSocial ||
   'Empresa ZIFCOR'
 )
+
+const empresaSlug = computed(() => slugify(empresaNombre.value))
 
 const companyDescription = computed(() =>
   empresa.value?.profile?.descripcion ||
@@ -166,11 +169,27 @@ const filteredProducts = computed(() => {
   )
 })
 
+// Reemplaza la URL con slug amigable sin recargar la página
+function prettifyUrl() {
+  if (!empresa.value) return
+  const slug = empresaSlug.value
+  const currentPath = route.path
+  // solo actúa si la URL todavía expone el GUID
+  if (currentPath.includes(empresa.value.id)) {
+    history.replaceState(
+      { ...history.state, empresaIdReal: empresa.value.id },
+      '',
+      `/tienda/empresa/${slug}`
+    )
+  }
+}
+
 async function loadEmpresa() {
   loading.value = true
   try {
     const { data } = await publicApi.getEmpresa(empresaId.value)
     empresa.value = data
+    prettifyUrl()
   } catch {
     empresa.value = null
   } finally {
@@ -182,7 +201,10 @@ async function loadProductos() {
   loadingProducts.value = true
   try {
     const { data } = await publicApi.getProductosEmpresa(empresaId.value, {
-      page: page.value, limit: 12, q: search.value || undefined, estado: 'published',
+      page: page.value,
+      limit: 12,
+      q: search.value || undefined,
+      estado: 'published',
     })
     productos.value = data?.data || []
     total.value = data?.total || 0
@@ -205,12 +227,37 @@ function onSearch() {
   searchTimeout = setTimeout(() => { page.value = 1; loadProductos() }, 400)
 }
 
-watch(() => route.params.empresaId, async () => {
-  page.value = 1
-  selectedCategory.value = 'all'
-  await loadEmpresa()
-  await loadProductos()
-}, { immediate: true })
+// Navega al producto con URL amigable; el ID real viaja en history.state
+function goToProducto(p) {
+  const productoSlug = slugify(p.nombre)
+  const slug = empresaSlug.value
+  const prettyPath = `/tienda/empresa/${slug}/producto/${productoSlug}`
+  const state = {
+    empresaIdReal: empresa.value.id,
+    productoIdReal: p.id,
+  }
+
+  // 1. Cambia la URL ANTES de navegar — nunca se verá el GUID
+  history.replaceState(state, '', prettyPath)
+
+  // 2. Navega internamente con los IDs reales en el path
+  //    (Vue Router no cambia la URL porque ya la cambiamos)
+  router.push({
+    path: `/tienda/empresa/${empresa.value.id}/producto/${p.id}`,
+    state,
+  })
+}
+
+watch(
+  () => route.params.empresaId,
+  async () => {
+    page.value = 1
+    selectedCategory.value = 'all'
+    await loadEmpresa()
+    await loadProductos()
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>

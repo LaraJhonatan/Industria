@@ -49,7 +49,6 @@
       <div class="bs-wrap">
         <div class="section-head">
           <h2 class="section-title">Explora empresas por sector</h2>
-          <!-- <p class="section-sub">{{ sectores.length }} sectores disponibles en ZIFCOR</p> -->
         </div>
 
         <div v-if="loading" class="column items-center q-py-xl">
@@ -96,6 +95,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { publicApi } from '../../api/publicCatalog'
+// import { slugify } from '../../utils/slugify'
 
 const router = useRouter()
 const sectores = ref([])
@@ -123,6 +123,17 @@ function quickSearch(term) {
   searchQuery.value = term
   goToSearch()
 }
+
+// Navega a la tienda de una empresa con URL amigable
+// El ID real viaja en history.state para que CompanyStorePage lo use
+// function goToEmpresa(empresa) {
+//   const nombre = empresa.profile?.nombreComercial || empresa.razonSocial || empresa.id
+//   const slug = slugify(nombre)
+//   router.push({
+//     path: `/tienda/empresa/${slug}`,
+//     state: { empresaIdReal: empresa.id },
+//   })
+// }
 
 onMounted(async () => {
   try {
@@ -372,12 +383,6 @@ onMounted(async () => {
   font-weight: 900;
   color: #1b1b1b;
   letter-spacing: -0.5px;
-}
-
-.section-sub {
-  margin: 0;
-  font-size: 14px;
-  color: rgba(27, 27, 27, .5);
 }
 
 .categories-grid {

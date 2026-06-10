@@ -10,7 +10,7 @@
         <nav class="breadcrumb">
           <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
           <span class="bc-sep">›</span>
-          <span class="bc-link" @click="router.push(`/tienda/empresa/${empresaId}`)">ZIFCOR</span>
+          <span class="bc-link" @click="goBackToStore()">{{ empresaNombreDisplay }}</span>
           <span class="bc-sep">›</span>
           <span class="bc-current">{{ product.nombre }}</span>
         </nav>
@@ -49,12 +49,12 @@
 
           <!-- INFO -->
           <div class="info-col">
-            <div class="empresa-chip" @click="router.push(`/tienda/empresa/${empresaId}`)">
+            <div class="empresa-chip" @click="goBackToStore()">
               <div class="empresa-chip-logo">
                 <img src="/IconoZ.png" alt="ZIFCOR" class="empresa-chip-logo-img" />
               </div>
               <div class="empresa-chip-meta">
-                <span class="empresa-chip-name">ZIFCOR</span>
+                <span class="empresa-chip-name">{{ empresaNombreDisplay }}</span>
                 <span class="empresa-chip-sub">Ver tienda</span>
               </div>
               <q-icon name="chevron_right" size="16px" color="grey-5" />
@@ -96,7 +96,7 @@
                 </svg>
                 Cotizar por WhatsApp
               </button>
-              <button class="btn-back" @click="router.push(`/tienda/empresa/${empresaId}`)">
+              <button class="btn-back" @click="goBackToStore()">
                 ← Ver más productos
               </button>
             </div>
@@ -148,14 +148,16 @@
 import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { publicApi } from '../../api/publicCatalog'
+import { slugify } from '../../utils/slugify'
 
 const router = useRouter()
 const route = useRoute()
 
 const ZIFCOR_WHATSAPP = '573114799224'
 
-const empresaId = computed(() => route.params.empresaId)
-const productoId = computed(() => route.params.productoId)
+// IDs reales: vienen de history.state (navegación interna) o del param (link con GUID)
+const empresaId = computed(() => history.state?.empresaIdReal || route.params.empresaId)
+const productoId = computed(() => history.state?.productoIdReal || route.params.productoId)
 
 const product = ref(null)
 const loading = ref(true)
@@ -164,10 +166,51 @@ const selectedVariante = ref(null)
 const zoomOpen = ref(false)
 
 const productImages = computed(() => product.value?.imagenes || [])
+
 const selectedImageUrl = computed(() => {
   if (!productImages.value.length) return ''
   return productImages.value[selectedImageIndex.value]?.url || ''
 })
+
+// Nombre de la empresa para mostrar en breadcrumb y chip
+const empresaNombreDisplay = computed(() =>
+  product.value?.empresa?.profile?.nombreComercial ||
+  product.value?.empresa?.razonSocial ||
+  'Tienda'
+)
+
+const empresaSlug = computed(() => slugify(empresaNombreDisplay.value))
+
+// Reemplaza la URL con slugs amigables sin recargar
+function prettifyUrl() {
+  if (!product.value) return
+  const productoSlug = slugify(product.value.nombre)
+  const currentPath = route.path
+  // actúa solo si la URL todavía expone algún GUID
+  const tieneGuid = currentPath.includes(product.value.id) || currentPath.includes(route.params.productoId)
+  if (tieneGuid) {
+    const newPath = `/tienda/empresa/${empresaSlug.value}/producto/${productoSlug}`
+    history.replaceState(
+      {
+        ...history.state,
+        empresaIdReal: product.value.empresaId,
+        productoIdReal: product.value.id,
+      },
+      '',
+      newPath
+    )
+  }
+}
+
+// Vuelve a la tienda de la empresa con URL amigable
+function goBackToStore() {
+  const id = product.value?.empresaId || empresaId.value
+  // const slug = empresaSlug.value || id
+  router.push({
+    path: `/tienda/empresa/${id}`,
+    state: { empresaIdReal: id },
+  })
+}
 
 // Deduplica atributos por atributoId
 const atributosUnicos = computed(() => {
@@ -181,46 +224,17 @@ const atributosUnicos = computed(() => {
   })
 })
 
-// Primeras 4 specs para mostrar como píldoras rápidas en la info-col
+// Primeras 4 specs como píldoras rápidas
 const specsSummary = computed(() => atributosUnicos.value.slice(0, 4))
 
-// Grupos de atributos por clave
 const GRUPOS = [
-  {
-    titulo: 'Vuelo',
-    icono: '✈',
-    claves: ['tiempo_vuelo', 'velocidad_max', 'resistencia_viento', 'techo_servicio']
-  },
-  {
-    titulo: 'Protección',
-    icono: '🛡',
-    claves: ['proteccion_ip', 'temp_operacion']
-  },
-  {
-    titulo: 'Cámaras',
-    icono: '📷',
-    claves: ['cam_gran_angular', 'zoom_optico', 'zoom_hibrido', 'resolucion_termica', 'rango_termica']
-  },
-  {
-    titulo: 'Transmisión',
-    icono: '📡',
-    claves: ['dist_transmision', 'sistema_com']
-  },
-  {
-    titulo: 'Navegación',
-    icono: '🧭',
-    claves: ['telemetro_laser', 'evasion_obstaculos', 'nav_sin_gps']
-  },
-  {
-    titulo: 'Seguridad',
-    icono: '🔒',
-    claves: ['cifrado_datos']
-  },
-  {
-    titulo: 'General',
-    icono: '📋',
-    claves: ['marca', 'modelo', 'certificacion', 'origen', 'color']
-  }
+  { titulo: 'Vuelo', icono: '✈', claves: ['tiempo_vuelo', 'velocidad_max', 'resistencia_viento', 'techo_servicio'] },
+  { titulo: 'Protección', icono: '🛡', claves: ['proteccion_ip', 'temp_operacion'] },
+  { titulo: 'Cámaras', icono: '📷', claves: ['cam_gran_angular', 'zoom_optico', 'zoom_hibrido', 'resolucion_termica', 'rango_termica'] },
+  { titulo: 'Transmisión', icono: '📡', claves: ['dist_transmision', 'sistema_com'] },
+  { titulo: 'Navegación', icono: '🧭', claves: ['telemetro_laser', 'evasion_obstaculos', 'nav_sin_gps'] },
+  { titulo: 'Seguridad', icono: '🔒', claves: ['cifrado_datos'] },
+  { titulo: 'General', icono: '📋', claves: ['marca', 'modelo', 'certificacion', 'origen', 'color'] },
 ]
 
 const atributosAgrupados = computed(() => {
@@ -229,32 +243,28 @@ const atributosAgrupados = computed(() => {
   const grupos = []
 
   for (const g of GRUPOS) {
-    const items = attrs.filter(av => {
-      const clave = av.atributo?.clave
-      return g.claves.includes(clave)
-    })
+    const items = attrs.filter(av => g.claves.includes(av.atributo?.clave))
     if (items.length) {
       items.forEach(av => clavesUsadas.add(av.atributo?.clave))
       grupos.push({ ...g, items })
     }
   }
 
-  // Resto de atributos no clasificados
   const resto = attrs.filter(av => !clavesUsadas.has(av.atributo?.clave))
-  if (resto.length) {
-    grupos.push({ titulo: 'Otros', icono: '⚙', items: resto })
-  }
+  if (resto.length) grupos.push({ titulo: 'Otros', icono: '⚙', items: resto })
 
   return grupos
 })
 
 function selectImage(index) { selectedImageIndex.value = index }
+
 function prevImage() {
   if (!productImages.value.length) return
   selectedImageIndex.value = selectedImageIndex.value === 0
     ? productImages.value.length - 1
     : selectedImageIndex.value - 1
 }
+
 function nextImage() {
   if (!productImages.value.length) return
   selectedImageIndex.value = selectedImageIndex.value === productImages.value.length - 1
@@ -287,6 +297,7 @@ async function loadProduct() {
       selectedImageIndex.value = 0
     }
     selectedVariante.value = data?.variantes?.length ? data.variantes[0] : null
+    prettifyUrl()
   } catch {
     product.value = null
   } finally {
@@ -589,7 +600,6 @@ watch(() => route.params.productoId, () => { zoomOpen.value = false; loadProduct
   margin: 0 0 20px;
 }
 
-/* Píldoras resumen rápido */
 .specs-summary {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -2,8 +2,6 @@ const dashboardGuard = () => {
   try {
     const raw = localStorage.getItem('ZIFCOR_sesion')
     const sesion = JSON.parse(raw || 'null')
-    // console.log('GUARD raw:', raw)
-    // console.log('GUARD accessToken:', sesion?.accessToken)
     if (!sesion?.accessToken) return '/auth'
   } catch (e) {
     console.log('GUARD ERROR:', e)
@@ -12,9 +10,6 @@ const dashboardGuard = () => {
 }
 
 const routes = [
-  // ══════════════════════════════════════════════════════════
-  //  SITIO PRINCIPAL
-  // ══════════════════════════════════════════════════════════
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -30,26 +25,15 @@ const routes = [
     ],
   },
 
-  // ══════════════════════════════════════════════════════════
-  //  AUTENTICACIÓN
-  // ══════════════════════════════════════════════════════════
-  {
-    path: '/auth',
-    component: () => import('pages/AuthView.vue'),
-  },
+  { path: '/auth', component: () => import('pages/AuthView.vue') },
 
-  // ══════════════════════════════════════════════════════════
-  //  TIENDA PÚBLICA
-  // ══════════════════════════════════════════════════════════
   {
     path: '/tienda',
     component: () => import('layouts/StoreLayout.vue'),
     children: [
+      { path: '', component: () => import('pages/tienda/CompanyCategoriesPage.vue') },
       {
-        path: '',
-        component: () => import('pages/tienda/CompanyCategoriesPage.vue'),
-      },
-      {
+        // acepta tanto el GUID legacy como el slug nuevo
         path: 'empresa/:empresaId',
         component: () => import('pages/tienda/CompanyStorePage.vue'),
       },
@@ -57,20 +41,11 @@ const routes = [
         path: 'empresa/:empresaId/producto/:productoId',
         component: () => import('pages/tienda/ProductPublicDetailPage.vue'),
       },
-      {
-        path: 'buscar',
-        component: () => import('src/components/tienda/TiendaSearchPage.vue'),
-      },
-      {
-        path: ':sectorSlug',
-        component: () => import('pages/tienda/CompaniesBySectorPage.vue'),
-      },
+      { path: 'buscar', component: () => import('src/components/tienda/TiendaSearchPage.vue') },
+      { path: ':sectorSlug', component: () => import('pages/tienda/CompaniesBySectorPage.vue') },
     ],
   },
 
-  // ══════════════════════════════════════════════════════════
-  //  DASHBOARD PRIVADO
-  // ══════════════════════════════════════════════════════════
   {
     path: '/dashboard',
     component: () => import('layouts/DashboardLayout.vue'),
@@ -106,13 +81,7 @@ const routes = [
     ],
   },
 
-  // ══════════════════════════════════════════════════════════
-  //  404
-  // ══════════════════════════════════════════════════════════
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
-  },
+  { path: '/:catchAll(.*)*', component: () => import('pages/ErrorNotFound.vue') },
 ]
 
 export default routes
