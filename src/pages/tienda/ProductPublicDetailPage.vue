@@ -9,8 +9,10 @@
       <template v-else-if="product">
         <nav class="breadcrumb">
           <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
-          <span class="bc-sep">›</span>
-          <span class="bc-link" @click="goBackToStore()">{{ empresaNombreDisplay }}</span>
+          <template v-if="route.params.sectorSlug">
+            <span class="bc-sep">›</span>
+            <span class="bc-link" @click="goBackToStore()">{{ empresaNombreDisplay }}</span>
+          </template>
           <span class="bc-sep">›</span>
           <span class="bc-current">{{ product.nombre }}</span>
         </nav>
@@ -299,6 +301,9 @@ useHead({
 // → /tienda/:sectorSlug/:empresaSlug/producto/:productoSlug
 function cleanUrl() {
   if (!product.value) return
+
+  if (!route.params.sectorSlug) return
+
   const slug = product.value.slug || slugify(product.value.nombre)
   const sector = route.params.sectorSlug
   history.replaceState(
@@ -310,6 +315,10 @@ function cleanUrl() {
 
 // Vuelve a la tienda manteniendo la jerarquía sector/empresa
 function goBackToStore() {
+  if (!route.params.sectorSlug) {
+    router.push('/tienda')
+    return
+  }
   const sector = route.params.sectorSlug
   router.push(`/tienda/${sector}/${empresaSlug.value}`)
 }

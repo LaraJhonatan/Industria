@@ -27,4 +27,5 @@ export const publicApi = {
   enviarSolicitudMaquinaria: (data) => http.post('/public/maquinaria', data),
   getProductosEmpresaPorSlug: (slug, params) =>
     http.get(`/public/empresas/slug/${slug}/productos`, { params }),
+  getDestacados: (llave) => http.get(`/destacados/${llave}`),
 }

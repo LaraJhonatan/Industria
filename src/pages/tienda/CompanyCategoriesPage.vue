@@ -45,9 +45,74 @@
       </div>
     </section>
 
-    <section class="catalog-section">
+    <!-- ══ PRODUCTOS DESTACADOS ══════════════════════════════ -->
+    <section v-if="destacados.length > 0" class="destacados-section">
       <div class="bs-wrap">
         <div class="section-head">
+          <div>
+            <h2 class="section-title">Productos destacados</h2>
+            <p class="section-sub">Selección de productos y servicios empresariales</p>
+          </div>
+          <router-link to="/tienda/buscar" class="ver-todos-link">
+            Ver todos los productos
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </router-link>
+        </div>
+
+        <div class="prod-carousel-wrap">
+          <button class="carousel-arrow carousel-arrow--prev" @click="scrollCarousel(-1)" :disabled="carouselStart">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
+          <div class="prod-carousel" ref="carouselRef" @scroll="onCarouselScroll"
+            :class="{ 'prod-carousel--centered': isCentered }">
+            <div v-for="item in destacados" :key="item.id" class="prod-card" @click="goToProducto(item)">
+              <div class="prod-img-wrap">
+                <img v-if="item.producto.imagenUrl" :src="item.producto.imagenUrl" :alt="item.producto.imagenAlt"
+                  class="prod-img" />
+                <div v-else class="prod-img-placeholder">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                </div>
+              </div>
+              <div class="prod-body">
+                <span class="prod-empresa">{{ item.empresa.nombreComercial || 'ZIFCOR' }}</span>
+                <p class="prod-nombre">{{ item.producto.nombre }}</p>
+                <p v-if="item.producto.precioBase" class="prod-precio">
+                  ${{ formatPrecio(item.producto.precioBase) }}
+                  <span class="prod-moneda">{{ item.producto.moneda }}</span>
+                </p>
+                <div class="prod-badge">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                  Proveedor verificado
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="carousel-arrow carousel-arrow--next" @click="scrollCarousel(1)" :disabled="carouselEnd">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SECTORES ══════════════════════════════════════════ -->
+    <section class="catalog-section">
+      <div class="bs-wrap">
+        <div class="section-head section-head--sectors">
           <h2 class="section-title">Explora empresas por sector</h2>
         </div>
 
@@ -92,16 +157,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { publicApi } from '../../api/publicCatalog'
-import { slugify } from '../../utils/slugify'
 
 const router = useRouter()
 const sectores = ref([])
+const destacados = ref([])
 const loading = ref(true)
 const searchQuery = ref('')
 const searchFocused = ref(false)
+const carouselRef = ref(null)
+const carouselStart = ref(true)
+const carouselEnd = ref(false)
+const isCentered = ref(false)
 
 const examples = [
   { icon: '🚁', label: 'Drones' },
@@ -124,30 +193,58 @@ function quickSearch(term) {
   goToSearch()
 }
 
-// Navega a la tienda de una empresa:
-// URL visible:  /tienda/empresa/nombre-empresa
-// ID real:      ?eid=GUID  (CompanyStorePage lo lee y lo limpia)
-function goToEmpresa(empresa) {
-  const nombre = empresa.profile?.nombreComercial || empresa.razonSocial || empresa.id
-  router.push({
-    path: `/tienda/empresa/${slugify(nombre)}`,
-    query: { eid: empresa.id },
-  })
+function goToProducto(item) {
+  if (!item || !item.producto || !item.producto.slug) return
+  router.push(`/tienda/producto/${item.producto.slug}`)
+}
+
+function formatPrecio(valor) {
+  if (!valor) return ''
+  return Number(valor).toLocaleString('es-CO')
+}
+
+function scrollCarousel(direction) {
+  if (!carouselRef.value) return
+  const card = carouselRef.value.querySelector('.prod-card')
+  const cardWidth = card ? card.offsetWidth + 12 : 175
+  carouselRef.value.scrollBy({ left: direction * cardWidth * 2, behavior: 'smooth' })
+}
+
+function onCarouselScroll() {
+  if (!carouselRef.value) return
+  const el = carouselRef.value
+  carouselStart.value = el.scrollLeft <= 0
+  carouselEnd.value = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4
+}
+
+function checkCentered() {
+  if (!carouselRef.value) return
+  const el = carouselRef.value
+  isCentered.value = el.scrollWidth <= el.clientWidth
 }
 
 onMounted(async () => {
   try {
-    const { data } = await publicApi.getSectores()
-    sectores.value = data
+    const [sectoresRes, destacadosRes] = await Promise.allSettled([
+      publicApi.getSectores(),
+      publicApi.getDestacados('destacados'),
+    ])
+    sectores.value = sectoresRes.status === 'fulfilled' ? sectoresRes.value.data : []
+    destacados.value = destacadosRes.status === 'fulfilled' ? destacadosRes.value.data : []
   } catch {
     sectores.value = []
+    destacados.value = []
   } finally {
     loading.value = false
+    await nextTick()
+    checkCentered()
+    window.addEventListener('resize', checkCentered)
   }
 })
 </script>
 
 <style scoped>
+/* ══ HERO ════════════════════════════════════════════════════ */
 .store-hero {
   position: relative;
   min-height: 420px;
@@ -358,9 +455,11 @@ onMounted(async () => {
   font-size: 14px;
 }
 
-.catalog-section {
-  background: #fafbfc;
-  padding: 32px 0 80px;
+/* ══ DESTACADOS ══════════════════════════════════════════════ */
+.destacados-section {
+  background: #fff;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid rgba(15, 23, 42, .07);
 }
 
 .bs-wrap {
@@ -370,15 +469,203 @@ onMounted(async () => {
 }
 
 .section-head {
-  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.section-head--sectors {
+  margin-bottom: 20px;
 }
 
 .section-title {
-  margin: 0 0 6px;
-  font-size: clamp(20px, 2.5vw, 28px);
+  margin: 0 0 3px;
+  font-size: clamp(16px, 2vw, 20px);
   font-weight: 900;
   color: #1b1b1b;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.4px;
+}
+
+.section-sub {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(11, 18, 32, .45);
+}
+
+.ver-todos-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #0071e3;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 150ms;
+}
+
+.ver-todos-link:hover {
+  opacity: .75;
+}
+
+/* Carrusel */
+.prod-carousel-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prod-carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 4px 2px 6px;
+  flex: 1;
+}
+
+.prod-carousel--centered {
+  justify-content: center;
+}
+
+.prod-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-arrow {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(15, 23, 42, .14);
+  background: #fff;
+  color: #0b1220;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 160ms;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .07);
+}
+
+.carousel-arrow:hover:not(:disabled) {
+  border-color: #0071e3;
+  color: #0071e3;
+  box-shadow: 0 3px 12px rgba(0, 113, 227, .18);
+}
+
+.carousel-arrow:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+/* Tarjeta producto */
+.prod-card {
+  flex-shrink: 0;
+  width: 160px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(15, 23, 42, .09);
+  background: #fff;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: transform 200ms, box-shadow 200ms, border-color 200ms;
+  overflow: hidden;
+}
+
+.prod-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .10);
+  border-color: rgba(0, 113, 227, .25);
+}
+
+.prod-img-wrap {
+  width: 100%;
+  height: 120px;
+  background: #f5f7fa;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prod-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 300ms;
+}
+
+.prod-card:hover .prod-img {
+  transform: scale(1.05);
+}
+
+.prod-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: rgba(11, 18, 32, .2);
+}
+
+.prod-body {
+  padding: 10px 11px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.prod-empresa {
+  font-size: 10px;
+  font-weight: 800;
+  color: #0071e3;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.prod-nombre {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  color: #0b1220;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prod-precio {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 900;
+  color: #0b1220;
+}
+
+.prod-moneda {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .45);
+  margin-left: 2px;
+}
+
+.prod-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+/* ══ SECTORES ════════════════════════════════════════════════ */
+.catalog-section {
+  background: #fafbfc;
+  padding: 28px 0 72px;
 }
 
 .categories-grid {
@@ -547,6 +834,14 @@ onMounted(async () => {
   .categories-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .prod-card {
+    width: 150px;
+  }
+
+  .prod-img-wrap {
+    height: 110px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -567,6 +862,18 @@ onMounted(async () => {
   .cta-btn {
     width: 100%;
     text-align: center;
+  }
+
+  .prod-card {
+    width: 140px;
+  }
+
+  .prod-img-wrap {
+    height: 100px;
+  }
+
+  .carousel-arrow {
+    display: none;
   }
 }
 

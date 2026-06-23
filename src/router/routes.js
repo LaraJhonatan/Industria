@@ -34,13 +34,19 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/tienda/CompanyCategoriesPage.vue') },
 
+      // Acceso directo por slug de producto (desde destacados, emails, redes sociales, etc.)
+      {
+        path: 'producto/:productoSlug',
+        component: () => import('pages/tienda/ProductPublicDetailPage.vue'),
+      },
+
       // Empresa por slug (URL amigable)
       {
         path: '/tienda/:sectorSlug/:empresaSlug',
         component: () => import('pages/tienda/CompanyStorePage.vue'),
       },
 
-      // Producto por slug (URL amigable)
+      // Producto por slug completo (URL jerárquica SEO)
       {
         path: '/tienda/:sectorSlug/:empresaSlug/producto/:productoSlug',
         component: () => import('pages/tienda/ProductPublicDetailPage.vue'),
