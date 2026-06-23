@@ -26,6 +26,7 @@ const routes = [
   },
 
   { path: '/auth', component: () => import('pages/AuthView.vue') },
+  { path: '/auth/callback', component: () => import('pages/AuthCallbackPage.vue') },
 
   {
     path: '/tienda',

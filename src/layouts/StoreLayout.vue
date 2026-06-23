@@ -15,19 +15,20 @@
           <!-- Autenticado -->
           <template v-if="authStore.isAuthenticated">
 
-            <!-- Carrito -->
+            <!-- Carrito (visible para todos) -->
             <button class="bs-cart-btn" @click="router.push('/tienda/carrito')">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <circle cx="9" cy="21" r="1" fill="currentColor" stroke="none" />
                 <circle cx="20" cy="21" r="1" fill="currentColor" stroke="none" />
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
+              <span class="bs-cart-label">Carrito</span>
             </button>
 
             <!-- Avatar -->
             <div class="bs-avatar-wrap">
               <button class="bs-avatar" @click="avatarMenu = !avatarMenu">
-                <img v-if="empresaLogoUrl" :src="empresaLogoUrl" :alt="empresaNombre" class="bs-avatar-img" />
+                <img v-if="profileImage" :src="profileImage" :alt="displayNombre" class="bs-avatar-img" />
                 <span v-else class="bs-avatar-initials">{{ initials }}</span>
               </button>
 
@@ -35,24 +36,44 @@
                 <div v-if="avatarMenu" class="bs-avatar-dropdown">
                   <div class="avatar-drop-head">
                     <div class="avatar-drop-avatar">
-                      <img v-if="empresaLogoUrl" :src="empresaLogoUrl" class="avatar-drop-img" />
+                      <img v-if="profileImage" :src="profileImage" :alt="displayNombre" class="avatar-drop-img" />
                       <span v-else class="avatar-drop-initials">{{ initials }}</span>
                     </div>
                     <div class="avatar-drop-info">
-                      <p class="avatar-drop-name">{{ empresaNombre }}</p>
-                      <p class="avatar-drop-nit">NIT {{ authStore.empresa?.nit }}</p>
+                      <p class="avatar-drop-name">{{ displayNombre }}</p>
+                      <p class="avatar-drop-sub">
+                        {{ esTipoUsuario ? 'Usuario' : 'NIT ' + authStore.empresa?.nit }}
+                      </p>
                     </div>
                   </div>
                   <div class="avatar-drop-hr" />
-                  <button class="avatar-drop-item" @click="goToDashboard">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="3" width="7" height="7" rx="1" />
-                      <rect x="14" y="3" width="7" height="7" rx="1" />
-                      <rect x="3" y="14" width="7" height="7" rx="1" />
-                      <rect x="14" y="14" width="7" height="7" rx="1" />
-                    </svg>
-                    Mi dashboard
-                  </button>
+
+                  <!-- Menú usuario Google -->
+                  <template v-if="esTipoUsuario">
+                    <button class="avatar-drop-item" @click="avatarMenu = false">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                      Mi perfil
+                    </button>
+                  </template>
+
+                  <!-- Menú empresa -->
+                  <template v-else>
+                    <button class="avatar-drop-item" @click="goToDashboard">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                      </svg>
+                      Mi dashboard
+                    </button>
+                  </template>
+
                   <div class="avatar-drop-hr" />
                   <button class="avatar-drop-item avatar-drop-item--danger" @click="doLogout">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -69,8 +90,16 @@
 
           <!-- No autenticado -->
           <template v-else>
+            <button class="bs-cart-btn" @click="router.push('/tienda/carrito')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="9" cy="21" r="1" fill="currentColor" stroke="none" />
+                <circle cx="20" cy="21" r="1" fill="currentColor" stroke="none" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              <span class="bs-cart-label">Carrito</span>
+            </button>
             <button class="bs-signup-btn" @click="router.push('/auth')">
-              Regístrate / Inicia Sesión
+              Iniciar sesión
             </button>
           </template>
         </div>
@@ -103,14 +132,17 @@
           <template v-if="authStore.isAuthenticated">
             <div class="drawer-profile">
               <div class="drawer-avatar">
-                <img v-if="empresaLogoUrl" :src="empresaLogoUrl" class="drawer-avatar-img" />
+                <img v-if="profileImage" :src="profileImage" :alt="displayNombre" class="drawer-avatar-img" />
                 <span v-else class="drawer-avatar-initials">{{ initials }}</span>
               </div>
               <div class="drawer-profile-info">
-                <p class="drawer-profile-name">{{ empresaNombre }}</p>
-                <p class="drawer-profile-nit">NIT {{ authStore.empresa?.nit }}</p>
+                <p class="drawer-profile-name">{{ displayNombre }}</p>
+                <p class="drawer-profile-nit">
+                  {{ esTipoUsuario ? 'Usuario' : 'NIT ' + authStore.empresa?.nit }}
+                </p>
               </div>
             </div>
+
             <button class="drawer-btn-secondary" @click="router.push('/tienda/carrito'); drawer = false">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <circle cx="9" cy="21" r="1" fill="currentColor" stroke="none" />
@@ -119,12 +151,27 @@
               </svg>
               Mi carrito
             </button>
-            <button class="drawer-btn-fill" @click="goToDashboard">Mi dashboard</button>
+
+            <template v-if="esTipoUsuario">
+              <button class="drawer-btn-fill" @click="drawer = false">Mi perfil</button>
+            </template>
+            <template v-else>
+              <button class="drawer-btn-fill" @click="goToDashboard; drawer = false">Mi dashboard</button>
+            </template>
+
             <button class="drawer-btn-outline" @click="doLogout">Cerrar sesión</button>
           </template>
           <template v-else>
+            <button class="drawer-btn-secondary" @click="router.push('/tienda/carrito'); drawer = false">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="9" cy="21" r="1" fill="currentColor" stroke="none" />
+                <circle cx="20" cy="21" r="1" fill="currentColor" stroke="none" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              Mi carrito
+            </button>
             <button class="drawer-btn-fill" @click="router.push('/auth'); drawer = false">
-              Regístrate / Inicia Sesión
+              Iniciar sesión
             </button>
           </template>
         </div>
@@ -184,14 +231,13 @@
               +200 visitantes este mes
             </div>
           </div>
-
           <div class="bs-foot-copy">© {{ year }} Zifcor S.A.S - Todos los derechos reservados - NIT: 902067173-6</div>
         </div>
       </div>
     </q-footer>
 
     <q-page-sticky position="bottom-right" :offset="[24, 24]" class="z-fab">
-      <a href="https://wa.me/573001234567" target="_blank" class="bs-whatsapp-float">
+      <a href="https://wa.me/573114799224" target="_blank" class="bs-whatsapp-float">
         <div class="bs-whatsapp-pulse" />
         <svg viewBox="0 0 24 24" class="bs-whatsapp-icon" fill="currentColor">
           <path
@@ -199,6 +245,7 @@
         </svg>
       </a>
     </q-page-sticky>
+
   </q-layout>
 </template>
 
@@ -216,14 +263,21 @@ const scrolled = ref(false)
 const avatarMenu = ref(false)
 const year = new Date().getFullYear()
 
-const empresaNombre = computed(() =>
-  authStore.empresa?.razonSocial || authStore.empresa?.nit || 'Mi empresa'
-)
+// ── Tipo de sesión
+const esTipoUsuario = computed(() => authStore.sesion?.usuario?.tipo === 'usuario')
 
-const empresaLogoUrl = computed(() => authStore.empresa?.logoUrl || null)
+const displayNombre = computed(() => {
+  if (esTipoUsuario.value) return authStore.sesion?.usuario?.nombre || 'Mi cuenta'
+  return authStore.empresa?.razonSocial || authStore.empresa?.nit || 'Mi empresa'
+})
+
+const profileImage = computed(() => {
+  if (esTipoUsuario.value) return authStore.sesion?.usuario?.fotoUrl || null
+  return authStore.empresa?.logoUrl || null
+})
 
 const initials = computed(() => {
-  const name = empresaNombre.value
+  const name = displayNombre.value
   const words = name.trim().split(/\s+/)
   if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase()
   return name.slice(0, 2).toUpperCase()
@@ -298,9 +352,41 @@ onBeforeUnmount(() => {
   display: block;
 }
 
+/* ── CARRITO ── */
+.bs-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(15, 23, 42, 0.12);
+  background: rgba(0, 0, 0, 0.025);
+  color: rgba(11, 18, 32, 0.70);
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 150ms, background 150ms, color 150ms;
+  white-space: nowrap;
+}
+
+.bs-cart-btn:hover {
+  border-color: #0071e3;
+  background: rgba(0, 113, 227, 0.06);
+  color: #0071e3;
+}
+
+.bs-cart-label {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+/* ── SIGNUP ── */
 .bs-signup-btn {
   height: 38px;
-  padding: 0 24px;
+  padding: 0 20px;
   background: #0071e3;
   color: #fff;
   border: none;
@@ -311,6 +397,7 @@ onBeforeUnmount(() => {
   transition: background 160ms;
   white-space: nowrap;
   flex-shrink: 0;
+  font-family: inherit;
 }
 
 .bs-signup-btn:hover {
@@ -321,27 +408,6 @@ onBeforeUnmount(() => {
   color: rgba(11, 18, 32, 0.72) !important;
 }
 
-/* ── CARRITO ── */
-.bs-cart-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  border: 1.5px solid rgba(15, 23, 42, 0.12);
-  background: rgba(0, 0, 0, 0.025);
-  color: rgba(11, 18, 32, 0.65);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: border-color 150ms, background 150ms, color 150ms;
-}
-
-.bs-cart-btn:hover {
-  border-color: #0071e3;
-  background: rgba(0, 113, 227, 0.06);
-  color: #0071e3;
-}
-
 /* ── AVATAR ── */
 .bs-avatar-wrap {
   position: relative;
@@ -350,7 +416,7 @@ onBeforeUnmount(() => {
 .bs-avatar {
   width: 38px;
   height: 38px;
-  border-radius: 8px;
+  border-radius: 50%;
   border: 1.5px solid rgba(15, 23, 42, 0.12);
   background: #f0f4f8;
   cursor: pointer;
@@ -374,10 +440,9 @@ onBeforeUnmount(() => {
 .bs-avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  object-fit: cover;
   display: block;
+  border-radius: 6px;
 }
 
 .bs-avatar-initials {
@@ -411,7 +476,7 @@ onBeforeUnmount(() => {
 .avatar-drop-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 50%;
   background: #f0f4f8;
   border: 1px solid rgba(15, 23, 42, 0.08);
   display: grid;
@@ -423,15 +488,12 @@ onBeforeUnmount(() => {
 .avatar-drop-avatar:has(.avatar-drop-initials) {
   background: linear-gradient(135deg, #0071e3, #4f9cf9);
   border-color: transparent;
-  border-radius: 50%;
 }
 
 .avatar-drop-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  object-fit: cover;
 }
 
 .avatar-drop-initials {
@@ -455,7 +517,7 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-.avatar-drop-nit {
+.avatar-drop-sub {
   font-size: 11px;
   color: rgba(11, 18, 32, 0.45);
   font-weight: 600;
@@ -616,26 +678,18 @@ onBeforeUnmount(() => {
 .drawer-avatar {
   width: 44px;
   height: 44px;
-  border-radius: 8px;
-  background: #f0f4f8;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0071e3, #4f9cf9);
   display: grid;
   place-items: center;
   flex-shrink: 0;
   overflow: hidden;
 }
 
-.drawer-avatar:has(.drawer-avatar-initials) {
-  background: linear-gradient(135deg, #0071e3, #4f9cf9);
-  border-color: transparent;
-  border-radius: 50%;
-}
-
 .drawer-avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  image-rendering: crisp-edges;
+  object-fit: cover;
 }
 
 .drawer-avatar-initials {
@@ -742,20 +796,6 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-}
-
-.bs-visitor-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.13);
-  background: rgba(15, 23, 42, 0.03);
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, 0.60);
-  white-space: nowrap;
 }
 
 .foot-logo-img {
@@ -869,24 +909,24 @@ onBeforeUnmount(() => {
   color: #0b1220;
 }
 
-.bs-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bs-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-}
-
 .bs-foot-copy {
   font-size: 12px;
   font-weight: 700;
   color: rgba(11, 18, 32, 0.45);
+}
+
+.bs-visitor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.13);
+  background: rgba(15, 23, 42, 0.03);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, 0.60);
+  white-space: nowrap;
 }
 
 .bs-whatsapp-float {

@@ -111,452 +111,646 @@
             <div class="brand-sep" />
             <span class="brand-label">Portal empresarial</span>
           </div>
-          <div class="tabs" v-if="reg.step < 5">
-            <button class="tab" :class="{ 'tab--on': mode === 'login' }" @click="switchMode('login')">
-              Iniciar sesión
-            </button>
-            <button class="tab" :class="{ 'tab--on': mode === 'register' }" @click="switchMode('register')">
-              Registrar empresa
-            </button>
-          </div>
         </div>
 
         <!-- CONTENIDO DINÁMICO -->
         <div class="panel-body">
 
-          <!-- LOGIN -->
-          <template v-if="mode === 'login'">
-            <div class="fh">
-              <h2 class="fh-title">Iniciar sesión</h2>
-              <p class="fh-sub">Entra a tu cuenta empresarial con seguridad</p>
+          <!-- ══ SELECTOR DE TIPO ══ -->
+          <template v-if="vista === 'selector'">
+            <div class="fh fh--center">
+              <div class="selector-ico">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path
+                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                </svg>
+              </div>
+              <h2 class="fh-title">¿Qué deseas hacer hoy?</h2>
+              <p class="fh-sub">Elige cómo quieres acceder a la plataforma</p>
             </div>
 
-            <div v-if="loginErr" class="alert alert--err">
+            <div class="type-grid">
+              <button class="type-card" @click="vista = 'usuario'">
+                <div class="tc-ico tc-ico--blue">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <h3 class="tc-title">Soy usuario</h3>
+                <p class="tc-desc">Quiero comprar, cotizar o buscar proveedores.</p>
+                <span class="tc-btn tc-btn--blue">Acceder como usuario →</span>
+              </button>
+
+              <button class="type-card" @click="vista = 'empresa-selector'">
+                <div class="tc-ico tc-ico--green">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                </div>
+                <h3 class="tc-title">Soy empresa</h3>
+                <p class="tc-desc">Quiero vender, publicar productos o servicios y conectar con clientes.</p>
+                <span class="tc-btn tc-btn--green">Acceder como empresa →</span>
+              </button>
+            </div>
+
+            <div class="or-row">
+              <div class="or-line" />
+              <span class="or-txt">o</span>
+              <div class="or-line" />
+            </div>
+
+            <button class="quick-login-btn" @click="vista = 'empresa-selector'">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              Iniciar sesión — si ya tienes cuenta
+            </button>
+
+            <div class="type-info-row">
+              <div class="ti-col">
+                <div class="ti-ico">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="ti-title">Para usuarios</p>
+                  <p class="ti-desc">Accede para comprar, cotizar, guardar favoritos y contactar empresas verificadas.
+                  </p>
+                  <button class="tlink" @click="vista = 'usuario'">Más información →</button>
+                </div>
+              </div>
+              <div class="ti-divider" />
+              <div class="ti-col">
+                <div class="ti-ico ti-ico--green">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="ti-title">Para empresas</p>
+                  <p class="ti-desc">Crea tu cuenta empresarial y empieza a vender tus productos y servicios
+                    industriales.</p>
+                  <button class="tlink" @click="vista = 'empresa-selector'">Más información →</button>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <!-- ══ USUARIO: LOGIN / REGISTRO CON GMAIL ══ -->
+          <template v-if="vista === 'usuario'">
+            <button class="back-btn" @click="vista = 'selector'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              Volver
+            </button>
+
+            <div class="fh">
+              <div class="user-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                Acceso de usuarios
+              </div>
+              <h2 class="fh-title">Accede con tu cuenta</h2>
+              <p class="fh-sub">Usa tu cuenta de Google para entrar a la plataforma de forma rápida y segura.</p>
+            </div>
+
+            <div v-if="userErr" class="alert alert--err">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <circle cx="12" cy="16" r=".6" fill="currentColor" />
               </svg>
-              {{ loginErr }}
+              {{ userErr }}
             </div>
 
-            <div class="fg">
-              <label class="fl">NIT o correo corporativo <span class="req">*</span></label>
-              <div class="iw">
-                <input v-model="login.id" class="fi" type="text" placeholder="900123456 o correo@empresa.com"
-                  @keydown.enter="doLogin" />
-                <svg class="fi-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2">
+            <button class="google-btn" :class="{ loading: userLoading }" @click="loginConGoogle"
+              :disabled="userLoading">
+              <span v-if="userLoading" class="spinner spinner--dark" />
+              <template v-else>
+                <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4" />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853" />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                    fill="#FBBC05" />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335" />
+                </svg>
+                Continuar con Google
+              </template>
+            </button>
+
+            <div class="gmail-info">
+              <div class="gi-row">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Inicio de sesión seguro con OAuth 2.0 de Google</span>
+              </div>
+              <div class="gi-row">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>Acceso en segundos, sin necesidad de contraseña</span>
+              </div>
+              <div class="gi-row">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
+                <span>Solo usamos tu nombre, foto y correo de Google</span>
               </div>
             </div>
 
-            <div class="fg">
-              <label class="fl">Contraseña <span class="req">*</span></label>
-              <div class="iw">
-                <input v-model="login.pw" class="fi" :type="showLP ? 'text' : 'password'" placeholder="Tu contraseña"
-                  @keydown.enter="doLogin" />
-                <button class="eye" type="button" @click="showLP = !showLP">
-                  <svg v-if="!showLP" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                  <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
-                    <path
-                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                  </svg>
-                </button>
-              </div>
-              <div style="text-align:right;margin-top:6px">
-                <button type="button" class="tlink" @click.prevent="() => { }">
-                  ¿Olvidaste tu contraseña?
-                </button>
-              </div>
+            <div class="or-row or-row--sm">
+              <div class="or-line" />
+              <span class="or-txt">¿Eres empresa?</span>
+              <div class="or-line" />
             </div>
 
-            <button class="btn-p w-full" :class="{ loading: loginLoading }" @click="doLogin" :disabled="loginLoading">
-              <span v-if="loginLoading" class="spinner" />
-              <span v-else>Iniciar sesión y continuar →</span>
+            <button class="empresa-link-btn" @click="vista = 'empresa-selector'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+              Acceder como empresa con NIT
             </button>
-            <p class="foot-txt">¿Aún no tienes cuenta?
-              <button class="tlink tlink--b" @click="switchMode('register')">Regístrate</button>
-            </p>
           </template>
 
-          <!-- WIZARD -->
-          <template v-else>
+          <!-- ══ EMPRESA: SELECTOR LOGIN / REGISTRO ══ -->
+          <template v-if="vista === 'empresa-selector'">
+            <button class="back-btn" @click="vista = 'selector'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              Volver
+            </button>
 
-            <div class="stepper" v-if="reg.step < 5">
-              <div v-for="(s, i) in steps" :key="i" class="st"
-                :class="{ 'st--done': reg.step > i + 1, 'st--on': reg.step === i + 1 }">
-                <div class="st-dot">
-                  <svg v-if="reg.step > i + 1" width="10" height="10" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="3.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span v-else>{{ i + 1 }}</span>
-                </div>
-                <span class="st-lbl">{{ s }}</span>
-                <div v-if="i < steps.length - 1" class="st-line" :class="{ 'st-line--on': reg.step > i + 1 }" />
+            <div class="fh">
+              <div class="user-badge user-badge--green">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" />
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
+                Portal empresarial
               </div>
+              <h2 class="fh-title">Acceso de empresas</h2>
+              <p class="fh-sub">Elige si ya tienes cuenta o quieres registrar tu empresa.</p>
             </div>
 
-            <!-- PASO 1 -->
-            <div v-if="reg.step === 1">
-              <div class="fh">
-                <h2 class="fh-title">Registra tu empresa</h2>
-                <p class="fh-sub">Crea tu cuenta empresarial con validación segura</p>
-              </div>
-              <div class="section-tag">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <path d="M3 9h18" />
-                  <path d="M9 21V9" />
-                </svg>
-                Identidad legal
-              </div>
-              <div v-if="reg.nitErr" class="alert alert--err">
+            <div class="tabs">
+              <button class="tab" :class="{ 'tab--on': modeEmpresa === 'login' }" @click="modeEmpresa = 'login'">
+                Iniciar sesión
+              </button>
+              <button class="tab" :class="{ 'tab--on': modeEmpresa === 'register' }" @click="switchToRegister">
+                Registrar empresa
+              </button>
+            </div>
+
+            <!-- LOGIN EMPRESA -->
+            <div v-if="modeEmpresa === 'login'" style="margin-top: 20px">
+              <div v-if="loginErr" class="alert alert--err">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <circle cx="12" cy="16" r=".6" fill="currentColor" />
                 </svg>
-                {{ reg.nitErr }}
+                {{ loginErr }}
               </div>
+
               <div class="fg">
-                <label class="fl">NIT de la empresa <span class="req">*</span></label>
+                <label class="fl">NIT o correo corporativo <span class="req">*</span></label>
                 <div class="iw">
-                  <input v-model="reg.nit" class="fi" type="text" placeholder="900 123 456"
-                    @keydown.enter="consultarNIT" @input="reg.nitErr = ''" />
+                  <input v-model="login.id" class="fi" type="text" placeholder="900123456 o correo@empresa.com"
+                    @keydown.enter="doLogin" />
                   <svg class="fi-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                   </svg>
                 </div>
-                <span class="fhint">Sin dígito de verificación</span>
               </div>
-              <button class="btn-p w-full" :class="{ loading: reg.loading }" @click="consultarNIT"
-                :disabled="reg.loading || !reg.nit">
-                <span v-if="reg.loading" class="spinner" />
-                <template v-else>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
-                  Consultar empresa
-                </template>
+
+              <div class="fg">
+                <label class="fl">Contraseña <span class="req">*</span></label>
+                <div class="iw">
+                  <input v-model="login.pw" class="fi" :type="showLP ? 'text' : 'password'" placeholder="Tu contraseña"
+                    @keydown.enter="doLogin" />
+                  <button class="eye" type="button" @click="showLP = !showLP">
+                    <svg v-if="!showLP" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2">
+                      <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  </button>
+                </div>
+                <div style="text-align:right;margin-top:6px">
+                  <button type="button" class="tlink" @click.prevent="() => { }">
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                </div>
+              </div>
+
+              <button class="btn-p w-full" :class="{ loading: loginLoading }" @click="doLogin" :disabled="loginLoading">
+                <span v-if="loginLoading" class="spinner" />
+                <span v-else>Iniciar sesión →</span>
               </button>
-              <p class="foot-txt">¿Ya tienes cuenta?
-                <button class="tlink tlink--b" @click="switchMode('login')">Iniciar sesión</button>
+              <p class="foot-txt">¿Aún no tienes cuenta?
+                <button class="tlink tlink--b" @click="switchToRegister">Regístrate</button>
               </p>
             </div>
 
-            <!-- PASO 2 -->
-            <div v-if="reg.step === 2">
-              <div class="fh">
-                <h2 class="fh-title">Empresa encontrada</h2>
-                <p class="fh-sub">Verifica los datos y carga el RUT en PDF</p>
-              </div>
-              <div class="empresa-card">
-                <div class="ec-head">
-                  <div class="ec-avatar">{{ reg.empresa.razonSocial?.charAt(0) }}</div>
-                  <div class="ec-info">
-                    <p class="ec-name">{{ reg.empresa.razonSocial }}</p>
-                    <span class="ec-badge" :class="reg.empresa.estado === 'ACTIVA' ? 'ec-badge--ok' : 'ec-badge--warn'">
-                      {{ reg.empresa.estado }}
-                    </span>
+            <!-- REGISTRO EMPRESA -->
+            <div v-if="modeEmpresa === 'register'" style="margin-top: 20px">
+              <div class="stepper">
+                <div v-for="(s, i) in steps" :key="i" class="st"
+                  :class="{ 'st--done': reg.step > i + 1, 'st--on': reg.step === i + 1 }">
+                  <div class="st-dot">
+                    <svg v-if="reg.step > i + 1" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="3.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span v-else>{{ i + 1 }}</span>
                   </div>
-                  <svg class="ec-ok" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
+                  <span class="st-lbl">{{ s }}</span>
+                  <div v-if="i < steps.length - 1" class="st-line" :class="{ 'st-line--on': reg.step > i + 1 }" />
+                </div>
+              </div>
+
+              <!-- PASO 1 -->
+              <div v-if="reg.step === 1">
+                <div class="section-tag">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <path d="M3 9h18" />
+                    <path d="M9 21V9" />
+                  </svg>
+                  Identidad legal
+                </div>
+                <div v-if="reg.nitErr" class="alert alert--err">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <circle cx="12" cy="16" r=".6" fill="currentColor" />
+                  </svg>
+                  {{ reg.nitErr }}
+                </div>
+                <div class="fg">
+                  <label class="fl">NIT de la empresa <span class="req">*</span></label>
+                  <div class="iw">
+                    <input v-model="reg.nit" class="fi" type="text" placeholder="900 123 456"
+                      @keydown.enter="consultarNIT" @input="reg.nitErr = ''" />
+                    <svg class="fi-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2">
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                  </div>
+                  <span class="fhint">Sin dígito de verificación</span>
+                </div>
+                <button class="btn-p w-full" :class="{ loading: reg.loading }" @click="consultarNIT"
+                  :disabled="reg.loading || !reg.nit">
+                  <span v-if="reg.loading" class="spinner" />
+                  <template v-else>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    Consultar empresa
+                  </template>
+                </button>
+                <p class="foot-txt">¿Ya tienes cuenta?
+                  <button class="tlink tlink--b" @click="modeEmpresa = 'login'">Iniciar sesión</button>
+                </p>
+              </div>
+
+              <!-- PASO 2 -->
+              <div v-if="reg.step === 2">
+                <div class="fh">
+                  <h2 class="fh-title">Empresa encontrada</h2>
+                  <p class="fh-sub">Verifica los datos y carga el RUT en PDF</p>
+                </div>
+                <div class="empresa-card">
+                  <div class="ec-head">
+                    <div class="ec-avatar">{{ reg.empresa.razonSocial?.charAt(0) }}</div>
+                    <div class="ec-info">
+                      <p class="ec-name">{{ reg.empresa.razonSocial }}</p>
+                      <span class="ec-badge"
+                        :class="reg.empresa.estado === 'ACTIVA' ? 'ec-badge--ok' : 'ec-badge--warn'">
+                        {{ reg.empresa.estado }}
+                      </span>
+                    </div>
+                    <svg class="ec-ok" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                  </div>
+                  <div class="ec-grid">
+                    <div class="ec-f">
+                      <span class="ec-l">NIT</span>
+                      <span class="ec-v">{{ reg.empresa.nit }}-{{ reg.empresa.dv }}</span>
+                    </div>
+                    <div class="ec-f">
+                      <span class="ec-l">Estado</span>
+                      <span class="ec-v">{{ reg.empresa.estado ?? '—' }}</span>
+                    </div>
+                    <div class="ec-f">
+                      <span class="ec-l">Tipo de sociedad</span>
+                      <span class="ec-v">{{ reg.empresa.tipoSociedad ?? '—' }}</span>
+                    </div>
+                    <div class="ec-f">
+                      <span class="ec-l">Cámara de comercio</span>
+                      <span class="ec-v">{{ reg.empresa.camara ?? '—' }}</span>
+                    </div>
+                    <div class="ec-f" style="grid-column: 1 / -1">
+                      <span class="ec-l">Representante legal</span>
+                      <span class="ec-v">{{ reg.empresa.representanteLegal ?? '—' }}</span>
+                    </div>
+                    <div class="ec-f" style="grid-column: 1 / -1">
+                      <span class="ec-l">Tipo contribuyente</span>
+                      <span class="ec-v">{{ reg.empresa.tipoContribuyente ?? '—' }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="section-tag mt-12">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  Cargar RUT
+                </div>
+
+                <div v-if="reg.rutErr" class="alert alert--err">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <circle cx="12" cy="16" r=".6" fill="currentColor" />
+                  </svg>
+                  {{ reg.rutErr }}
+                </div>
+
+                <div class="dropzone" :class="{ 'dz--has': reg.rutFile, 'dz--drag': reg.drag }"
+                  @click="!reg.rutFile && $refs.fi.click()" @dragover.prevent="reg.drag = true"
+                  @dragleave.prevent="reg.drag = false" @drop.prevent="onDrop">
+                  <input ref="fi" type="file" accept=".pdf" style="display:none" @change="onFile" />
+                  <template v-if="!reg.rutFile">
+                    <svg class="dz-ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="1.6">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <p class="dz-txt">Arrastra el PDF o <span class="dz-link">selecciona</span></p>
+                    <p class="dz-hint">Solo archivos .pdf · Máx. 5 MB</p>
+                  </template>
+                  <template v-else>
+                    <div class="dz-file">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="1.8">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                      <div>
+                        <p class="dz-fn">{{ reg.rutFile.name }}</p>
+                        <p class="dz-fs">{{ fmtBytes(reg.rutFile.size) }}</p>
+                      </div>
+                      <button class="dz-rm" @click.stop="reg.rutFile = null; reg.rutValidado = false">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </div>
+                  </template>
+                </div>
+
+                <div v-if="reg.rutValidado" class="alert alert--ok mt-8">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  RUT validado. Correo: <strong>{{ reg.correoEnmascarado }}</strong>
+                </div>
+
+                <div class="btn-row mt-16">
+                  <button class="btn-g"
+                    @click="reg.step = 1; reg.empresa = null; reg.rutFile = null; reg.rutValidado = false">
+                    ← Volver
+                  </button>
+                  <button v-if="!reg.rutValidado" class="btn-p" :class="{ loading: reg.loading }"
+                    :disabled="!reg.rutFile || reg.loading" @click="validarRUT">
+                    <span v-if="reg.loading" class="spinner" />
+                    <span v-else>Validar RUT</span>
+                  </button>
+                  <button v-else class="btn-p" @click="enviarCodigo">Continuar →</button>
+                </div>
+              </div>
+
+              <!-- PASO 3 -->
+              <div v-if="reg.step === 3">
+                <div class="otp-icon">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                </div>
+                <div class="fh">
+                  <h2 class="fh-title">Verifica tu correo</h2>
+                  <p class="fh-sub">Enviamos un código a <strong class="em-blue">{{ reg.correoEnmascarado }}</strong>
+                  </p>
+                </div>
+
+                <div v-if="reg.otpErr" class="alert alert--err">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <circle cx="12" cy="16" r=".6" fill="currentColor" />
+                  </svg>
+                  {{ reg.otpErr }}
+                </div>
+                <div v-if="reg.otpResent" class="alert alert--ok">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Código reenviado. Revisa tu correo.
+                </div>
+
+                <div class="otp-group">
+                  <input v-for="(_, i) in 6" :key="i" :ref="el => { if (el) otpR[i] = el }" v-model="reg.otp[i]"
+                    class="otp-box" type="text" maxlength="1" inputmode="numeric" @input="otpIn(i, $event)"
+                    @keydown="otpKd(i, $event)" @paste="otpPaste($event)" @focus="reg.otpErr = ''" />
+                </div>
+
+                <button class="btn-p w-full" :class="{ loading: reg.loading }"
+                  :disabled="reg.otp.join('').length < 6 || reg.loading" @click="verificarOTP">
+                  <span v-if="reg.loading" class="spinner" />
+                  <span v-else>Verificar código</span>
+                </button>
+                <div class="resend-row">
+                  <span class="resend-txt">¿No recibiste el código?</span>
+                  <button class="tlink" @click="reenviarOTP">Reenviar</button>
+                </div>
+                <button class="btn-g w-full mt-8" @click="reg.step = 2">← Volver</button>
+              </div>
+
+              <!-- PASO 4 -->
+              <div v-if="reg.step === 4">
+                <div class="fh">
+                  <h2 class="fh-title">Crea tu contraseña</h2>
+                  <p class="fh-sub">Define una contraseña segura para tu empresa</p>
+                </div>
+                <div v-if="reg.passErr" class="alert alert--err">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <circle cx="12" cy="16" r=".6" fill="currentColor" />
+                  </svg>
+                  {{ reg.passErr }}
+                </div>
+                <div class="fg">
+                  <label class="fl">Contraseña <span class="req">*</span></label>
+                  <div class="iw">
+                    <input v-model="reg.pw" class="fi" :type="showP ? 'text' : 'password'"
+                      placeholder="Mínimo 8 caracteres" @input="reg.passErr = ''" />
+                    <button class="eye" type="button" @click="showP = !showP">
+                      <svg v-if="!showP" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                      <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path
+                          d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div v-if="reg.pw" class="strength-row">
+                    <div class="sbars">
+                      <div v-for="n in 4" :key="n" class="sbar" :class="pStrength >= n ? `sbar--${pLabel}` : ''" />
+                    </div>
+                    <span class="slabel" :class="`slabel--${pLabel}`">{{ pLabel }}</span>
+                  </div>
+                  <ul class="rules">
+                    <li :class="{ ok: reg.pw.length >= 8 }">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>Mínimo 8 caracteres
+                    </li>
+                    <li :class="{ ok: /[a-zA-Z]/.test(reg.pw) }">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>Al menos una letra
+                    </li>
+                    <li :class="{ ok: /\d/.test(reg.pw) }">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>Al menos un número
+                    </li>
+                  </ul>
+                </div>
+                <div class="fg">
+                  <label class="fl">Confirmar contraseña <span class="req">*</span></label>
+                  <div class="iw">
+                    <input v-model="reg.pwc" class="fi" :type="showPC ? 'text' : 'password'"
+                      placeholder="Repite la contraseña" @input="reg.passErr = ''" />
+                    <button class="eye" type="button" @click="showPC = !showPC">
+                      <svg v-if="!showPC" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                      <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path
+                          d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    </button>
+                  </div>
+                  <span v-if="reg.pwc && reg.pw !== reg.pwc" class="fhint fhint--err">
+                    Las contraseñas no coinciden
+                  </span>
+                </div>
+                <label class="checkbox-row">
+                  <input v-model="reg.acepta" type="checkbox" class="checkbox" />
+                  <span class="checkbox-lbl">Confirmo que represento legalmente a esta empresa <span
+                      class="req">*</span></span>
+                </label>
+                <div class="info-tip mt-12">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <circle cx="12" cy="16" r=".6" fill="currentColor" />
+                  </svg>
+                  Tu cuenta quedará asociada a esta empresa.
+                </div>
+                <button class="btn-p w-full mt-16" :class="{ loading: reg.loading }"
+                  :disabled="!pValid || !reg.acepta || reg.loading" @click="crearCuenta">
+                  <span v-if="reg.loading" class="spinner" />
+                  <template v-else>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M9 12l2 2 4-4" />
+                      <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0" />
+                    </svg>
+                    Crear cuenta →
+                  </template>
+                </button>
+              </div>
+
+              <!-- PASO 5: ÉXITO -->
+              <div v-if="reg.step === 5" class="success-block">
+                <div class="success-ico">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
                 </div>
-                <div class="ec-grid">
-                  <div class="ec-f">
-                    <span class="ec-l">NIT</span>
-                    <span class="ec-v">{{ reg.empresa.nit }}-{{ reg.empresa.dv }}</span>
+                <h2 class="fh-title" style="text-align:center">¡Cuenta creada!</h2>
+                <p class="fh-sub" style="text-align:center">
+                  Tu empresa <strong>{{ reg.empresa?.razonSocial }}</strong> ya tiene acceso al sistema.
+                </p>
+                <div class="success-detail">
+                  <div class="sd-row">
+                    <span class="sd-l">NIT</span>
+                    <span class="sd-v">{{ reg.empresa?.nit }}-{{ reg.empresa?.dv }}</span>
                   </div>
-                  <div class="ec-f">
-                    <span class="ec-l">Estado</span>
-                    <span class="ec-v">{{ reg.empresa.estado ?? '—' }}</span>
-                  </div>
-                  <div class="ec-f">
-                    <span class="ec-l">Tipo de sociedad</span>
-                    <span class="ec-v">{{ reg.empresa.tipoSociedad ?? '—' }}</span>
-                  </div>
-                  <div class="ec-f">
-                    <span class="ec-l">Cámara de comercio</span>
-                    <span class="ec-v">{{ reg.empresa.camara ?? '—' }}</span>
-                  </div>
-                  <div class="ec-f" style="grid-column: 1 / -1">
-                    <span class="ec-l">Representante legal</span>
-                    <span class="ec-v">{{ reg.empresa.representanteLegal ?? '—' }}</span>
-                  </div>
-                  <div class="ec-f" style="grid-column: 1 / -1">
-                    <span class="ec-l">Tipo contribuyente</span>
-                    <span class="ec-v">{{ reg.empresa.tipoContribuyente ?? '—' }}</span>
+                  <div class="sd-row">
+                    <span class="sd-l">Correo</span>
+                    <span class="sd-v">{{ reg.correoEnmascarado }}</span>
                   </div>
                 </div>
-              </div>
-
-              <div class="section-tag mt-12">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                </svg>
-                Cargar RUT
-              </div>
-
-              <div v-if="reg.rutErr" class="alert alert--err">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>
-                {{ reg.rutErr }}
-              </div>
-
-              <div class="dropzone" :class="{ 'dz--has': reg.rutFile, 'dz--drag': reg.drag }"
-                @click="!reg.rutFile && $refs.fi.click()" @dragover.prevent="reg.drag = true"
-                @dragleave.prevent="reg.drag = false" @drop.prevent="onDrop">
-                <input ref="fi" type="file" accept=".pdf" style="display:none" @change="onFile" />
-                <template v-if="!reg.rutFile">
-                  <svg class="dz-ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="1.6">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                  <p class="dz-txt">Arrastra el PDF o <span class="dz-link">selecciona</span></p>
-                  <p class="dz-hint">Solo archivos .pdf · Máx. 5 MB</p>
-                </template>
-                <template v-else>
-                  <div class="dz-file">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="1.8">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                    </svg>
-                    <div>
-                      <p class="dz-fn">{{ reg.rutFile.name }}</p>
-                      <p class="dz-fs">{{ fmtBytes(reg.rutFile.size) }}</p>
-                    </div>
-                    <button class="dz-rm" @click.stop="reg.rutFile = null; reg.rutValidado = false">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2.5">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
-                    </button>
-                  </div>
-                </template>
-              </div>
-
-              <div v-if="reg.rutValidado" class="alert alert--ok mt-8">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                RUT validado. Correo: <strong>{{ reg.correoEnmascarado }}</strong>
-              </div>
-
-              <div class="btn-row mt-16">
-                <button class="btn-g"
-                  @click="reg.step = 1; reg.empresa = null; reg.rutFile = null; reg.rutValidado = false">
-                  ← Volver
-                </button>
-                <button v-if="!reg.rutValidado" class="btn-p" :class="{ loading: reg.loading }"
-                  :disabled="!reg.rutFile || reg.loading" @click="validarRUT">
-                  <span v-if="reg.loading" class="spinner" />
-                  <span v-else>Validar RUT</span>
-                </button>
-                <button v-else class="btn-p" @click="enviarCodigo">Continuar →</button>
+                <button class="btn-p w-full mt-16" @click="irAlLogin">Ir a iniciar sesión →</button>
               </div>
             </div>
-
-            <!-- PASO 3 -->
-            <div v-if="reg.step === 3">
-              <div class="otp-icon">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
-              </div>
-              <div class="fh">
-                <h2 class="fh-title">Verifica tu correo</h2>
-                <p class="fh-sub">Enviamos un código a <strong class="em-blue">{{ reg.correoEnmascarado }}</strong></p>
-              </div>
-
-              <div v-if="reg.otpErr" class="alert alert--err">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>
-                {{ reg.otpErr }}
-              </div>
-              <div v-if="reg.otpResent" class="alert alert--ok">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                Código reenviado. Revisa tu correo.
-              </div>
-
-              <div class="otp-group">
-                <input v-for="(_, i) in 6" :key="i" :ref="el => { if (el) otpR[i] = el }" v-model="reg.otp[i]"
-                  class="otp-box" type="text" maxlength="1" inputmode="numeric" @input="otpIn(i, $event)"
-                  @keydown="otpKd(i, $event)" @paste="otpPaste($event)" @focus="reg.otpErr = ''" />
-              </div>
-
-              <button class="btn-p w-full" :class="{ loading: reg.loading }"
-                :disabled="reg.otp.join('').length < 6 || reg.loading" @click="verificarOTP">
-                <span v-if="reg.loading" class="spinner" />
-                <span v-else>Verificar código</span>
-              </button>
-              <div class="resend-row">
-                <span class="resend-txt">¿No recibiste el código?</span>
-                <button class="tlink" @click="reenviarOTP">Reenviar</button>
-              </div>
-              <button class="btn-g w-full mt-8" @click="reg.step = 2">← Volver</button>
-            </div>
-
-            <!-- PASO 4 -->
-            <div v-if="reg.step === 4">
-              <div class="fh">
-                <h2 class="fh-title">Crea tu contraseña</h2>
-                <p class="fh-sub">Define una contraseña segura para tu empresa</p>
-              </div>
-              <div v-if="reg.passErr" class="alert alert--err">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>
-                {{ reg.passErr }}
-              </div>
-              <div class="fg">
-                <label class="fl">Contraseña <span class="req">*</span></label>
-                <div class="iw">
-                  <input v-model="reg.pw" class="fi" :type="showP ? 'text' : 'password'"
-                    placeholder="Mínimo 8 caracteres" @input="reg.passErr = ''" />
-                  <button class="eye" type="button" @click="showP = !showP">
-                    <svg v-if="!showP" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2">
-                      <path
-                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
-                  </button>
-                </div>
-                <div v-if="reg.pw" class="strength-row">
-                  <div class="sbars">
-                    <div v-for="n in 4" :key="n" class="sbar" :class="pStrength >= n ? `sbar--${pLabel}` : ''" />
-                  </div>
-                  <span class="slabel" :class="`slabel--${pLabel}`">{{ pLabel }}</span>
-                </div>
-                <ul class="rules">
-                  <li :class="{ ok: reg.pw.length >= 8 }">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>Mínimo 8 caracteres
-                  </li>
-                  <li :class="{ ok: /[a-zA-Z]/.test(reg.pw) }">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>Al menos una letra
-                  </li>
-                  <li :class="{ ok: /\d/.test(reg.pw) }">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>Al menos un número
-                  </li>
-                </ul>
-              </div>
-              <div class="fg">
-                <label class="fl">Confirmar contraseña <span class="req">*</span></label>
-                <div class="iw">
-                  <input v-model="reg.pwc" class="fi" :type="showPC ? 'text' : 'password'"
-                    placeholder="Repite la contraseña" @input="reg.passErr = ''" />
-                  <button class="eye" type="button" @click="showPC = !showPC">
-                    <svg v-if="!showPC" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2">
-                      <path
-                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
-                  </button>
-                </div>
-                <span v-if="reg.pwc && reg.pw !== reg.pwc" class="fhint fhint--err">
-                  Las contraseñas no coinciden
-                </span>
-              </div>
-              <label class="checkbox-row">
-                <input v-model="reg.acepta" type="checkbox" class="checkbox" />
-                <span class="checkbox-lbl">Confirmo que represento legalmente a esta empresa <span
-                    class="req">*</span></span>
-              </label>
-              <div class="info-tip mt-12">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <circle cx="12" cy="16" r=".6" fill="currentColor" />
-                </svg>
-                Tu cuenta quedará asociada a esta empresa.
-              </div>
-              <button class="btn-p w-full mt-16" :class="{ loading: reg.loading }"
-                :disabled="!pValid || !reg.acepta || reg.loading" @click="crearCuenta">
-                <span v-if="reg.loading" class="spinner" />
-                <template v-else>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 12l2 2 4-4" />
-                    <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0" />
-                  </svg>
-                  Crear cuenta →
-                </template>
-              </button>
-            </div>
-
-            <!-- PASO 5 -->
-            <div v-if="reg.step === 5" class="success-block">
-              <div class="success-ico">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
-              </div>
-              <h2 class="fh-title" style="text-align:center">¡Cuenta creada!</h2>
-              <p class="fh-sub" style="text-align:center">
-                Tu empresa <strong>{{ reg.empresa?.razonSocial }}</strong> ya tiene acceso al sistema.
-              </p>
-              <div class="success-detail">
-                <div class="sd-row">
-                  <span class="sd-l">NIT</span>
-                  <span class="sd-v">{{ reg.empresa?.nit }}-{{ reg.empresa?.dv }}</span>
-                </div>
-                <div class="sd-row">
-                  <span class="sd-l">Correo</span>
-                  <span class="sd-v">{{ reg.correoEnmascarado }}</span>
-                </div>
-              </div>
-              <button class="btn-p w-full mt-16" @click="irAlLogin">Ir a iniciar sesión →</button>
-            </div>
-
           </template>
+
         </div>
       </div>
     </div>
@@ -599,14 +793,23 @@ function getError(err, fallback = 'Ocurrió un error. Intenta de nuevo.') {
   return fallback
 }
 
-const mode = ref('login')
-const steps = ['Empresa', 'RUT', 'Verificar', 'Contraseña']
+// ── Estado de vista
+// 'selector' | 'usuario' | 'empresa-selector'
+const vista = ref('selector')
+const modeEmpresa = ref('login')
 
+// ── Estado login empresa
 const login = reactive({ id: '', pw: '' })
 const loginErr = ref('')
 const loginLoading = ref(false)
 const showLP = ref(false)
 
+// ── Estado usuario (Google)
+const userErr = ref('')
+const userLoading = ref(false)
+
+// ── Estado registro empresa
+const steps = ['Empresa', 'RUT', 'Verificar', 'Contraseña']
 const reg = reactive({
   step: 1, nit: '', nitErr: '', empresa: null, loading: false,
   rutFile: null, rutErr: '', rutValidado: false, drag: false,
@@ -633,20 +836,18 @@ function fmtBytes(b) {
   return (b / 1048576).toFixed(1) + ' MB'
 }
 
-function switchMode(m) {
-  mode.value = m
-  if (m === 'register') {
-    loginErr.value = ''
-    Object.assign(reg, {
-      step: 1, nit: '', nitErr: '', empresa: null, loading: false,
-      rutFile: null, rutErr: '', rutValidado: false,
-      correoEnmascarado: '',
-      otp: ['', '', '', '', '', ''], otpErr: '', otpResent: false,
-      pw: '', pwc: '', passErr: '', acepta: false,
-    })
-  }
+function switchToRegister() {
+  modeEmpresa.value = 'register'
+  Object.assign(reg, {
+    step: 1, nit: '', nitErr: '', empresa: null, loading: false,
+    rutFile: null, rutErr: '', rutValidado: false,
+    correoEnmascarado: '',
+    otp: ['', '', '', '', '', ''], otpErr: '', otpResent: false,
+    pw: '', pwc: '', passErr: '', acepta: false,
+  })
 }
 
+// ── Login empresa
 async function doLogin() {
   if (loginLoading.value) return
   loginErr.value = ''
@@ -661,6 +862,13 @@ async function doLogin() {
   }
 }
 
+async function loginConGoogle() {
+  if (userLoading.value) return
+  userLoading.value = true
+  window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`
+}
+
+// ── Registro empresa: pasos
 async function consultarNIT() {
   reg.nitErr = ''
   const n = reg.nit.trim().replace(/\D/g, '')
@@ -795,7 +1003,8 @@ async function crearCuenta() {
 function irAlLogin() {
   login.id = reg.empresa?.nit ?? ''
   login.pw = ''
-  mode.value = 'login'
+  modeEmpresa.value = 'login'
+  vista.value = 'empresa-selector'
   loginErr.value = ''
 }
 </script>
@@ -1003,7 +1212,7 @@ function irAlLogin() {
 
 .auth-box {
   width: 100%;
-  max-width: 460px;
+  max-width: 480px;
   background: #fff;
   border-radius: 20px;
   border: 1px solid rgba(15, 23, 42, .09);
@@ -1015,7 +1224,7 @@ function irAlLogin() {
 
 .panel-head {
   background: #fff;
-  padding: 28px 32px 20px;
+  padding: 24px 28px 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -1049,6 +1258,342 @@ function irAlLogin() {
   letter-spacing: 1px;
 }
 
+.panel-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 28px 28px;
+  background: #fff;
+}
+
+/* ══ SELECTOR ════════════════════════════════════ */
+.fh--center {
+  text-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.selector-ico {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(0, 113, 227, .07);
+  border: 1px solid rgba(0, 113, 227, .16);
+  display: grid;
+  place-items: center;
+  color: #0071e3;
+  margin-bottom: 12px;
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 14px 16px;
+  border: 1.5px solid rgba(15, 23, 42, .10);
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 180ms;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.type-card:hover {
+  border-color: #0071e3;
+  box-shadow: 0 4px 18px rgba(0, 113, 227, .12);
+  transform: translateY(-2px);
+}
+
+.tc-ico {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 4px;
+}
+
+.tc-ico--blue {
+  background: rgba(0, 113, 227, .08);
+  border: 1px solid rgba(0, 113, 227, .16);
+  color: #0071e3;
+}
+
+.tc-ico--green {
+  background: rgba(22, 163, 74, .08);
+  border: 1px solid rgba(22, 163, 74, .18);
+  color: #16a34a;
+}
+
+.tc-title {
+  font-size: 15px;
+  font-weight: 900;
+  color: #0b1220;
+}
+
+.tc-desc {
+  font-size: 12.5px;
+  color: rgba(11, 18, 32, .55);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 800;
+  width: 100%;
+}
+
+.tc-btn--blue {
+  background: linear-gradient(135deg, #0071e3, #1a87ff);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 113, 227, .25);
+}
+
+.tc-btn--green {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(22, 163, 74, .25);
+}
+
+.or-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.or-row--sm {
+  margin: 14px 0 10px;
+}
+
+.or-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(15, 23, 42, .09);
+}
+
+.or-txt {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .38);
+  white-space: nowrap;
+}
+
+.quick-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  border: 1.5px solid rgba(15, 23, 42, .12);
+  border-radius: 11px;
+  background: none;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .62);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms;
+  margin-bottom: 16px;
+}
+
+.quick-login-btn:hover {
+  border-color: rgba(15, 23, 42, .24);
+  color: #0b1220;
+}
+
+.type-info-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  padding: 14px 0 0;
+  border-top: 1px solid rgba(15, 23, 42, .07);
+}
+
+.ti-divider {
+  width: 1px;
+  background: rgba(15, 23, 42, .08);
+  align-self: stretch;
+}
+
+.ti-col {
+  display: flex;
+  gap: 10px;
+}
+
+.ti-ico {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(0, 113, 227, .07);
+  border: 1px solid rgba(0, 113, 227, .14);
+  display: grid;
+  place-items: center;
+  color: #0071e3;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ti-ico--green {
+  background: rgba(22, 163, 74, .07);
+  border-color: rgba(22, 163, 74, .16);
+  color: #16a34a;
+}
+
+.ti-title {
+  font-size: 12px;
+  font-weight: 900;
+  color: #0b1220;
+  margin-bottom: 3px;
+}
+
+.ti-desc {
+  font-size: 11.5px;
+  color: rgba(11, 18, 32, .52);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+/* ══ BOTÓN VOLVER ════════════════════════════════ */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .45);
+  padding: 0;
+  font-family: inherit;
+  margin-bottom: 18px;
+  transition: color 140ms;
+}
+
+.back-btn:hover {
+  color: #0b1220;
+}
+
+/* ══ BADGE TIPO ══════════════════════════════════ */
+.user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(0, 113, 227, .08);
+  border: 1px solid rgba(0, 113, 227, .18);
+  color: #0071e3;
+  margin-bottom: 10px;
+}
+
+.user-badge--green {
+  background: rgba(22, 163, 74, .08);
+  border-color: rgba(22, 163, 74, .20);
+  color: #16a34a;
+}
+
+/* ══ GOOGLE BTN ══════════════════════════════════ */
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 48px;
+  border: 1.5px solid rgba(15, 23, 42, .14);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0b1220;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 160ms;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+  margin-bottom: 16px;
+}
+
+.google-btn:hover:not(:disabled) {
+  border-color: rgba(15, 23, 42, .26);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .10);
+  transform: translateY(-1px);
+}
+
+.google-btn:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.gmail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: rgba(15, 23, 42, .03);
+  border: 1px solid rgba(15, 23, 42, .07);
+  border-radius: 10px;
+}
+
+.gi-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: rgba(11, 18, 32, .55);
+  font-weight: 600;
+}
+
+.gi-row svg {
+  color: #0071e3;
+  flex-shrink: 0;
+}
+
+.empresa-link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  border: 1.5px solid rgba(22, 163, 74, .22);
+  border-radius: 11px;
+  background: rgba(22, 163, 74, .04);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #15803d;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms;
+}
+
+.empresa-link-btn:hover {
+  background: rgba(22, 163, 74, .08);
+  border-color: rgba(22, 163, 74, .36);
+}
+
+/* ══ TABS EMPRESA ════════════════════════════════ */
 .tabs {
   display: flex;
   background: #f1f3f7;
@@ -1083,14 +1628,7 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-.panel-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 28px 32px 32px;
-  background: #fff;
-}
-
+/* ══ FORM SHARED ═════════════════════════════════ */
 .fh {
   margin-bottom: 20px;
 }
@@ -1225,6 +1763,7 @@ function irAlLogin() {
   margin-top: 1px;
 }
 
+/* ══ STEPPER ═════════════════════════════════════ */
 .stepper {
   display: flex;
   align-items: center;
@@ -1307,6 +1846,7 @@ function irAlLogin() {
   color: #0071e3;
 }
 
+/* ══ EMPRESA CARD ════════════════════════════════ */
 .empresa-card {
   background: #fff;
   border: 1.5px solid rgba(15, 23, 42, .09);
@@ -1410,6 +1950,7 @@ function irAlLogin() {
   color: #0b1220;
 }
 
+/* ══ DROPZONE ════════════════════════════════════ */
 .dropzone {
   border: 2px dashed rgba(15, 23, 42, .17);
   border-radius: 12px;
@@ -1502,6 +2043,7 @@ function irAlLogin() {
   color: #ef4444;
 }
 
+/* ══ OTP ═════════════════════════════════════════ */
 .otp-icon {
   width: 52px;
   height: 52px;
@@ -1554,6 +2096,7 @@ function irAlLogin() {
   color: rgba(11, 18, 32, .52);
 }
 
+/* ══ PASSWORD STRENGTH ═══════════════════════════ */
 .strength-row {
   display: flex;
   align-items: center;
@@ -1645,6 +2188,7 @@ function irAlLogin() {
   opacity: 1;
 }
 
+/* ══ CHECKBOX ════════════════════════════════════ */
 .checkbox-row {
   display: flex;
   align-items: flex-start;
@@ -1688,6 +2232,7 @@ function irAlLogin() {
   margin-top: 1px;
 }
 
+/* ══ SUCCESS ═════════════════════════════════════ */
 .success-block {
   display: flex;
   flex-direction: column;
@@ -1740,6 +2285,7 @@ function irAlLogin() {
   color: #0b1220;
 }
 
+/* ══ BUTTONS ═════════════════════════════════════ */
 .btn-p {
   display: inline-flex;
   align-items: center;
@@ -1832,6 +2378,7 @@ function irAlLogin() {
   font-weight: 800;
 }
 
+/* ══ SPINNER ═════════════════════════════════════ */
 .spinner {
   width: 16px;
   height: 16px;
@@ -1839,6 +2386,11 @@ function irAlLogin() {
   border: 2px solid rgba(255, 255, 255, .35);
   border-top-color: #fff;
   animation: spin .7s linear infinite;
+}
+
+.spinner--dark {
+  border-color: rgba(11, 18, 32, .2);
+  border-top-color: #0b1220;
 }
 
 @keyframes spin {
@@ -1854,6 +2406,7 @@ function irAlLogin() {
   margin-top: 14px;
 }
 
+/* ══ UTILIDADES ══════════════════════════════════ */
 .mt-8 {
   margin-top: 8px;
 }
@@ -1947,6 +2500,17 @@ function irAlLogin() {
   .panel-body {
     padding: 20px 20px 32px;
   }
+
+  .type-info-row {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .ti-divider {
+    width: 100%;
+    height: 1px;
+    align-self: auto;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1982,6 +2546,10 @@ function irAlLogin() {
 
   .hs-lbl {
     display: none;
+  }
+
+  .type-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

@@ -34,6 +34,35 @@ export const useAuthStore = defineStore('auth', () => {
     }
     localStorage.setItem('ZIFCOR_sesion', JSON.stringify(sesion.value))
   }
-
-  return { sesion, isAuthenticated, empresa, token, login, logout, restoreSession, updateLogoUrl }
+  function setTokenUsuario(accessToken) {
+    try {
+      const base64 = accessToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+      const payload = JSON.parse(decodeURIComponent(escape(atob(base64))))
+      const data = {
+        accessToken,
+        usuario: {
+          id: payload.sub,
+          email: payload.email,
+          nombre: payload.nombre,
+          fotoUrl: payload.fotoUrl || null,
+          tipo: 'usuario',
+        },
+      }
+      sesion.value = data
+      localStorage.setItem('ZIFCOR_sesion', JSON.stringify(data))
+    } catch (e) {
+      console.error('Error decodificando token:', e)
+    }
+  }
+  return {
+    sesion,
+    isAuthenticated,
+    empresa,
+    token,
+    login,
+    logout,
+    restoreSession,
+    updateLogoUrl,
+    setTokenUsuario,
+  }
 })
