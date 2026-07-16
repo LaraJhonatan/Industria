@@ -9,7 +9,9 @@
       <div class="hero-inner">
 
         <div class="hero-top">
-          <img src="/IconoZ.png" alt="ZIFCOR" class="hero-logo" />
+          <router-link to="/" class="hero-logo-link" aria-label="Volver al inicio">
+            <img src="/IconoZ.png" alt="ZIFCOR" class="hero-logo" />
+          </router-link>
         </div>
 
         <div class="hero-body">
@@ -1057,11 +1059,21 @@ function irAlLogin() {
   padding: 36px 44px 32px;
 }
 
+.hero-logo-link {
+  display: inline-flex;
+  cursor: pointer;
+}
+
 .hero-logo {
   height: 32px;
   width: auto;
   object-fit: contain;
   filter: brightness(0) invert(1);
+  transition: opacity 160ms;
+}
+
+.hero-logo-link:hover .hero-logo {
+  opacity: 0.8;
 }
 
 .hero-body {

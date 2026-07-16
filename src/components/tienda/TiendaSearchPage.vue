@@ -86,7 +86,7 @@
       <template v-else>
         <div class="products-grid">
           <article v-for="p in productos" :key="p.id" class="product-card"
-            @click="router.push(`/tienda/empresa/${p.empresaId}/producto/${p.id}`)">
+            @click="router.push(`/tienda/producto/${p.slug}`)">
             <div class="product-img">
               <img v-if="p.imagenes?.[0]?.url" :src="p.imagenes[0].url" :alt="p.nombre" />
               <div v-else class="product-img-empty">
@@ -112,7 +112,7 @@
                 </span>
                 <span v-else class="product-price-na">Consultar precio</span>
                 <button class="product-btn"
-                  @click.stop="router.push(`/tienda/empresa/${p.empresaId}/producto/${p.id}`)">
+                  @click.stop="router.push(`/tienda/producto/${p.slug}`)">
                   Ver detalle
                 </button>
               </div>

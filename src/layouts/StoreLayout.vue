@@ -7,7 +7,34 @@
 
         <router-link to="/" class="bs-brand">
           <img src="/IconoZ.png" alt="ZIFCOR" class="bs-logo-img" />
+          <span class="bs-brand-text">
+            <span class="bs-brand-name">ZIFCOR</span>
+            <span class="bs-brand-tag">Distribuidora</span>
+          </span>
         </router-link>
+
+        <nav class="bs-nav gt-sm">
+          <router-link to="/tienda" class="bs-nav-link">
+            Categorías
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </router-link>
+          <button class="bs-nav-link bs-nav-link--soon" type="button">
+            Empresas
+            <span class="bs-nav-soon">Próximamente</span>
+          </button>
+          <button class="bs-nav-link bs-nav-link--soon" type="button">
+            Ofertas
+            <span class="bs-nav-soon">Próximamente</span>
+          </button>
+          <a class="bs-nav-link" :href="whatsappQuoteUrl" target="_blank" rel="noopener noreferrer">
+            Solicita cotización
+          </a>
+          <router-link to="/auth?mode=registro-empresa" class="bs-nav-link bs-nav-link--accent">
+            Vende en ZIFCOR
+          </router-link>
+        </nav>
 
         <q-space />
 
@@ -99,7 +126,7 @@
               <span class="bs-cart-label">Carrito</span>
             </button>
             <button class="bs-signup-btn" @click="router.push('/auth')">
-              Iniciar sesión
+              Regístrate / Inicia sesión
             </button>
           </template>
         </div>
@@ -263,6 +290,9 @@ const scrolled = ref(false)
 const avatarMenu = ref(false)
 const year = new Date().getFullYear()
 
+const whatsappQuoteUrl = 'https://wa.me/573114799224?text=' +
+  encodeURIComponent('Hola, quiero solicitar una cotización en ZIFCOR.')
+
 // ── Tipo de sesión
 const esTipoUsuario = computed(() => authStore.sesion?.usuario?.tipo === 'usuario')
 
@@ -341,6 +371,7 @@ onBeforeUnmount(() => {
 .bs-brand {
   display: inline-flex;
   align-items: center;
+  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
 }
@@ -350,6 +381,102 @@ onBeforeUnmount(() => {
   width: auto;
   object-fit: contain;
   display: block;
+}
+
+.bs-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.bs-brand-name {
+  font-size: 15px;
+  font-weight: 900;
+  color: #0b1220;
+  letter-spacing: -0.3px;
+}
+
+.bs-brand-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* ── NAV ── */
+.bs-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 28px;
+}
+
+.bs-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 38px;
+  padding: 0 14px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, 0.68);
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 150ms, color 150ms;
+}
+
+.bs-nav-link:hover {
+  background: rgba(0, 113, 227, 0.06);
+  color: #0071e3;
+}
+
+.bs-nav-link--accent {
+  color: #0071e3;
+}
+
+.bs-nav-link--soon {
+  cursor: default;
+  color: rgba(11, 18, 32, 0.35);
+}
+
+.bs-nav-link--soon:hover {
+  background: none;
+  color: rgba(11, 18, 32, 0.35);
+}
+
+.bs-nav-link--soon:hover .bs-nav-soon {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.bs-nav-soon {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #0b1220;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 7px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms, transform 180ms;
+}
+
+@media (max-width: 1200px) {
+  .bs-nav {
+    display: none;
+  }
 }
 
 /* ── CARRITO ── */

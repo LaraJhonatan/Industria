@@ -8,7 +8,9 @@
 
       <template v-else-if="product">
         <nav class="breadcrumb">
-          <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
+          <span class="bc-link" @click="goBackToSectores()">
+            {{ route.params.sectorSlug ? 'Sectores' : 'Volver' }}
+          </span>
           <template v-if="route.params.sectorSlug">
             <span class="bc-sep">›</span>
             <span class="bc-link" @click="goBackToStore()">{{ empresaNombreDisplay }}</span>
@@ -311,6 +313,16 @@ function cleanUrl() {
     '',
     `/tienda/${sector}/${empresaSlug.value}/producto/${slug}`
   )
+}
+
+// Primer crumb: si el usuario llegó navegando dentro del sitio (búsqueda, destacados, etc.)
+// vuelve a esa página; si entró por link directo, cae a la home de la tienda.
+function goBackToSectores() {
+  if (window.history.state?.back) {
+    router.back()
+    return
+  }
+  router.push('/tienda')
 }
 
 // Vuelve a la tienda manteniendo la jerarquía sector/empresa

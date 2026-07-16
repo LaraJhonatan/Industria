@@ -7,10 +7,11 @@
       </div>
       <div class="sh-content">
         <h1 class="sh-title">
-          Encuentra lo que<br />
-          <span class="sh-title-blue">tu negocio necesita</span>
+          Encuentra proveedores,<br />
+          <span class="sh-title-blue">productos y servicios</span><br />
+          para tu empresa
         </h1>
-        <p class="sh-sub">Busca entre millones de productos y proveedores globales</p>
+        <p class="sh-sub">Busca entre miles de empresas y encuentra exactamente lo que necesitas.</p>
 
         <div class="search-block">
           <div class="search-bar" :class="{ focused: searchFocused }">
@@ -34,12 +35,70 @@
         </div>
 
         <div class="sh-examples">
-          <span class="sh-examples-label">Ejemplos de búsqueda</span>
-          <div class="sh-chips">
-            <button v-for="ex in examples" :key="ex.label" class="sh-chip" @click="quickSearch(ex.label)">
-              <span class="sh-chip-icon">{{ ex.icon }}</span>
-              {{ ex.label }}
-            </button>
+          <span class="sh-examples-label">Búsquedas populares</span>
+          <div class="sh-chips-outer">
+            <div class="sh-chips">
+              <button v-for="(ex, idx) in loopedExamples" :key="idx" class="sh-chip" @click="quickSearch(ex.label)">
+                <span class="sh-chip-icon">{{ ex.icon }}</span>
+                {{ ex.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CONFIANZA ═════════════════════════════════════════ -->
+    <section class="trust-section">
+      <div class="bs-wrap trust-grid">
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l8 4v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6z" />
+              <polyline points="9 12 11 14 15 10" />
+            </svg>
+          </div>
+          <div>
+            <p class="trust-title">Miles de proveedores verificados</p>
+            <p class="trust-sub">Empresas confiables</p>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3 8-8" />
+              <path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11" />
+            </svg>
+          </div>
+          <div>
+            <p class="trust-title">Cotiza y compra fácilmente</p>
+            <p class="trust-sub">Ahorra tiempo y dinero</p>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="1" y="6" width="14" height="11" rx="1.5" />
+              <path d="M15 10h4l3 3v4h-7z" />
+              <circle cx="6" cy="19" r="1.6" />
+              <circle cx="17.5" cy="19" r="1.6" />
+            </svg>
+          </div>
+          <div>
+            <p class="trust-title">Envíos a todo el país</p>
+            <p class="trust-sub">Logística segura</p>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="4" y="10" width="16" height="10" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+          </div>
+          <div>
+            <p class="trust-title">Compra protegida</p>
+            <p class="trust-sub">Transacciones seguras</p>
           </div>
         </div>
       </div>
@@ -61,15 +120,16 @@
           </router-link>
         </div>
 
-        <div class="prod-carousel-wrap">
-          <button class="carousel-arrow carousel-arrow--prev" @click="scrollCarousel(-1)" :disabled="carouselStart">
+        <div class="prod-carousel-wrap" @mouseenter="productCarousel.stop()" @mouseleave="productCarousel.start()">
+          <button class="carousel-arrow carousel-arrow--prev" @click="productCarousel.scroll(-1)"
+            :disabled="productCarousel.atStart.value">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
 
-          <div class="prod-carousel" ref="carouselRef" @scroll="onCarouselScroll"
-            :class="{ 'prod-carousel--centered': isCentered }">
+          <div class="prod-carousel" :ref="setProductCarouselEl" @scroll="productCarousel.onScroll"
+            :class="{ 'prod-carousel--centered': productCarousel.centered.value }">
             <div v-for="item in destacados" :key="item.id" class="prod-card" @click="goToProducto(item)">
               <div class="prod-img-wrap">
                 <img v-if="item.producto.imagenUrl" :src="item.producto.imagenUrl" :alt="item.producto.imagenAlt"
@@ -100,7 +160,68 @@
             </div>
           </div>
 
-          <button class="carousel-arrow carousel-arrow--next" @click="scrollCarousel(1)" :disabled="carouselEnd">
+          <button class="carousel-arrow carousel-arrow--next" @click="productCarousel.scroll(1)"
+            :disabled="productCarousel.atEnd.value">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SERVICIOS DESTACADOS ══════════════════════════════ -->
+    <section v-if="serviciosDestacados.length > 0" class="destacados-section">
+      <div class="bs-wrap">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Servicios destacados de empresas</h2>
+            <p class="section-sub">Encuentra y contrata servicios especializados para tu negocio</p>
+          </div>
+          <router-link to="/tienda/buscar" class="ver-todos-link">
+            Ver todos los servicios
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </router-link>
+        </div>
+
+        <div class="prod-carousel-wrap" @mouseenter="serviceCarousel.stop()" @mouseleave="serviceCarousel.start()">
+          <button class="carousel-arrow carousel-arrow--prev" @click="serviceCarousel.scroll(-1)"
+            :disabled="serviceCarousel.atStart.value">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
+          <div class="prod-carousel svc-carousel" :ref="setServiceCarouselEl" @scroll="serviceCarousel.onScroll"
+            :class="{ 'prod-carousel--centered': serviceCarousel.centered.value }">
+            <div v-for="item in serviciosDestacados" :key="item.id" class="prod-card svc-card"
+              @click="goToProducto(item)">
+              <div class="prod-img-wrap">
+                <img v-if="item.producto.imagenUrl" :src="item.producto.imagenUrl" :alt="item.producto.imagenAlt"
+                  class="prod-img" />
+                <div v-else class="prod-img-placeholder">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                </div>
+              </div>
+              <div class="prod-body">
+                <span class="prod-empresa">{{ item.empresa.nombreComercial || 'ZIFCOR' }}</span>
+                <p class="prod-nombre">{{ item.producto.nombre }}</p>
+                <p v-if="item.producto.precioBase" class="prod-precio">
+                  Desde ${{ formatPrecio(item.producto.precioBase) }}
+                  <span class="prod-moneda">{{ item.producto.moneda }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button class="carousel-arrow carousel-arrow--next" @click="serviceCarousel.scroll(1)"
+            :disabled="serviceCarousel.atEnd.value">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <polyline points="9 18 15 12 9 6" />
             </svg>
@@ -157,20 +278,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { publicApi } from '../../api/publicCatalog'
 
 const router = useRouter()
 const sectores = ref([])
 const destacados = ref([])
+const serviciosDestacados = ref([])
 const loading = ref(true)
 const searchQuery = ref('')
 const searchFocused = ref(false)
-const carouselRef = ref(null)
-const carouselStart = ref(true)
-const carouselEnd = ref(false)
-const isCentered = ref(false)
 
 const examples = [
   { icon: '🚁', label: 'Drones' },
@@ -179,8 +297,12 @@ const examples = [
   { icon: '☕', label: 'Café' },
   { icon: '📱', label: 'Celulares' },
   { icon: '🔧', label: 'Repuestos' },
-  { icon: '👕', label: 'Ropa' },
+  { icon: '💻', label: 'Electrónica' },
+  { icon: '🚚', label: 'Transporte' },
+  { icon: '📦', label: 'Empaques' },
+  { icon: '🖥️', label: 'Software' },
 ]
+const loopedExamples = [...examples, ...examples]
 
 function goToSearch() {
   const q = searchQuery.value.trim()
@@ -203,43 +325,105 @@ function formatPrecio(valor) {
   return Number(valor).toLocaleString('es-CO')
 }
 
-function scrollCarousel(direction) {
-  if (!carouselRef.value) return
-  const card = carouselRef.value.querySelector('.prod-card')
-  const cardWidth = card ? card.offsetWidth + 12 : 175
-  carouselRef.value.scrollBy({ left: direction * cardWidth * 2, behavior: 'smooth' })
+// ── Carrusel de tarjetas con auto-avance (productos / servicios destacados)
+function useCardCarousel(intervalMs = 3200) {
+  const el = ref(null)
+  const atStart = ref(true)
+  const atEnd = ref(false)
+  const centered = ref(false)
+  let timer = null
+
+  function cardWidth() {
+    const card = el.value?.querySelector('.prod-card')
+    return card ? card.offsetWidth + 12 : 175
+  }
+
+  function scroll(direction) {
+    if (!el.value) return
+    el.value.scrollBy({ left: direction * cardWidth() * 2, behavior: 'smooth' })
+  }
+
+  function onScroll() {
+    if (!el.value) return
+    atStart.value = el.value.scrollLeft <= 0
+    atEnd.value = el.value.scrollLeft + el.value.clientWidth >= el.value.scrollWidth - 4
+  }
+
+  function checkCentered() {
+    if (!el.value) return
+    centered.value = el.value.scrollWidth <= el.value.clientWidth
+  }
+
+  function tick() {
+    if (!el.value || centered.value) return
+    if (atEnd.value) el.value.scrollTo({ left: 0, behavior: 'smooth' })
+    else scroll(1)
+  }
+
+  function start() {
+    stop()
+    timer = setInterval(tick, intervalMs)
+  }
+
+  function stop() {
+    if (timer) clearInterval(timer)
+    timer = null
+  }
+
+  return { el, atStart, atEnd, centered, scroll, onScroll, checkCentered, start, stop }
 }
 
-function onCarouselScroll() {
-  if (!carouselRef.value) return
-  const el = carouselRef.value
-  carouselStart.value = el.scrollLeft <= 0
-  carouselEnd.value = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4
+const productCarousel = useCardCarousel()
+const serviceCarousel = useCardCarousel(3800)
+
+function setProductCarouselEl(node) {
+  productCarousel.el.value = node
 }
 
-function checkCentered() {
-  if (!carouselRef.value) return
-  const el = carouselRef.value
-  isCentered.value = el.scrollWidth <= el.clientWidth
+function setServiceCarouselEl(node) {
+  serviceCarousel.el.value = node
+}
+
+// ── Fetch con reintento — evita que la sección quede vacía por un timeout puntual del backend
+async function fetchWithRetry(fn, retries = 2, delayMs = 1500) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await fn()
+    } catch (err) {
+      if (i === retries) throw err
+      await new Promise((resolve) => setTimeout(resolve, delayMs))
+    }
+  }
+  return undefined
 }
 
 onMounted(async () => {
   try {
-    const [sectoresRes, destacadosRes] = await Promise.allSettled([
-      publicApi.getSectores(),
-      publicApi.getDestacados('destacados'),
+    const [sectoresRes, destacadosRes, serviciosRes] = await Promise.allSettled([
+      fetchWithRetry(() => publicApi.getSectores()),
+      fetchWithRetry(() => publicApi.getDestacados('destacados')),
+      fetchWithRetry(() => publicApi.getDestacados('servicios')),
     ])
     sectores.value = sectoresRes.status === 'fulfilled' ? sectoresRes.value.data : []
     destacados.value = destacadosRes.status === 'fulfilled' ? destacadosRes.value.data : []
-  } catch {
-    sectores.value = []
-    destacados.value = []
+    serviciosDestacados.value = serviciosRes.status === 'fulfilled' ? serviciosRes.value.data : []
   } finally {
     loading.value = false
     await nextTick()
-    checkCentered()
-    window.addEventListener('resize', checkCentered)
+    productCarousel.checkCentered()
+    serviceCarousel.checkCentered()
+    productCarousel.start()
+    serviceCarousel.start()
+    window.addEventListener('resize', productCarousel.checkCentered)
+    window.addEventListener('resize', serviceCarousel.checkCentered)
   }
+})
+
+onBeforeUnmount(() => {
+  productCarousel.stop()
+  serviceCarousel.stop()
+  window.removeEventListener('resize', productCarousel.checkCentered)
+  window.removeEventListener('resize', serviceCarousel.checkCentered)
 })
 </script>
 
@@ -414,6 +598,7 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  width: 100%;
 }
 
 .sh-examples-label {
@@ -424,11 +609,34 @@ onMounted(async () => {
   letter-spacing: 1px;
 }
 
+.sh-chips-outer {
+  width: 100%;
+  max-width: 900px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
 .sh-chips {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
-  justify-content: center;
+  width: max-content;
+  animation: sh-chips-scroll 26s linear infinite;
+}
+
+.sh-chips-outer:hover .sh-chips {
+  animation-play-state: paused;
+}
+
+@keyframes sh-chips-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .sh-chip {
@@ -443,6 +651,8 @@ onMounted(async () => {
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: background 150ms, border-color 150ms;
 }
 
@@ -453,6 +663,63 @@ onMounted(async () => {
 
 .sh-chip-icon {
   font-size: 14px;
+}
+
+/* ══ CONFIANZA ═══════════════════════════════════════════════ */
+.trust-section {
+  background: #fff;
+  border-bottom: 1px solid rgba(15, 23, 42, .07);
+  padding: 22px 0;
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trust-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(0, 113, 227, .08);
+  color: #0071e3;
+  display: grid;
+  place-items: center;
+}
+
+.trust-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0b1220;
+  line-height: 1.3;
+}
+
+.trust-sub {
+  margin: 2px 0 0;
+  font-size: 11.5px;
+  color: rgba(11, 18, 32, .45);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .trust-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .trust-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ══ DESTACADOS ══════════════════════════════════════════════ */
@@ -660,6 +927,10 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 700;
   color: #16a34a;
+}
+
+.svc-card {
+  width: 190px;
 }
 
 /* ══ SECTORES ════════════════════════════════════════════════ */
@@ -880,6 +1151,12 @@ onMounted(async () => {
 @media (max-width: 480px) {
   .bs-wrap {
     padding: 0 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-chips {
+    animation: none;
   }
 }
 </style>

@@ -194,7 +194,7 @@
           <div class="bs-foot-right">
             <div class="bs-foot-contact">
               <a class="bs-foot-contact-link" href="tel:+573114799224">+57 3114799224</a>
-              <a class="bs-foot-contact-link" href="mailto:info@ZIFCOR.com">info@ZIFCOR.com</a>
+              <a class="bs-foot-contact-link" href="mailto:contacto@zifcor.com">contacto@zifcor.com</a>
             </div>
             <span class="bs-vline" />
             <div class="bs-foot-social">
