@@ -120,17 +120,10 @@
           </router-link>
         </div>
 
-        <div class="prod-carousel-wrap" @mouseenter="productCarousel.stop()" @mouseleave="productCarousel.start()">
-          <button class="carousel-arrow carousel-arrow--prev" @click="productCarousel.scroll(-1)"
-            :disabled="productCarousel.atStart.value">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-
-          <div class="prod-carousel" :ref="setProductCarouselEl" @scroll="productCarousel.onScroll"
-            :class="{ 'prod-carousel--centered': productCarousel.centered.value }">
-            <div v-for="item in destacados" :key="item.id" class="prod-card" @click="goToProducto(item)">
+        <div class="marquee" :class="{ 'marquee--static': !marqueeProductos }">
+          <div class="marquee-track" :style="marqueeProductos ? { animationDuration: prodMarqueeDuration } : {}">
+            <div v-for="(item, idx) in prodMarqueeItems" :key="`p-${idx}`" class="prod-card"
+              @click="goToProducto(item)">
               <div class="prod-img-wrap">
                 <img v-if="item.producto.imagenUrl" :src="item.producto.imagenUrl" :alt="item.producto.imagenAlt"
                   class="prod-img" />
@@ -159,13 +152,6 @@
               </div>
             </div>
           </div>
-
-          <button class="carousel-arrow carousel-arrow--next" @click="productCarousel.scroll(1)"
-            :disabled="productCarousel.atEnd.value">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
         </div>
       </div>
     </section>
@@ -186,17 +172,10 @@
           </router-link>
         </div>
 
-        <div class="prod-carousel-wrap" @mouseenter="serviceCarousel.stop()" @mouseleave="serviceCarousel.start()">
-          <button class="carousel-arrow carousel-arrow--prev" @click="serviceCarousel.scroll(-1)"
-            :disabled="serviceCarousel.atStart.value">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-
-          <div class="prod-carousel svc-carousel" :ref="setServiceCarouselEl" @scroll="serviceCarousel.onScroll"
-            :class="{ 'prod-carousel--centered': serviceCarousel.centered.value }">
-            <div v-for="item in serviciosDestacados" :key="item.id" class="prod-card svc-card"
+        <div class="marquee" :class="{ 'marquee--static': !marqueeServicios }">
+          <div class="marquee-track marquee-track--reverse"
+            :style="marqueeServicios ? { animationDuration: svcMarqueeDuration } : {}">
+            <div v-for="(item, idx) in svcMarqueeItems" :key="`s-${idx}`" class="prod-card svc-card"
               @click="goToProducto(item)">
               <div class="prod-img-wrap">
                 <img v-if="item.producto.imagenUrl" :src="item.producto.imagenUrl" :alt="item.producto.imagenAlt"
@@ -219,13 +198,6 @@
               </div>
             </div>
           </div>
-
-          <button class="carousel-arrow carousel-arrow--next" @click="serviceCarousel.scroll(1)"
-            :disabled="serviceCarousel.atEnd.value">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
         </div>
       </div>
     </section>
@@ -235,13 +207,14 @@
       <div class="bs-wrap">
         <div class="section-head section-head--sectors">
           <h2 class="section-title">Explora empresas por sector</h2>
+          <p class="section-sub">Descubre proveedores agrupados por su industria</p>
         </div>
 
         <div v-if="loading" class="column items-center q-py-xl">
           <q-spinner color="blue-6" size="40px" />
         </div>
 
-        <div v-else class="categories-grid">
+        <div v-else class="sectors-grid">
           <div v-for="sector in sectores" :key="sector.id" class="cat-card"
             @click="router.push(`/tienda/${sector.slug}`)">
             <div class="cat-img-wrap">
@@ -249,15 +222,12 @@
               <div class="cat-overlay" />
             </div>
             <div class="cat-body">
-              <span class="cat-kicker">Sector</span>
               <h3 class="cat-name">{{ sector.nombre }}</h3>
               <p class="cat-desc">{{ sector.descripcion }}</p>
-              <div class="cat-meta">
-                <span class="cat-prod-count">{{ sector.totalEmpresas || 0 }} empresas</span>
-              </div>
+              <span class="cat-prod-count">{{ sector.totalEmpresas || 0 }} empresas</span>
               <button class="cat-btn">
                 Ver empresas
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
               </button>
@@ -278,7 +248,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { publicApi } from '../../api/publicCatalog'
 
@@ -325,64 +295,24 @@ function formatPrecio(valor) {
   return Number(valor).toLocaleString('es-CO')
 }
 
-// ── Carrusel de tarjetas con auto-avance (productos / servicios destacados)
-function useCardCarousel(intervalMs = 3200) {
-  const el = ref(null)
-  const atStart = ref(true)
-  const atEnd = ref(false)
-  const centered = ref(false)
-  let timer = null
+// ── Marquee continuo (productos / servicios destacados)
+// Sólo se anima si hay suficientes tarjetas para llenar el ancho; si no, quedan estáticas centradas.
+const MARQUEE_MIN = 5          // a partir de cuántas tarjetas conviene el desplazamiento
+const SECONDS_PER_CARD = 5.5   // ritmo: lento y fluido
 
-  function cardWidth() {
-    const card = el.value?.querySelector('.prod-card')
-    return card ? card.offsetWidth + 12 : 175
-  }
+const marqueeProductos = computed(() => destacados.value.length >= MARQUEE_MIN)
+const marqueeServicios = computed(() => serviciosDestacados.value.length >= MARQUEE_MIN)
 
-  function scroll(direction) {
-    if (!el.value) return
-    el.value.scrollBy({ left: direction * cardWidth() * 2, behavior: 'smooth' })
-  }
+// Se duplica la lista para que el bucle sea perfecto (translateX -50%)
+const prodMarqueeItems = computed(() =>
+  marqueeProductos.value ? [...destacados.value, ...destacados.value] : destacados.value,
+)
+const svcMarqueeItems = computed(() =>
+  marqueeServicios.value ? [...serviciosDestacados.value, ...serviciosDestacados.value] : serviciosDestacados.value,
+)
 
-  function onScroll() {
-    if (!el.value) return
-    atStart.value = el.value.scrollLeft <= 0
-    atEnd.value = el.value.scrollLeft + el.value.clientWidth >= el.value.scrollWidth - 4
-  }
-
-  function checkCentered() {
-    if (!el.value) return
-    centered.value = el.value.scrollWidth <= el.value.clientWidth
-  }
-
-  function tick() {
-    if (!el.value || centered.value) return
-    if (atEnd.value) el.value.scrollTo({ left: 0, behavior: 'smooth' })
-    else scroll(1)
-  }
-
-  function start() {
-    stop()
-    timer = setInterval(tick, intervalMs)
-  }
-
-  function stop() {
-    if (timer) clearInterval(timer)
-    timer = null
-  }
-
-  return { el, atStart, atEnd, centered, scroll, onScroll, checkCentered, start, stop }
-}
-
-const productCarousel = useCardCarousel()
-const serviceCarousel = useCardCarousel(3800)
-
-function setProductCarouselEl(node) {
-  productCarousel.el.value = node
-}
-
-function setServiceCarouselEl(node) {
-  serviceCarousel.el.value = node
-}
+const prodMarqueeDuration = computed(() => `${destacados.value.length * SECONDS_PER_CARD}s`)
+const svcMarqueeDuration = computed(() => `${serviciosDestacados.value.length * SECONDS_PER_CARD}s`)
 
 // ── Fetch con reintento — evita que la sección quede vacía por un timeout puntual del backend
 async function fetchWithRetry(fn, retries = 2, delayMs = 1500) {
@@ -409,21 +339,7 @@ onMounted(async () => {
     serviciosDestacados.value = serviciosRes.status === 'fulfilled' ? serviciosRes.value.data : []
   } finally {
     loading.value = false
-    await nextTick()
-    productCarousel.checkCentered()
-    serviceCarousel.checkCentered()
-    productCarousel.start()
-    serviceCarousel.start()
-    window.addEventListener('resize', productCarousel.checkCentered)
-    window.addEventListener('resize', serviceCarousel.checkCentered)
   }
-})
-
-onBeforeUnmount(() => {
-  productCarousel.stop()
-  serviceCarousel.stop()
-  window.removeEventListener('resize', productCarousel.checkCentered)
-  window.removeEventListener('resize', serviceCarousel.checkCentered)
 })
 </script>
 
@@ -431,12 +347,11 @@ onBeforeUnmount(() => {
 /* ══ HERO ════════════════════════════════════════════════════ */
 .store-hero {
   position: relative;
-  min-height: 420px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 72px 32px 64px;
+  padding: 40px 32px 38px;
 }
 
 .sh-bg {
@@ -461,20 +376,20 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 860px;
+  max-width: 820px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 20px;
+  gap: 14px;
 }
 
 .sh-title {
   margin: 0;
-  font-size: clamp(26px, 4vw, 48px);
+  font-size: clamp(24px, 3.2vw, 38px);
   font-weight: 900;
   color: #fff;
-  line-height: 1.1;
+  line-height: 1.12;
   letter-spacing: -1px;
 }
 
@@ -744,6 +659,7 @@ onBeforeUnmount(() => {
 }
 
 .section-head--sectors {
+  display: block;
   margin-bottom: 20px;
 }
 
@@ -778,56 +694,59 @@ onBeforeUnmount(() => {
   opacity: .75;
 }
 
-/* Carrusel */
-.prod-carousel-wrap {
+/* Marquee continuo (desplazamiento fluido y lento) */
+.marquee {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  overflow: hidden;
+  padding: 6px 0 8px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3.5%, #000 96.5%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 3.5%, #000 96.5%, transparent);
 }
 
-.prod-carousel {
+.marquee-track {
   display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  padding: 4px 2px 6px;
-  flex: 1;
+  gap: 14px;
+  width: max-content;
+  animation-name: marquee-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
 }
 
-.prod-carousel--centered {
+.marquee-track--reverse {
+  animation-direction: reverse;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pocas tarjetas: sin animación, centradas */
+.marquee--static {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.marquee--static .marquee-track {
+  animation: none;
+  width: 100%;
   justify-content: center;
 }
 
-.prod-carousel::-webkit-scrollbar {
-  display: none;
-}
-
-.carousel-arrow {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(15, 23, 42, .14);
-  background: #fff;
-  color: #0b1220;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: all 160ms;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .07);
-}
-
-.carousel-arrow:hover:not(:disabled) {
-  border-color: #0071e3;
-  color: #0071e3;
-  box-shadow: 0 3px 12px rgba(0, 113, 227, .18);
-}
-
-.carousel-arrow:disabled {
-  opacity: .35;
-  cursor: not-allowed;
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
 }
 
 /* Tarjeta producto */
@@ -939,19 +858,20 @@ onBeforeUnmount(() => {
   padding: 28px 0 72px;
 }
 
-.categories-grid {
+/* Grid de sectores */
+.sectors-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  margin-bottom: 72px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 44px;
 }
 
 .cat-card {
   position: relative;
-  border-radius: 22px;
+  height: 240px;
+  border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  min-height: 260px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -960,7 +880,7 @@ onBeforeUnmount(() => {
 
 .cat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, .18);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, .20);
 }
 
 .cat-img-wrap {
@@ -972,80 +892,64 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.72;
   transition: transform 420ms ease;
 }
 
 .cat-card:hover .cat-img {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .cat-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(160deg, rgba(0, 30, 80, .88) 0%, rgba(0, 60, 120, .35) 100%);
+  background: linear-gradient(to top, rgba(4, 14, 38, .94) 8%, rgba(6, 24, 66, .68) 42%, rgba(8, 34, 90, .30) 100%);
 }
 
 .cat-body {
   position: relative;
   z-index: 1;
-  padding: 28px 26px;
+  padding: 18px 20px 18px;
   display: flex;
   flex-direction: column;
 }
 
-.cat-kicker {
-  display: inline-flex;
-  padding: 4px 12px;
-  background: rgba(255, 255, 255, .15);
-  border: 1px solid rgba(255, 255, 255, .3);
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 900;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, .9);
-  margin-bottom: 10px;
-  width: fit-content;
-}
-
 .cat-name {
-  margin: 0 0 8px;
-  font-size: 30px;
+  margin: 0 0 6px;
+  font-size: 20px;
   font-weight: 900;
   color: #fff;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
   line-height: 1.1;
 }
 
 .cat-desc {
-  margin: 0 0 12px;
-  font-size: 13.5px;
-  color: rgba(255, 255, 255, .70);
-  line-height: 1.55;
-  max-width: 40ch;
-}
-
-.cat-meta {
-  margin-bottom: 14px;
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, .72);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cat-prod-count {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
-  color: rgba(255, 255, 255, .50);
+  color: rgba(255, 255, 255, .55);
+  margin-bottom: 12px;
 }
 
 .cat-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 40px;
-  padding: 0 18px;
+  gap: 5px;
+  height: 34px;
+  padding: 0 15px;
   border: none;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 900;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
   color: #fff;
   cursor: pointer;
   width: fit-content;
@@ -1054,8 +958,7 @@ onBeforeUnmount(() => {
 }
 
 .cat-btn:hover {
-  filter: brightness(.86);
-  transform: translateY(-1px);
+  filter: brightness(.88);
 }
 
 .cta-banner {
@@ -1102,10 +1005,6 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 900px) {
-  .categories-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .prod-card {
     width: 150px;
   }
@@ -1117,11 +1016,11 @@ onBeforeUnmount(() => {
 
 @media (max-width: 640px) {
   .store-hero {
-    padding: 48px 16px 40px;
+    padding: 32px 16px 30px;
   }
 
-  .categories-grid {
-    grid-template-columns: 1fr;
+  .cat-card {
+    height: 210px;
   }
 
   .cta-banner {
@@ -1141,10 +1040,6 @@ onBeforeUnmount(() => {
 
   .prod-img-wrap {
     height: 100px;
-  }
-
-  .carousel-arrow {
-    display: none;
   }
 }
 

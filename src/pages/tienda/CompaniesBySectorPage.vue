@@ -2,8 +2,7 @@
   <section class="sector-page">
 
     <div class="sector-hero">
-      <div class="hero-img" :style="sector?.imagenUrl ? { backgroundImage: `url('${sector.imagenUrl}')` } : {}" />
-      <div class="hero-blue" />
+      <div class="hero-deco" aria-hidden="true" />
       <div class="hero-content">
         <nav class="breadcrumb">
           <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
@@ -14,15 +13,22 @@
           <q-spinner color="white" size="36px" />
         </div>
         <template v-else>
-          <h1 class="hero-title">Sector<br />{{ sector?.nombre || sectorSlug }}</h1>
-          <div class="hero-divider" />
+          <div class="hero-main">
+            <div class="hero-icon">
+              <q-icon :name="sectorIcon" size="38px" />
+            </div>
+            <div class="hero-texts">
+              <span class="hero-eyebrow">Sector industrial</span>
+              <h1 class="hero-title">{{ sector?.nombre || sectorSlug }}</h1>
+              <p v-if="sector?.descripcion" class="hero-desc">{{ sector.descripcion }}</p>
+            </div>
+          </div>
           <div v-if="sectorCategories.length" class="hero-cats">
-            <span class="cats-label">CATEGORÍAS DENTRO DEL SECTOR</span>
+            <span class="cats-label">Categorías dentro del sector</span>
             <div class="cats-row">
-              <button v-for="cat in sectorCategories" :key="cat.slug" class="cat-chip">
-                <i :class="`ti ${cat.icon}`" aria-hidden="true" />
+              <span v-for="cat in sectorCategories" :key="cat.slug" class="cat-chip">
                 {{ cat.label }}
-              </button>
+              </span>
             </div>
           </div>
         </template>
@@ -45,30 +51,48 @@
           </div>
 
           <div v-else class="companies-grid">
-            <article v-for="empresa in empresas" :key="empresa.slug" class="company-card"
-              @click="router.push(`/tienda/${route.params.sectorSlug}/${empresa.profile?.slug || empresa.id}`)">
-              <div class="card-banner" :style="{ backgroundImage: `url('${getCardBg(empresa)}')` }">
-                <div class="card-banner-overlay" />
-                <div v-if="empresa.profile?.logoUrl" class="card-logo">
-                  <img :src="empresa.profile.logoUrl" :alt="getEmpresaNombre(empresa)" />
+            <template v-for="empresa in empresas" :key="empresa.slug">
+              <!-- Empresa general ZIFCOR: tarjeta de vitrina del gremio, sin nombre ni descripción -->
+              <article v-if="isZifcor(empresa) && zifcorCard" class="zifcor-card"
+                @click="router.push(`/tienda/${route.params.sectorSlug}/${empresa.profile?.slug || empresa.id}`)">
+                <div class="zifcor-card-img-wrap">
+                  <img :src="zifcorCard.image" :alt="zifcorCard.title" class="zifcor-card-img" />
+                  <span class="zifcor-card-badge">ZIFCOR · Oficial</span>
                 </div>
-                <div v-else class="card-logo-placeholder">
-                  <i class="ti ti-building-factory-2" aria-hidden="true" />
-                </div>
-              </div>
-              <div class="card-body">
-                <h3 class="card-name">{{ getEmpresaNombre(empresa) }}</h3>
-                <p class="card-desc">{{ getDesc(empresa) }}</p>
-                <div class="card-footer">
-                  <span v-if="empresa.profile?.ciudad" class="card-location">
-                    <i class="ti ti-map-pin" aria-hidden="true" />
-                    {{ empresa.profile.ciudad }}<template v-if="empresa.profile?.departamento">, {{
-                      empresa.profile.departamento }}</template>
+                <div class="zifcor-card-body">
+                  <h3 class="zifcor-card-title">{{ zifcorCard.title }}</h3>
+                  <span class="zifcor-card-link">
+                    {{ zifcorCard.linkLabel }}
+                    <i class="ti ti-arrow-right" aria-hidden="true" />
                   </span>
-                  <span class="card-cta">Ver empresa <i class="ti ti-arrow-right" aria-hidden="true" /></span>
                 </div>
-              </div>
-            </article>
+              </article>
+
+              <article v-else class="company-card"
+                @click="router.push(`/tienda/${route.params.sectorSlug}/${empresa.profile?.slug || empresa.id}`)">
+                <div class="card-banner" :style="{ backgroundImage: `url('${getCardBg(empresa)}')` }">
+                  <div class="card-banner-overlay" />
+                  <div v-if="empresa.profile?.logoUrl" class="card-logo">
+                    <img :src="empresa.profile.logoUrl" :alt="getEmpresaNombre(empresa)" />
+                  </div>
+                  <div v-else class="card-logo-placeholder">
+                    <i class="ti ti-building-factory-2" aria-hidden="true" />
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h3 class="card-name">{{ getEmpresaNombre(empresa) }}</h3>
+                  <p class="card-desc">{{ getDesc(empresa) }}</p>
+                  <div class="card-footer">
+                    <span v-if="empresa.profile?.ciudad" class="card-location">
+                      <i class="ti ti-map-pin" aria-hidden="true" />
+                      {{ empresa.profile.ciudad }}<template v-if="empresa.profile?.departamento">, {{
+                        empresa.profile.departamento }}</template>
+                    </span>
+                    <span class="card-cta">Ver empresa <i class="ti ti-arrow-right" aria-hidden="true" /></span>
+                  </div>
+                </div>
+              </article>
+            </template>
           </div>
         </template>
       </div>
@@ -138,6 +162,31 @@ const SECTOR_CATEGORIES = {
 
 const sectorCategories = computed(() => SECTOR_CATEGORIES[sectorSlug.value?.toLowerCase()] || [])
 
+const SECTOR_ICONS = {
+  manufacturero: 'precision_manufacturing',
+  agroindustria: 'agriculture',
+  comercio: 'storefront',
+  servicios: 'handyman',
+  tecnologia: 'memory',
+  construccion: 'apartment',
+}
+
+const sectorIcon = computed(() => SECTOR_ICONS[sectorSlug.value?.toLowerCase()] || 'category')
+
+// Tarjeta de vitrina para la empresa general ZIFCOR dentro de cada gremio
+const ZIFCOR_CARD_BY_SECTOR = {
+  manufacturero: { image: '/manofacturero.png', title: 'Maquinaria industrial', linkLabel: 'Ver todos los productos' },
+  agroindustria: { image: '/agroindustria.png', title: 'Productos agroindustriales', linkLabel: 'Ver todos los productos' },
+  servicios: { image: '/servicios.png', title: 'Servicios industriales', linkLabel: 'Ver todos los servicios' },
+  tecnologia: { image: '/Tecnologia.png', title: 'Productos tecnológicos', linkLabel: 'Ver todos los productos' },
+}
+
+const zifcorCard = computed(() => ZIFCOR_CARD_BY_SECTOR[sectorSlug.value?.toLowerCase()] || null)
+
+function isZifcor(empresa) {
+  return getEmpresaNombre(empresa).trim().toUpperCase() === 'ZIFCOR'
+}
+
 async function loadSectorData() {
   loading.value = true
   try {
@@ -176,48 +225,33 @@ function getDesc(e) {
 /* ── HERO ── */
 .sector-hero {
   position: relative;
-  height: 360px;
   overflow: hidden;
-  background: #1354d3;
+  background:
+    radial-gradient(1100px 460px at 82% -30%, rgba(79, 156, 249, 0.42), transparent 60%),
+    linear-gradient(120deg, #0b1e46 0%, #123a94 52%, #1657c9 100%);
   display: flex;
-  align-items: stretch;
 }
 
-/* Imagen ocupa la mitad derecha */
-.hero-img {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 58%;
-  height: 100%;
-  background: #0b1a35;
-  background-size: cover;
-  background-position: center;
-  /* Corte diagonal desde arriba-izquierda */
-  clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%);
-}
-
-/* Oscurecer ligeramente la imagen para que el contraste sea limpio */
-.hero-img::after {
-  content: '';
+/* Puntos decorativos suaves, en vez de foto */
+.hero-deco {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-}
-
-/* El panel azul no necesita elemento extra — es el fondo del hero */
-.hero-blue {
-  display: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.4px, transparent 1.5px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(900px 420px at 88% 20%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(900px 420px at 88% 20%, #000 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  width: 52%;
-  padding: 32px 40px 40px 48px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 30px 48px 40px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
 }
 
 .breadcrumb {
@@ -225,7 +259,7 @@ function getDesc(e) {
   align-items: center;
   gap: 6px;
   font-size: 12.5px;
-  margin-bottom: 22px;
+  margin-bottom: 26px;
 }
 
 .bc-link {
@@ -250,40 +284,76 @@ function getDesc(e) {
 }
 
 .loading-wrap {
-  min-height: 160px;
+  min-height: 120px;
   display: flex;
   align-items: center;
 }
 
-.hero-title {
-  margin: 0 0 16px;
-  font-size: clamp(30px, 4vw, 52px);
-  font-weight: 900;
-  color: #fff;
-  letter-spacing: -1.5px;
-  line-height: 1.05;
+.hero-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
 }
 
-.hero-divider {
-  width: 36px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.40);
-  border-radius: 2px;
-  margin-bottom: 20px;
+.hero-icon {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.hero-icon :deep(.q-icon) {
+  color: #fff;
+}
+
+.hero-texts {
+  min-width: 0;
+}
+
+.hero-eyebrow {
+  display: block;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.hero-title {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -1.4px;
+  line-height: 1.02;
+}
+
+.hero-desc {
+  margin: 10px 0 0;
+  max-width: 60ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .hero-cats {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 11px;
 }
 
 .cats-label {
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .cats-row {
@@ -296,26 +366,23 @@ function getDesc(e) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 30px;
-  padding: 0 11px;
-  border-radius: 7px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  height: 32px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
   background: rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 12px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 12.5px;
   font-weight: 700;
-  cursor: default;
-  transition: background 140ms;
+  transition: background 140ms, border-color 140ms;
   font-family: inherit;
-}
-
-.cat-chip:hover {
-  background: rgba(255, 255, 255, 0.18);
 }
 
 .cat-chip .ti {
   font-size: 13px;
-  opacity: 0.70;
+  opacity: 0.75;
 }
 
 /* ── BODY ── */
@@ -499,6 +566,91 @@ function getDesc(e) {
   transform: translateX(3px);
 }
 
+/* ── ZIFCOR (vitrina del gremio) ── */
+.zifcor-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  width: 100%;
+  max-width: 240px;
+  justify-self: start;
+  border: 2px solid rgba(19, 84, 211, 0.45);
+  box-shadow: 0 0 0 5px rgba(19, 84, 211, 0.12), 0 14px 32px rgba(19, 84, 211, 0.24);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.zifcor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 0 6px rgba(19, 84, 211, 0.18), 0 20px 42px rgba(19, 84, 211, 0.34);
+}
+
+.zifcor-card-img-wrap {
+  position: relative;
+  height: 130px;
+  background: #0d1f3c;
+  overflow: hidden;
+}
+
+.zifcor-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.zifcor-card-badge {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1354d3;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.zifcor-card-body {
+  padding: 13px 15px 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+.zifcor-card-title {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #0b1220;
+  line-height: 1.25;
+  letter-spacing: -0.2px;
+}
+
+.zifcor-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #1354d3;
+  padding-top: 9px;
+  border-top: 1px solid rgba(11, 18, 32, 0.08);
+}
+
+.zifcor-card-link .ti {
+  font-size: 12px;
+  transition: transform 150ms;
+}
+
+.zifcor-card:hover .zifcor-card-link .ti {
+  transform: translateX(3px);
+}
+
 /* ── EMPTY ── */
 .empty-state {
   display: flex;
@@ -555,23 +707,28 @@ function getDesc(e) {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .hero-img {
-    width: 100%;
-    clip-path: none;
-  }
-
-  .hero-img::after {
-    background: rgba(19, 84, 211, 0.55);
-  }
-
   .hero-content {
-    width: 100%;
-    padding: 24px 24px 36px;
+    padding: 24px 24px 32px;
   }
 
-  .sector-hero {
-    height: auto;
-    min-height: 300px;
+  .hero-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+  }
+
+  .hero-icon :deep(.q-icon) {
+    font-size: 28px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-main {
+    gap: 14px;
+  }
+
+  .hero-desc {
+    display: none;
   }
 }
 
