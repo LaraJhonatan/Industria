@@ -6,32 +6,34 @@
     </div>
 
     <template v-else-if="empresa">
-      <div class="store-banner"
-        :style="empresa.profile?.bannerUrl ? { backgroundImage: `url('${empresa.profile.bannerUrl}')` } : {}">
-        <div class="banner-overlay" />
-      </div>
-
       <div class="bs-wrap">
-        <div class="profile-card">
-          <div class="profile-logo-wrap">
-            <div class="profile-logo">
-              <img v-if="empresa.profile?.logoUrl" :src="empresa.profile.logoUrl" :alt="empresaNombre" />
-              <i v-else class="ti ti-building-factory-2 profile-logo-icon" aria-hidden="true" />
-            </div>
-          </div>
-          <div class="profile-info">
-            <div class="profile-accent" />
-            <h1 class="profile-name">{{ empresaNombre }}</h1>
-            <p class="profile-desc">{{ companyDescription }}</p>
-          </div>
-        </div>
-
         <div class="content-wrap">
           <nav class="breadcrumb">
             <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
             <span class="bc-sep">›</span>
             <span class="bc-current">{{ empresaNombre }}</span>
           </nav>
+
+          <div class="profile-card" :class="{ 'profile-card--zifcor': isZifcor }">
+            <div class="profile-logo-wrap">
+              <div class="profile-logo">
+                <img v-if="empresa.profile?.logoUrl" :src="empresa.profile.logoUrl" :alt="empresaNombre" />
+                <i v-else class="ti ti-building-factory-2 profile-logo-icon" aria-hidden="true" />
+              </div>
+            </div>
+            <div class="profile-info">
+              <div class="profile-name-row">
+                <h1 class="profile-name">{{ empresaNombre }}</h1>
+                <span v-if="isZifcor" class="profile-official">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Proveedor oficial
+                </span>
+              </div>
+              <p class="profile-desc">{{ companyDescription }}</p>
+            </div>
+          </div>
 
           <div class="products-section">
             <div class="products-head">
@@ -147,6 +149,8 @@ const companyDescription = computed(() =>
   'Empresa registrada en ZIFCOR. Explora su catálogo, conoce sus productos y contáctala directamente desde la plataforma.'
 )
 
+const isZifcor = computed(() => empresaNombre.value.trim().toUpperCase() === 'ZIFCOR')
+
 const availableCategories = computed(() => {
   const map = new Map()
   for (const p of productos.value) {
@@ -253,21 +257,6 @@ watch(
   font-weight: 600;
 }
 
-.store-banner {
-  height: 300px;
-  width: 100%;
-  background-color: #0d1f3c;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-
-.banner-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(11, 18, 32, .18), rgba(11, 18, 32, .55));
-}
-
 .bs-wrap {
   max-width: 1400px;
   width: 100%;
@@ -278,18 +267,34 @@ watch(
 
 .profile-card {
   position: relative;
-  margin-top: -72px;
-  z-index: 3;
+  overflow: hidden;
   background: #fff;
   border: 1px solid rgba(11, 18, 32, .08);
-  border-radius: 20px;
-  box-shadow: 0 16px 48px rgba(11, 18, 32, .10);
-  padding: 28px 36px;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(11, 18, 32, .06);
+  padding: 22px 26px;
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 22px;
   width: 100%;
   box-sizing: border-box;
+  margin-bottom: 22px;
+}
+
+/* Acento de marca a la izquierda, en vez de un banner enorme */
+.profile-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #1657c9, #4f9cf9);
+}
+
+.profile-card--zifcor {
+  border: 2px solid rgba(19, 84, 211, .30);
+  box-shadow: 0 0 0 4px rgba(19, 84, 211, .06), 0 8px 26px rgba(19, 84, 211, .12);
 }
 
 .profile-logo-wrap {
@@ -297,16 +302,16 @@ watch(
 }
 
 .profile-logo {
-  width: 88px;
-  height: 88px;
-  border-radius: 16px;
+  width: 74px;
+  height: 74px;
+  border-radius: 15px;
   background: #f4f5f7;
   border: 1.5px solid rgba(11, 18, 32, .08);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 7px;
 }
 
 .profile-logo img {
@@ -325,35 +330,50 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
-.profile-accent {
-  width: 32px;
-  height: 3px;
-  background: #1354d3;
-  border-radius: 2px;
-  margin-bottom: 4px;
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .profile-name {
   margin: 0;
-  font-size: clamp(20px, 2.8vw, 32px);
+  font-size: clamp(19px, 2.4vw, 27px);
   font-weight: 900;
   color: #0b1220;
   letter-spacing: -0.5px;
   line-height: 1.1;
 }
 
+.profile-official {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(19, 84, 211, .10);
+  color: #1354d3;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .profile-desc {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13.5px;
+  line-height: 1.55;
   color: rgba(11, 18, 32, .52);
   max-width: 72ch;
 }
 
 .content-wrap {
-  padding: 24px 0 70px;
+  padding: 28px 0 70px;
 }
 
 .breadcrumb {
@@ -486,8 +506,8 @@ watch(
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: 16px;
 }
 
 .product-card {
@@ -508,7 +528,7 @@ watch(
 }
 
 .product-img {
-  height: 180px;
+  height: 148px;
   overflow: hidden;
   background: #f3f6f9;
 }
@@ -533,35 +553,43 @@ watch(
 }
 
 .product-info {
-  padding: 14px 16px 16px;
+  padding: 12px 13px 13px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 .product-cat {
-  margin: 0 0 5px;
-  font-size: 10px;
+  margin: 0 0 4px;
+  font-size: 9.5px;
   font-weight: 900;
-  letter-spacing: .9px;
+  letter-spacing: .8px;
   text-transform: uppercase;
   color: #1354d3;
 }
 
 .product-name {
-  margin: 0 0 7px;
-  font-size: 14px;
+  margin: 0 0 6px;
+  font-size: 13px;
   font-weight: 900;
-  line-height: 1.35;
+  line-height: 1.3;
   color: #0b1220;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .product-desc {
-  margin: 0 0 12px;
-  font-size: 12.5px;
-  line-height: 1.55;
+  margin: 0 0 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
   color: rgba(11, 18, 32, .50);
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .product-footer {
@@ -572,13 +600,13 @@ watch(
 }
 
 .product-price {
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 900;
   color: #0b1220;
 }
 
 .product-price-na {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   color: rgba(11, 18, 32, .38);
 }
@@ -586,13 +614,13 @@ watch(
 .product-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 34px;
-  padding: 0 12px;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
   background: transparent;
   border: 1.5px solid rgba(19, 84, 211, .22);
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   color: #1354d3;
   cursor: pointer;
@@ -647,16 +675,11 @@ watch(
     padding: 0 16px;
   }
 
-  .store-banner {
-    height: 200px;
-  }
-
   .profile-card {
     flex-direction: column;
     align-items: flex-start;
-    margin-top: -40px;
-    padding: 20px;
-    gap: 16px;
+    padding: 18px 18px 18px 22px;
+    gap: 14px;
     border-radius: 14px;
   }
 
@@ -690,12 +713,13 @@ watch(
 
 @media (max-width: 480px) {
   .products-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .profile-logo {
-    width: 72px;
-    height: 72px;
+    width: 64px;
+    height: 64px;
   }
 }
 </style>

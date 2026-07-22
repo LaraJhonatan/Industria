@@ -52,19 +52,30 @@
 
           <div v-else class="companies-grid">
             <template v-for="empresa in empresas" :key="empresa.slug">
-              <!-- Empresa general ZIFCOR: tarjeta de vitrina del gremio, sin nombre ni descripción -->
-              <article v-if="isZifcor(empresa) && zifcorCard" class="zifcor-card"
+              <!-- Empresa general ZIFCOR: misma tarjeta que las demás, con acento y contenido de vitrina -->
+              <article v-if="isZifcor(empresa) && zifcorCard" class="company-card company-card--zifcor"
                 @click="router.push(`/tienda/${route.params.sectorSlug}/${empresa.profile?.slug || empresa.id}`)">
-                <div class="zifcor-card-img-wrap">
-                  <img :src="zifcorCard.image" :alt="zifcorCard.title" class="zifcor-card-img" />
-                  <span class="zifcor-card-badge">ZIFCOR · Oficial</span>
-                </div>
-                <div class="zifcor-card-body">
-                  <h3 class="zifcor-card-title">{{ zifcorCard.title }}</h3>
-                  <span class="zifcor-card-link">
-                    {{ zifcorCard.linkLabel }}
-                    <i class="ti ti-arrow-right" aria-hidden="true" />
+                <div class="card-banner" :style="{ backgroundImage: `url('${zifcorCard.image}')` }">
+                  <div class="card-banner-overlay" />
+                  <span class="zifcor-badge">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    ZIFCOR · Oficial
                   </span>
+                </div>
+                <div class="card-body">
+                  <h3 class="card-name">{{ zifcorCard.title }}</h3>
+                  <p class="card-desc">{{ zifcorCard.desc }}</p>
+                  <div class="card-footer">
+                    <span class="card-cta">
+                      {{ zifcorCard.linkLabel }}
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </span>
+                  </div>
                 </div>
               </article>
 
@@ -175,10 +186,22 @@ const sectorIcon = computed(() => SECTOR_ICONS[sectorSlug.value?.toLowerCase()] 
 
 // Tarjeta de vitrina para la empresa general ZIFCOR dentro de cada gremio
 const ZIFCOR_CARD_BY_SECTOR = {
-  manufacturero: { image: '/manofacturero.png', title: 'Maquinaria industrial', linkLabel: 'Ver todos los productos' },
-  agroindustria: { image: '/agroindustria.png', title: 'Productos agroindustriales', linkLabel: 'Ver todos los productos' },
-  servicios: { image: '/servicios.png', title: 'Servicios industriales', linkLabel: 'Ver todos los servicios' },
-  tecnologia: { image: '/Tecnologia.png', title: 'Productos tecnológicos', linkLabel: 'Ver todos los productos' },
+  manufacturero: {
+    image: '/manofacturero.png', title: 'Maquinaria industrial', linkLabel: 'Ver todos los productos',
+    desc: 'Todo lo que tu empresa necesita para fabricar, producir y optimizar sus procesos.',
+  },
+  agroindustria: {
+    image: '/agroindustria.png', title: 'Productos agroindustriales', linkLabel: 'Ver todos los productos',
+    desc: 'Equipos, insumos y tecnología para la producción agrícola, pecuaria y alimentaria.',
+  },
+  servicios: {
+    image: '/servicios.png', title: 'Servicios industriales', linkLabel: 'Ver todos los servicios',
+    desc: 'Encuentra empresas especializadas para hacer crecer tu negocio.',
+  },
+  tecnologia: {
+    image: '/Tecnologia.png', title: 'Productos tecnológicos', linkLabel: 'Ver todos los productos',
+    desc: 'Equipos tecnológicos para impulsar la transformación digital de tu empresa.',
+  },
 }
 
 const zifcorCard = computed(() => ZIFCOR_CARD_BY_SECTOR[sectorSlug.value?.toLowerCase()] || null)
@@ -419,8 +442,8 @@ function getDesc(e) {
 /* ── CARDS ── */
 .companies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
+  gap: 16px;
 }
 
 .company-card {
@@ -442,7 +465,7 @@ function getDesc(e) {
 /* Banner con imagen real de la empresa */
 .card-banner {
   position: relative;
-  height: 150px;
+  height: 118px;
   background: #0d1f3c;
   background-size: cover;
   background-position: center;
@@ -458,11 +481,11 @@ function getDesc(e) {
 /* Logo flotante esquina inferior izquierda */
 .card-logo {
   position: absolute;
-  bottom: 12px;
-  left: 14px;
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  bottom: 10px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   background: #fff;
   border: 2px solid rgba(255, 255, 255, 0.95);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
@@ -482,11 +505,11 @@ function getDesc(e) {
 
 .card-logo-placeholder {
   position: absolute;
-  bottom: 12px;
-  left: 14px;
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  bottom: 10px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   background: rgba(255, 255, 255, 0.14);
   border: 1.5px solid rgba(255, 255, 255, 0.25);
   display: flex;
@@ -501,35 +524,39 @@ function getDesc(e) {
 
 /* Cuerpo */
 .card-body {
-  padding: 16px 18px 18px;
+  padding: 13px 14px 14px;
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 7px;
+  gap: 5px;
 }
 
 .card-name {
   margin: 0;
-  font-size: 14.5px;
+  font-size: 13.5px;
   font-weight: 900;
   color: #0b1220;
-  line-height: 1.3;
+  line-height: 1.25;
   letter-spacing: -0.1px;
 }
 
 .card-desc {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
   color: rgba(11, 18, 32, 0.50);
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 10px;
+  padding-top: 9px;
   border-top: 1px solid rgba(11, 18, 32, 0.06);
   margin-top: 2px;
 }
@@ -551,104 +578,50 @@ function getDesc(e) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 800;
   color: #1354d3;
   margin-left: auto;
 }
 
-.card-cta .ti {
+.card-cta .ti,
+.card-cta svg {
   font-size: 13px;
   transition: transform 150ms;
 }
 
-.company-card:hover .card-cta .ti {
+.company-card:hover .card-cta .ti,
+.company-card:hover .card-cta svg {
   transform: translateX(3px);
 }
 
-/* ── ZIFCOR (vitrina del gremio) ── */
-.zifcor-card {
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  width: 100%;
-  max-width: 240px;
-  justify-self: start;
+/* ── ZIFCOR (misma tarjeta, con acento oficial) ── */
+.company-card--zifcor {
   border: 2px solid rgba(19, 84, 211, 0.45);
-  box-shadow: 0 0 0 5px rgba(19, 84, 211, 0.12), 0 14px 32px rgba(19, 84, 211, 0.24);
-  transition: transform 200ms ease, box-shadow 200ms ease;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 0 0 4px rgba(19, 84, 211, 0.10), 0 12px 30px rgba(19, 84, 211, 0.20);
 }
 
-.zifcor-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 0 6px rgba(19, 84, 211, 0.18), 0 20px 42px rgba(19, 84, 211, 0.34);
+.company-card--zifcor:hover {
+  box-shadow: 0 0 0 5px rgba(19, 84, 211, 0.16), 0 18px 40px rgba(19, 84, 211, 0.30);
 }
 
-.zifcor-card-img-wrap {
-  position: relative;
-  height: 130px;
-  background: #0d1f3c;
-  overflow: hidden;
-}
-
-.zifcor-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.zifcor-card-badge {
+.zifcor-badge {
   position: absolute;
-  top: 9px;
-  left: 9px;
-  padding: 3px 9px;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   color: #1354d3;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-}
-
-.zifcor-card-body {
-  padding: 13px 15px 13px;
-  display: flex;
-  flex-direction: column;
-}
-
-.zifcor-card-title {
-  margin: 0 0 8px;
-  font-size: 15px;
-  font-weight: 900;
-  color: #0b1220;
-  line-height: 1.25;
-  letter-spacing: -0.2px;
-}
-
-.zifcor-card-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11.5px;
-  font-weight: 800;
-  color: #1354d3;
-  padding-top: 9px;
-  border-top: 1px solid rgba(11, 18, 32, 0.08);
-}
-
-.zifcor-card-link .ti {
-  font-size: 12px;
-  transition: transform 150ms;
-}
-
-.zifcor-card:hover .zifcor-card-link .ti {
-  transform: translateX(3px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20);
 }
 
 /* ── EMPTY ── */
@@ -742,8 +715,8 @@ function getDesc(e) {
   }
 
   .companies-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 12px;
   }
 
   .hero-content {
