@@ -11,19 +11,20 @@
           <nav class="breadcrumb">
             <span class="bc-link" @click="router.push('/tienda')">Sectores</span>
             <span class="bc-sep">›</span>
-            <span class="bc-current">{{ empresaNombre }}</span>
+            <span class="bc-current">{{ displayName }}</span>
           </nav>
 
           <div class="profile-card" :class="{ 'profile-card--zifcor': isZifcor }">
             <div class="profile-logo-wrap">
-              <div class="profile-logo">
-                <img v-if="empresa.profile?.logoUrl" :src="empresa.profile.logoUrl" :alt="empresaNombre" />
+              <div class="profile-logo" :class="{ 'profile-logo--zifcor': isZifcor }">
+                <q-icon v-if="isZifcor" :name="sectorIcon" size="36px" class="profile-sector-icon" />
+                <img v-else-if="empresa.profile?.logoUrl" :src="empresa.profile.logoUrl" :alt="displayName" />
                 <i v-else class="ti ti-building-factory-2 profile-logo-icon" aria-hidden="true" />
               </div>
             </div>
             <div class="profile-info">
               <div class="profile-name-row">
-                <h1 class="profile-name">{{ empresaNombre }}</h1>
+                <h1 class="profile-name">{{ displayName }}</h1>
                 <span v-if="isZifcor" class="profile-official">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <polyline points="20 6 9 17 4 12" />
@@ -31,7 +32,7 @@
                   Proveedor oficial
                 </span>
               </div>
-              <p class="profile-desc">{{ companyDescription }}</p>
+              <p v-if="!isZifcor" class="profile-desc">{{ companyDescription }}</p>
             </div>
           </div>
 
@@ -150,6 +151,33 @@ const companyDescription = computed(() =>
 )
 
 const isZifcor = computed(() => empresaNombre.value.trim().toUpperCase() === 'ZIFCOR')
+
+// Para ZIFCOR se muestra el título del gremio (no "ZIFCOR"), igual que la tarjeta de vitrina
+const ZIFCOR_TITLE_BY_SECTOR = {
+  manufacturero: 'Maquinaria industrial',
+  agroindustria: 'Productos agroindustriales',
+  servicios: 'Servicios industriales',
+  tecnologia: 'Productos tecnológicos',
+}
+
+const displayName = computed(() => {
+  if (isZifcor.value) {
+    return ZIFCOR_TITLE_BY_SECTOR[sectorSlug.value?.toLowerCase()] || empresaNombre.value
+  }
+  return empresaNombre.value
+})
+
+// Ícono del gremio (mismo criterio que la pantalla de sectores) para ZIFCOR
+const SECTOR_ICONS = {
+  manufacturero: 'precision_manufacturing',
+  agroindustria: 'agriculture',
+  comercio: 'storefront',
+  servicios: 'handyman',
+  tecnologia: 'memory',
+  construccion: 'apartment',
+}
+
+const sectorIcon = computed(() => SECTOR_ICONS[sectorSlug.value?.toLowerCase()] || 'category')
 
 const availableCategories = computed(() => {
   const map = new Map()
@@ -324,6 +352,16 @@ watch(
 .profile-logo-icon {
   font-size: 36px;
   color: rgba(11, 18, 32, .25);
+}
+
+/* Logo de ZIFCOR: ícono del gremio sobre degradado de marca */
+.profile-logo--zifcor {
+  background: linear-gradient(150deg, #1657c9, #4f9cf9);
+  border-color: transparent;
+}
+
+.profile-logo--zifcor :deep(.profile-sector-icon) {
+  color: #fff;
 }
 
 .profile-info {

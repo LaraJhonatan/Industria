@@ -66,8 +66,7 @@
                 </div>
                 <div class="card-body">
                   <h3 class="card-name">{{ zifcorCard.title }}</h3>
-                  <p class="card-desc">{{ zifcorCard.desc }}</p>
-                  <div class="card-footer">
+                  <div class="card-footer card-footer--zifcor">
                     <span class="card-cta">
                       {{ zifcorCard.linkLabel }}
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -603,6 +602,11 @@ function getDesc(e) {
 
 .company-card--zifcor:hover {
   box-shadow: 0 0 0 5px rgba(19, 84, 211, 0.16), 0 18px 40px rgba(19, 84, 211, 0.30);
+}
+
+/* Sin descripción: el link queda pegado abajo */
+.card-footer--zifcor {
+  margin-top: auto;
 }
 
 .zifcor-badge {
