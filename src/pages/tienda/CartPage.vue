@@ -149,12 +149,13 @@
             <span class="summary-total">${{ formatPrecio(cart.subtotalPagable) }} COP</span>
           </div>
 
-          <button v-if="cart.pagables.length" class="btn-pse" @click="pagarPSE" :disabled="cart.loading">
+          <button v-if="cart.pagables.length" class="btn-pse" @click="router.push('/tienda/checkout')"
+            :disabled="cart.loading">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="1" y="4" width="22" height="16" rx="2" />
               <line x1="1" y1="10" x2="23" y2="10" />
             </svg>
-            Pagar con PSE
+            Continuar a pagar
           </button>
 
           <a v-if="cart.cotizacion.length" :href="whatsappCotizacionUrl" target="_blank" rel="noopener noreferrer"
@@ -222,16 +223,6 @@ const whatsappCotizacionUrl = computed(() => {
     '\n\n¿Me pueden ayudar con el precio?'
   return `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(msg)}`
 })
-
-function pagarPSE() {
-  // TODO: integrar pasarela PSE. Por ahora, aviso.
-  $q.notify({
-    message: 'La pasarela de pago PSE se integrará próximamente.',
-    color: 'blue-6',
-    position: 'top',
-    timeout: 2600,
-  })
-}
 
 onMounted(() => {
   cart.fetch()

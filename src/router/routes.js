@@ -58,6 +58,9 @@ const routes = [
       // Carrito del usuario
       { path: 'carrito', component: () => import('pages/tienda/CartPage.vue') },
 
+      // Checkout: datos de envío + pago
+      { path: 'checkout', component: () => import('pages/tienda/CheckoutPage.vue') },
+
       // Empresas por sector
       { path: ':sectorSlug', component: () => import('pages/tienda/CompaniesBySectorPage.vue') },
     ],
