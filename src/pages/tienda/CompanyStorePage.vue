@@ -50,58 +50,106 @@
               </q-input>
             </div>
 
-            <div v-if="availableCategories.length > 1" class="category-filters">
-              <button v-for="cat in availableCategories" :key="cat.id" class="cat-chip"
-                :class="{ 'cat-chip-active': selectedCategory === cat.id }" @click="selectedCategory = cat.id">
-                {{ cat.label }}
-                <span v-if="cat.id !== 'all'" class="chip-count">
-                  {{productos.filter(p => String(p.category?.id ?? p.category?.nombre ?? '') === cat.id).length}}
-                </span>
-              </button>
-            </div>
+            <!-- Botón para abrir el filtro en móvil -->
+            <button v-if="categoryTree.length" class="mobile-filter-toggle" @click="mobileFilterOpen = !mobileFilterOpen">
+              <q-icon name="tune" size="16px" />
+              Categorías
+              <span v-if="activeFilterLabel" class="mobile-filter-active">{{ activeFilterLabel }}</span>
+            </button>
 
-            <div v-if="loadingProducts" class="loading-products column items-center justify-center">
-              <q-spinner color="blue-6" size="34px" />
-            </div>
+            <div class="products-layout">
+              <!-- ═══ Sidebar de categorías (estilo Amazon) ═══ -->
+              <aside v-if="categoryTree.length" class="category-sidebar" :class="{ 'category-sidebar--open': mobileFilterOpen }">
+                <div class="sidebar-head">
+                  <h3 class="sidebar-title">Categorías</h3>
+                  <button class="sidebar-close" @click="mobileFilterOpen = false">
+                    <q-icon name="close" size="16px" />
+                  </button>
+                </div>
 
-            <div v-else-if="!filteredProducts.length" class="empty-state">
-              <div class="empty-icon">
-                <q-icon name="filter_alt_off" size="48px" color="grey-4" />
+                <button class="sidebar-all" :class="{ 'sidebar-all--active': !selectedCategoryId }"
+                  @click="selectAll()">
+                  Todas las categorías
+                  <span class="sidebar-count">{{ totalCatalogo }}</span>
+                </button>
+
+                <ul class="sidebar-tree">
+                  <li v-for="cat in categoryTree" :key="cat.id" class="sidebar-node">
+                    <div class="sidebar-row" :class="{ 'sidebar-row--active': selectedCategoryId === cat.id && !selectedSubcategoryId }">
+                      <button class="sidebar-row-main" @click="selectCategory(cat)">
+                        <span class="sidebar-label">{{ cat.nombre }}</span>
+                        <span class="sidebar-count">{{ cat.count }}</span>
+                      </button>
+                      <button v-if="cat.subs.length" class="sidebar-chevron"
+                        :class="{ 'sidebar-chevron--open': expanded[cat.id] }"
+                        @click="toggleExpand(cat.id)" :aria-label="expanded[cat.id] ? 'Contraer' : 'Expandir'">
+                        <q-icon name="expand_more" size="18px" />
+                      </button>
+                    </div>
+
+                    <ul v-if="cat.subs.length" class="sidebar-subtree" :class="{ 'sidebar-subtree--open': expanded[cat.id] }">
+                      <li v-for="sub in cat.subs" :key="sub.id">
+                        <button class="sidebar-sub-row" :class="{ 'sidebar-sub-row--active': selectedSubcategoryId === sub.id }"
+                          @click="selectSubcategory(cat, sub)">
+                          <span class="sidebar-label">{{ sub.nombre }}</span>
+                          <span class="sidebar-count">{{ sub.count }}</span>
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </aside>
+
+              <div v-if="mobileFilterOpen" class="sidebar-overlay" @click="mobileFilterOpen = false" />
+
+              <!-- ═══ Grid de productos ═══ -->
+              <div class="products-main">
+                <div v-if="loadingProducts" class="loading-products column items-center justify-center">
+                  <q-spinner color="blue-6" size="34px" />
+                </div>
+
+                <div v-else-if="!filteredProducts.length" class="empty-state">
+                  <div class="empty-icon">
+                    <q-icon name="filter_alt_off" size="48px" color="grey-4" />
+                  </div>
+                  <h3 class="empty-title">No hay productos en esta categoría</h3>
+                  <p class="empty-sub">Prueba con otra categoría o limpia el filtro.</p>
+                  <button v-if="selectedCategoryId" class="empty-clear-btn" @click="selectAll()">Ver todas las
+                    categorías</button>
+                </div>
+
+                <div v-else class="products-grid">
+                  <article v-for="p in filteredProducts" :key="p.id" class="product-card" @click="goToProducto(p)">
+                    <div class="product-img">
+                      <img v-if="p.imagenes?.[0]?.url" :src="p.imagenes[0].url" :alt="p.nombre" />
+                      <div v-else class="product-img-empty">
+                        <q-icon name="inventory_2" size="32px" color="grey-4" />
+                      </div>
+                    </div>
+                    <div class="product-info">
+                      <p v-if="p.category?.nombre" class="product-cat">{{ p.category.nombre }}</p>
+                      <h3 class="product-name">{{ p.nombre }}</h3>
+                      <p v-if="p.descripcion" class="product-desc">
+                        {{ p.descripcion.length > 90 ? p.descripcion.slice(0, 90) + '...' : p.descripcion }}
+                      </p>
+                      <div class="product-footer">
+                        <span v-if="p.precioBase" class="product-price">
+                          ${{ Number(p.precioBase).toLocaleString('es-CO') }} {{ p.moneda }}
+                        </span>
+                        <span v-else class="product-price-na">Consultar precio</span>
+                        <button class="product-btn" @click.stop="goToProducto(p)">
+                          Ver detalles
+                          <i class="ti ti-arrow-right" aria-hidden="true" />
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+
+                <div class="pagination-wrap row justify-center" v-if="pages > 1">
+                  <q-pagination v-model="page" :max="pages" color="blue-6" @update:model-value="loadProductos" />
+                </div>
               </div>
-              <h3 class="empty-title">No hay productos en esta categoría</h3>
-              <p class="empty-sub">Prueba con otra categoría o limpia el filtro.</p>
-            </div>
-
-            <div v-else class="products-grid">
-              <article v-for="p in filteredProducts" :key="p.id" class="product-card" @click="goToProducto(p)">
-                <div class="product-img">
-                  <img v-if="p.imagenes?.[0]?.url" :src="p.imagenes[0].url" :alt="p.nombre" />
-                  <div v-else class="product-img-empty">
-                    <q-icon name="inventory_2" size="32px" color="grey-4" />
-                  </div>
-                </div>
-                <div class="product-info">
-                  <p v-if="p.category?.nombre" class="product-cat">{{ p.category.nombre }}</p>
-                  <h3 class="product-name">{{ p.nombre }}</h3>
-                  <p v-if="p.descripcion" class="product-desc">
-                    {{ p.descripcion.length > 90 ? p.descripcion.slice(0, 90) + '...' : p.descripcion }}
-                  </p>
-                  <div class="product-footer">
-                    <span v-if="p.precioBase" class="product-price">
-                      ${{ Number(p.precioBase).toLocaleString('es-CO') }} {{ p.moneda }}
-                    </span>
-                    <span v-else class="product-price-na">Consultar precio</span>
-                    <button class="product-btn" @click.stop="goToProducto(p)">
-                      Ver detalles
-                      <i class="ti ti-arrow-right" aria-hidden="true" />
-                    </button>
-                  </div>
-                </div>
-              </article>
-            </div>
-
-            <div class="pagination-wrap row justify-center" v-if="pages > 1">
-              <q-pagination v-model="page" :max="pages" color="blue-6" @update:model-value="loadProductos" />
             </div>
           </div>
         </div>
@@ -127,7 +175,12 @@ const search = ref('')
 const page = ref(1)
 const total = ref(0)
 const pages = ref(0)
-const selectedCategory = ref('all')
+
+// ── Filtro de categorías (estilo Amazon: categoría > subcategoría) ──
+const selectedCategoryId = ref(null)
+const selectedSubcategoryId = ref(null)
+const expanded = ref({})
+const mobileFilterOpen = ref(false)
 
 let searchTimeout = null
 
@@ -179,23 +232,56 @@ const SECTOR_ICONS = {
 
 const sectorIcon = computed(() => SECTOR_ICONS[sectorSlug.value?.toLowerCase()] || 'category')
 
-const availableCategories = computed(() => {
-  const map = new Map()
-  for (const p of productos.value) {
-    const rawId = p.category?.id ?? p.category?.nombre
-    const rawName = p.category?.nombre
-    if (!rawId || !rawName) continue
-    map.set(String(rawId), { id: String(rawId), label: rawName })
+// Árbol categoría → subcategorías con conteos: viene del backend, calculado sobre
+// TODO el catálogo filtrado (no solo la página actual), para que el panel no
+// cambie al paginar. Se actualiza cada vez que se recargan los productos.
+const categoryTree = ref([])
+const totalCatalogo = ref(0)
+
+const activeFilterLabel = computed(() => {
+  if (selectedSubcategoryId.value) {
+    for (const cat of categoryTree.value) {
+      const sub = cat.subs.find((s) => s.id === selectedSubcategoryId.value)
+      if (sub) return sub.nombre
+    }
   }
-  return [{ id: 'all', label: 'Todas' }, ...Array.from(map.values())]
+  if (selectedCategoryId.value) {
+    return categoryTree.value.find((c) => c.id === selectedCategoryId.value)?.nombre || ''
+  }
+  return ''
 })
 
-const filteredProducts = computed(() => {
-  if (selectedCategory.value === 'all') return productos.value
-  return productos.value.filter(p =>
-    String(p.category?.id ?? p.category?.nombre ?? '') === selectedCategory.value
-  )
-})
+// El filtrado ya lo hace el backend (respeta la paginación); el front solo muestra lo que llega.
+const filteredProducts = computed(() => productos.value)
+
+function selectAll() {
+  selectedCategoryId.value = null
+  selectedSubcategoryId.value = null
+  mobileFilterOpen.value = false
+  page.value = 1
+  loadProductos()
+}
+
+function selectCategory(cat) {
+  selectedCategoryId.value = cat.id
+  selectedSubcategoryId.value = null
+  if (cat.subs.length) expanded.value[cat.id] = true
+  mobileFilterOpen.value = false
+  page.value = 1
+  loadProductos()
+}
+
+function selectSubcategory(cat, sub) {
+  selectedCategoryId.value = cat.id
+  selectedSubcategoryId.value = sub.id
+  mobileFilterOpen.value = false
+  page.value = 1
+  loadProductos()
+}
+
+function toggleExpand(catId) {
+  expanded.value[catId] = !expanded.value[catId]
+}
 
 // Tras cargar la empresa limpia el ?eid de la URL → queda /tienda/empresa/zifcor
 function cleanUrl() {
@@ -223,10 +309,14 @@ async function loadProductos() {
       q: search.value || undefined,
       estado: 'published',
       sectorSlug: sectorSlug.value, // 👈 aquí ya lo tienes directo
+      categoryId: selectedCategoryId.value || undefined,
+      subcategoryId: selectedSubcategoryId.value || undefined,
     })
     productos.value = data?.data || []
     total.value = data?.total || 0
     pages.value = data?.pages || 0
+    categoryTree.value = data?.categorias || []
+    totalCatalogo.value = data?.categorias?.reduce((s, c) => s + c.count, 0) || 0
   } catch {
     productos.value = []
     total.value = 0
@@ -259,7 +349,7 @@ watch(
   () => route.query.eid || route.params.empresaId,
   async () => {
     page.value = 1
-    selectedCategory.value = 'all'
+    selectAll()
     await loadEmpresa()
     await loadProductos()
   },
@@ -484,58 +574,275 @@ watch(
   width: 240px;
 }
 
-.category-filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-
-.cat-chip {
-  display: inline-flex;
+/* ── Botón para abrir el filtro en móvil ── */
+.mobile-filter-toggle {
+  display: none;
   align-items: center;
-  gap: 7px;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 999px;
-  border: 1.5px solid rgba(11, 18, 32, .09);
+  gap: 8px;
+  width: 100%;
+  height: 42px;
+  padding: 0 16px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(11, 18, 32, .1);
   background: #fff;
-  color: rgba(11, 18, 32, .65);
-  font-size: 12.5px;
+  color: #0b1220;
+  font-size: 13px;
   font-weight: 800;
   cursor: pointer;
-  transition: all 160ms ease;
   font-family: inherit;
 }
 
-.cat-chip:hover {
-  border-color: rgba(19, 84, 211, .22);
+.mobile-filter-active {
+  margin-left: auto;
   color: #1354d3;
-  background: rgba(19, 84, 211, .04);
+  font-weight: 900;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.cat-chip-active {
-  background: #1354d3;
-  color: #fff;
-  border-color: #1354d3;
-  box-shadow: 0 6px 18px rgba(19, 84, 211, .22);
+/* ── Layout: sidebar + grid ── */
+.products-layout {
+  display: grid;
+  grid-template-columns: 196px 1fr;
+  gap: 20px;
+  align-items: start;
 }
 
-.chip-count {
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: rgba(11, 18, 32, .08);
-  display: inline-flex;
+/* ── Sidebar de categorías (estilo Amazon) — panel liviano, sin caja pesada ── */
+.category-sidebar {
+  position: sticky;
+  top: 20px;
+  padding: 4px 12px 4px 0;
+  border-right: 1px solid rgba(11, 18, 32, .08);
+}
+
+.sidebar-head {
+  display: none;
   align-items: center;
-  justify-content: center;
-  font-size: 10px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.sidebar-close {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: rgba(11, 18, 32, .05);
+  border-radius: 8px;
+  color: #0b1220;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.sidebar-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: rgba(11, 18, 32, .45);
+}
+
+.sidebar-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: #0b1220;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 140ms;
+  margin-bottom: 6px;
+}
+
+.sidebar-all:hover {
+  background: rgba(11, 18, 32, .045);
+}
+
+.sidebar-all--active {
+  background: rgba(19, 84, 211, .09);
+  color: #1354d3;
+}
+
+.sidebar-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(11, 18, 32, .07);
+  padding-top: 6px;
+}
+
+.sidebar-node {
+  margin-bottom: 2px;
+}
+
+.sidebar-row {
+  display: flex;
+  align-items: center;
+  border-radius: 9px;
+  transition: background 140ms;
+}
+
+.sidebar-row:hover {
+  background: rgba(11, 18, 32, .04);
+}
+
+.sidebar-row--active {
+  background: rgba(19, 84, 211, .09);
+}
+
+.sidebar-row-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 6px 9px 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  min-width: 0;
+}
+
+.sidebar-row--active .sidebar-label {
+  color: #1354d3;
   font-weight: 900;
 }
 
-.cat-chip-active .chip-count {
-  background: rgba(255, 255, 255, .20);
+.sidebar-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0b1220;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-count {
+  flex-shrink: 0;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(11, 18, 32, .07);
+  color: rgba(11, 18, 32, .55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 900;
+}
+
+.sidebar-chevron {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  margin-right: 4px;
+  border: none;
+  background: none;
+  color: rgba(11, 18, 32, .4);
+  cursor: pointer;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  transition: transform 200ms ease, background 140ms;
+}
+
+.sidebar-chevron:hover {
+  background: rgba(11, 18, 32, .06);
+  color: #0b1220;
+}
+
+.sidebar-chevron--open {
+  transform: rotate(180deg);
+}
+
+.sidebar-subtree {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 16px;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 260ms ease;
+}
+
+.sidebar-subtree--open {
+  max-height: 600px;
+}
+
+.sidebar-sub-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px 7px 12px;
+  margin: 1px 0;
+  border: none;
+  border-left: 2px solid rgba(11, 18, 32, .09);
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  border-radius: 0 7px 7px 0;
+  transition: background 140ms, border-color 140ms;
+}
+
+.sidebar-sub-row:hover {
+  background: rgba(11, 18, 32, .04);
+}
+
+.sidebar-sub-row .sidebar-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(11, 18, 32, .70);
+  white-space: normal;
+  line-height: 1.3;
+}
+
+.sidebar-sub-row--active {
+  border-left-color: #1354d3;
+  background: rgba(19, 84, 211, .07);
+}
+
+.sidebar-sub-row--active .sidebar-label {
+  color: #1354d3;
+  font-weight: 800;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+.products-main {
+  min-width: 0;
+}
+
+.empty-clear-btn {
+  margin-top: 16px;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(19, 84, 211, .25);
+  background: rgba(19, 84, 211, .06);
+  color: #1354d3;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .loading-products {
@@ -737,15 +1044,44 @@ watch(
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .category-filters {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 4px;
+  .mobile-filter-toggle {
+    display: flex;
   }
 
-  .cat-chip {
-    white-space: nowrap;
-    flex-shrink: 0;
+  .products-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* La sidebar se convierte en un panel deslizante (drawer) */
+  .category-sidebar {
+    display: none;
+  }
+
+  .category-sidebar--open {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 6000;
+    width: min(84vw, 320px);
+    background: #fff;
+    border-right: none;
+    padding: 16px;
+    overflow-y: auto;
+    box-shadow: 8px 0 32px rgba(0, 0, 0, .18);
+  }
+
+  .category-sidebar--open .sidebar-head {
+    display: flex;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 5999;
+    background: rgba(11, 18, 32, .45);
   }
 }
 
