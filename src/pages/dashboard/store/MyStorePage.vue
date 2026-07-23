@@ -10,7 +10,6 @@
         @click="router.push('/dashboard/productos/nuevo')" />
     </div>
 
-    <!-- Banner + logo -->
     <q-card flat bordered class="store-header-card q-mb-md">
       <div class="banner-wrap">
         <img v-if="profile?.bannerUrl" :src="profile.bannerUrl" class="banner-img" />
@@ -47,7 +46,6 @@
       </div>
     </q-card>
 
-    <!-- Métricas -->
     <div class="metrics-grid q-mb-md">
       <div class="metric-card">
         <div class="metric-icon-wrap" style="background:rgba(0,113,227,.08)">
@@ -87,7 +85,6 @@
       </div>
     </div>
 
-    <!-- Descripción -->
     <q-card flat bordered class="profile-card q-mb-md" v-if="profile?.descripcion">
       <q-card-section>
         <div class="section-title q-mb-sm">Sobre la empresa</div>
@@ -95,7 +92,6 @@
       </q-card-section>
     </q-card>
 
-    <!-- Productos recientes -->
     <q-card flat bordered class="profile-card">
       <q-card-section>
         <div class="row items-center justify-between q-mb-md">

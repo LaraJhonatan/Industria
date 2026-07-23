@@ -1,7 +1,5 @@
 import http from './http'
 
-// Carrito en la DB — todas requieren estar logueado como usuario (Gmail).
-// El token JWT lo agrega el interceptor de http.js automáticamente.
 export const cartApi = {
   get: () => http.get('/cart'),
   addItem: (productId, cantidad = 1) => http.post('/cart/items', { productId, cantidad }),

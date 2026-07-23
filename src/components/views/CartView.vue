@@ -2,7 +2,6 @@
   <section class="cart-section" aria-label="Carrito de compras">
     <div class="cart-wrap">
 
-      <!-- ══ Empty Cart ══ -->
       <div v-if="cartStore.isEmpty" class="empty-cart">
         <div class="empty-icon">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#c8cdd5" stroke-width="1.5">
@@ -16,17 +15,14 @@
         <button class="empty-btn" @click="router.push('/tienda')">Ir a la tienda →</button>
       </div>
 
-      <!-- ══ Cart with items ══ -->
       <template v-else>
 
-        <!-- Page header -->
         <div class="cart-header">
           <h1 class="cart-title">Carrito de compras</h1>
           <span class="cart-count">{{ cartStore.totalItems }} {{ cartStore.totalItems === 1 ? 'producto' : 'productos'
           }}</span>
         </div>
 
-        <!-- Breadcrumb -->
         <nav class="breadcrumb">
           <button class="bc-link" @click="router.push('/tienda')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -40,13 +36,10 @@
           <span class="bc-dim">Pago</span>
         </nav>
 
-        <!-- Main grid -->
         <div class="cart-layout">
 
-          <!-- ── Items list ── -->
           <div class="items-col">
 
-            <!-- Column headers -->
             <div class="items-header">
               <span class="ih-product">Producto</span>
               <span class="ih-price">Precio</span>
@@ -55,38 +48,31 @@
               <span class="ih-del"></span>
             </div>
 
-            <!-- Item rows -->
             <transition-group name="item-list" tag="div" class="items-list">
               <div v-for="item in cartStore.items" :key="item.productId" class="cart-item">
 
-                <!-- Image -->
                 <div class="item-img-wrap">
                   <img :src="item.image" :alt="item.name" class="item-img" />
                 </div>
 
-                <!-- Info -->
                 <div class="item-info">
                   <p class="item-category">{{ item.categoryTitle }}</p>
                   <h3 class="item-name">{{ item.name }}</h3>
                   <p v-if="item.variant" class="item-variant">{{ item.variant }}</p>
-                  <!-- mobile price -->
+
                   <p class="item-price-mobile">{{ formatCOP(item.price) }}</p>
                 </div>
 
-                <!-- Price (desktop) -->
                 <span class="item-price desktop-only">{{ formatCOP(item.price) }}</span>
 
-                <!-- Qty controls -->
                 <div class="item-qty">
                   <button class="qty-ctrl" @click="cartStore.decrement(item.productId)">−</button>
                   <span class="qty-num">{{ item.qty }}</span>
                   <button class="qty-ctrl" @click="cartStore.increment(item.productId)">+</button>
                 </div>
 
-                <!-- Line total -->
                 <span class="item-line-total">{{ formatCOP(item.price * item.qty) }}</span>
 
-                <!-- Remove -->
                 <button class="item-remove" @click="confirmRemove(item.productId)" title="Eliminar">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6" />
@@ -99,7 +85,6 @@
               </div>
             </transition-group>
 
-            <!-- Clear cart -->
             <div class="cart-actions-bar">
               <button class="clear-btn" @click="showClearModal = true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -115,7 +100,6 @@
 
           </div>
 
-          <!-- ── Order Summary ── -->
           <div class="summary-col">
             <div class="summary-box">
               <h2 class="summary-title">Resumen del pedido</h2>
@@ -159,7 +143,6 @@
                 Solicitar cotización completa
               </button>
 
-              <!-- Security badges -->
               <div class="security-badges">
                 <div class="sec-badge">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1aab5c" stroke-width="2">
@@ -190,7 +173,6 @@
       </template>
     </div>
 
-    <!-- ══ Confirm remove modal ══ -->
     <teleport to="body">
       <transition name="modal">
         <div v-if="removeId" class="modal-overlay" @click.self="removeId = null">
@@ -252,7 +234,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   padding: 0 32px;
 }
 
-/* header */
 .cart-header {
   display: flex;
   align-items: baseline;
@@ -274,7 +255,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   color: rgba(27, 27, 27, .45);
 }
 
-/* breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -313,7 +293,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   color: rgba(27, 27, 27, .35);
 }
 
-/* layout */
 .cart-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -321,7 +300,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   align-items: start;
 }
 
-/* items col */
 .items-col {
   display: flex;
   flex-direction: column;
@@ -499,7 +477,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   color: #ff3b30;
 }
 
-/* actions bar */
 .cart-actions-bar {
   display: flex;
   justify-content: space-between;
@@ -543,7 +520,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   text-decoration: underline;
 }
 
-/* summary */
 .summary-col {}
 
 .summary-box {
@@ -678,7 +654,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   font-weight: 600;
 }
 
-/* empty */
 .empty-cart {
   max-width: 440px;
   margin: 80px auto;
@@ -725,7 +700,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   background: #005fcd;
 }
 
-/* modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -792,7 +766,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
   background: #d93025;
 }
 
-/* transitions */
 .item-list-enter-active {
   transition: all 300ms ease;
 }
@@ -824,7 +797,6 @@ function doClear() { cartStore.clear(); showClearModal.value = false }
 
 .desktop-only {}
 
-/* responsive */
 @media (max-width: 960px) {
   .cart-layout {
     grid-template-columns: 1fr;

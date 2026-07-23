@@ -2,7 +2,7 @@
   <transition name="panel-slide">
     <div v-if="open" class="overlay" @click.self="$emit('close')">
       <aside class="panel" role="dialog" aria-label="Presupuesto">
-        <!-- Header -->
+
         <div class="panel-header">
           <div>
             <p class="panel-kicker">Presupuesto</p>
@@ -19,7 +19,6 @@
           </button>
         </div>
 
-        <!-- Items -->
         <div class="panel-body">
           <div v-if="budgetStore.items.length === 0" class="empty-state">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -51,7 +50,6 @@
           </transition-group>
         </div>
 
-        <!-- Footer -->
         <div v-if="budgetStore.items.length > 0" class="panel-footer">
           <button class="submit-btn" @click="submitQuote">
             Solicitar cotización
@@ -288,7 +286,6 @@ function submitQuote() {
   color: #c62828;
 }
 
-/* Transitions */
 .panel-slide-enter-active,
 .panel-slide-leave-active {
   transition: opacity 260ms ease;

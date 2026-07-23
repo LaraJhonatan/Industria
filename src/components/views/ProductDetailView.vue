@@ -2,7 +2,6 @@
   <section class="detail-section" aria-label="Detalle del producto">
     <div class="bs-wrap">
 
-      <!-- SKELETON (3 s) -->
       <template v-if="isLoading">
         <div class="sk-breadcrumb">
           <div class="sk sk-bc-a" />
@@ -37,10 +36,8 @@
         <div class="sk sk-tab-content" />
       </template>
 
-      <!-- CONTENIDO REAL -->
       <template v-else-if="product && category">
 
-        <!-- Breadcrumb — ahora con subcategoría -->
         <nav class="breadcrumb" aria-label="Ruta de navegación">
           <button class="bc-link" @click="router.push('/tienda')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -52,7 +49,7 @@
           <button class="bc-link" @click="router.push(`/tienda/${category.id}`)">
             {{ category.title }}
           </button>
-          <!-- Subcategoría como paso intermedio -->
+
           <template v-if="subcategory">
             <span class="bc-sep">/</span>
             <button class="bc-link" @click="router.push(`/tienda/${category.id}/sub/${subcategory.id}`)">
@@ -63,10 +60,8 @@
           <span class="bc-current">{{ product.name }}</span>
         </nav>
 
-        <!-- MAIN LAYOUT -->
         <div class="detail-layout">
 
-          <!-- Gallery -->
           <div class="gallery-section">
             <div class="gallery-grid">
               <div class="thumbnails" role="list">
@@ -101,7 +96,6 @@
             </div>
           </div>
 
-          <!-- Info -->
           <div class="info-section">
             <div>
               <span class="product-kicker"
@@ -215,7 +209,6 @@
           </div>
         </div>
 
-        <!-- TABS -->
         <div class="tabs-section">
           <div class="tab-bar" role="tablist">
             <button v-for="tab in tabs" :key="tab.id" class="tab-btn" :class="{ 'tab-active': activeTab === tab.id }"
@@ -254,7 +247,6 @@
           </div>
         </div>
 
-        <!-- Información adicional -->
         <div class="additional-info" v-reveal>
           <h3 class="ai-title">Información adicional</h3>
           <div class="ai-table">
@@ -267,7 +259,7 @@
             </div>
             <div class="ai-row">
               <span class="ai-lbl">Subcategoría</span>
-              <!-- Si se resolvió la subcategoría, es un link clickeable; si no, texto plano -->
+
               <span v-if="subcategory" class="ai-val ai-link" :style="{ color: category.accentColor }"
                 @click="router.push(`/tienda/${category.id}/sub/${subcategory.id}`)">{{ subcategory.name }}</span>
               <span v-else class="ai-val">{{ product.subcategory }}</span>
@@ -279,7 +271,6 @@
           </div>
         </div>
 
-        <!-- Productos relacionados -->
         <div class="related-section" v-reveal>
           <h2 class="related-title">Productos relacionados</h2>
           <div class="related-grid">
@@ -328,7 +319,6 @@ const relatedProducts = computed(() =>
   category.value?.products.filter(p => p.id !== route.params.productId).slice(0, 4) ?? []
 )
 
-// Resuelve la subcategoría a partir del campo product.subcategory
 const subcategory = computed(() =>
   category.value?.subcategories.find(s => s.id === product.value?.subcategory) ?? null
 )
@@ -402,7 +392,7 @@ const vReveal = {
 </script>
 
 <style scoped>
-/* SKELETON */
+
 @keyframes shimmer {
   0% {
     background-position: -700px 0
@@ -555,7 +545,6 @@ const vReveal = {
   border-radius: 14px;
 }
 
-/* PAGE */
 .detail-section {
   background: #fafbfc;
   padding: 40px 0 80px;
@@ -568,7 +557,6 @@ const vReveal = {
   padding: 0 32px;
 }
 
-/* breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -608,7 +596,6 @@ const vReveal = {
   white-space: nowrap;
 }
 
-/* layout */
 .detail-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
@@ -617,7 +604,6 @@ const vReveal = {
   align-items: start;
 }
 
-/* gallery */
 .gallery-section {
   display: flex;
   flex-direction: column;
@@ -748,7 +734,6 @@ const vReveal = {
   font-weight: 600;
 }
 
-/* info */
 .info-section {
   display: flex;
   flex-direction: column;
@@ -1060,7 +1045,6 @@ const vReveal = {
   margin: 0;
 }
 
-/* tabs */
 .tabs-section {
   margin-bottom: 52px;
 }
@@ -1169,7 +1153,6 @@ const vReveal = {
   flex-shrink: 0;
 }
 
-/* additional info */
 .additional-info {
   margin-bottom: 52px;
 }
@@ -1217,7 +1200,6 @@ const vReveal = {
   cursor: pointer;
 }
 
-/* related */
 .related-section {
   border-top: 2px solid rgba(27, 27, 27, .06);
   padding-top: 48px;
@@ -1308,7 +1290,6 @@ const vReveal = {
   background: #0062c8;
 }
 
-/* reveal */
 :global(.reveal) {
   opacity: 0;
   transform: translateY(24px);
@@ -1320,7 +1301,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* img fade */
 .img-fade-enter-active,
 .img-fade-leave-active {
   transition: opacity 200ms;
@@ -1338,7 +1318,6 @@ const vReveal = {
   font-size: 15px;
 }
 
-/* responsive */
 @media (max-width:1024px) {
   .detail-layout {
     grid-template-columns: 1fr;

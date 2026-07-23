@@ -2,7 +2,6 @@
   <section class="search-section">
     <div class="bs-wrap">
 
-      <!-- Header -->
       <div class="search-header">
         <div class="search-header-top">
           <div>
@@ -13,7 +12,6 @@
             </h1>
           </div>
 
-          <!-- Buscador inline -->
           <div class="search-bar-wrap">
             <div class="search-bar" :class="{ focused }">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -33,13 +31,11 @@
         </p>
       </div>
 
-      <!-- Loading -->
       <div v-if="loading" class="loading-wrap">
         <q-spinner color="blue-6" size="42px" />
         <p class="loading-text">Buscando productos...</p>
       </div>
 
-      <!-- Sin resultados -->
       <div v-else-if="!productos.length" class="empty-state">
         <div class="empty-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -66,7 +62,6 @@
           </a>
         </div>
 
-        <!-- Card de ayuda -->
         <div class="help-card">
           <div class="help-card-icon">💬</div>
           <div class="help-card-text">
@@ -82,7 +77,6 @@
         </div>
       </div>
 
-      <!-- Grid de resultados -->
       <template v-else>
         <div class="products-grid">
           <article v-for="p in productos" :key="p.id" class="product-card"
@@ -120,12 +114,10 @@
           </article>
         </div>
 
-        <!-- Paginación -->
         <div class="pagination-wrap row justify-center" v-if="pages > 1">
           <q-pagination v-model="page" :max="pages" color="blue-6" @update:model-value="fetchResults" />
         </div>
 
-        <!-- Banner WhatsApp al final de resultados -->
         <div class="results-wa-banner">
           <div class="results-wa-left">
             <p class="results-wa-title">¿No encontraste exactamente lo que buscas?</p>
@@ -143,7 +135,6 @@
 
     </div>
 
-    <!-- WhatsApp flotante (igual que en MainLayout) -->
     <a :href="whatsappUrl" target="_blank" rel="noopener noreferrer" class="bs-whatsapp-float">
       <div class="bs-whatsapp-pulse" />
       <svg viewBox="0 0 24 24" class="bs-whatsapp-icon" fill="currentColor">
@@ -232,7 +223,6 @@ watch(
   padding: 40px 32px 0;
 }
 
-/* ── HEADER ── */
 .search-header {
   margin-bottom: 32px;
 }
@@ -270,7 +260,6 @@ watch(
   font-weight: 700;
 }
 
-/* ── BUSCADOR INLINE ── */
 .search-bar-wrap {
   flex-shrink: 0;
   width: 380px;
@@ -324,7 +313,6 @@ watch(
   background: #005fcd;
 }
 
-/* ── LOADING ── */
 .loading-wrap {
   display: flex;
   flex-direction: column;
@@ -341,7 +329,6 @@ watch(
   font-weight: 600;
 }
 
-/* ── EMPTY ── */
 .empty-state {
   text-align: center;
   padding: 60px 20px 40px;
@@ -422,7 +409,6 @@ watch(
   transform: translateY(-1px);
 }
 
-/* ── HELP CARD ── */
 .help-card {
   max-width: 640px;
   margin: 0 auto;
@@ -483,7 +469,6 @@ watch(
   filter: brightness(.92);
 }
 
-/* ── GRID ── */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -616,7 +601,6 @@ watch(
   margin-top: 12px;
 }
 
-/* ── BANNER WA AL FINAL DE RESULTADOS ── */
 .results-wa-banner {
   margin-top: 32px;
   background: linear-gradient(100deg, #1a1a2e 0%, #16213e 100%);
@@ -674,7 +658,6 @@ watch(
   flex-shrink: 0;
 }
 
-/* ── WHATSAPP FLOTANTE ── */
 .bs-whatsapp-float {
   position: fixed;
   bottom: 24px;
@@ -723,7 +706,6 @@ watch(
   }
 }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .bs-wrap {
     padding: 24px 16px 0;

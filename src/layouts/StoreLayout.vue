@@ -39,10 +39,9 @@
         <q-space />
 
         <div class="row items-center no-wrap q-gutter-sm gt-sm">
-          <!-- Autenticado -->
+
           <template v-if="authStore.isAuthenticated">
 
-            <!-- Carrito (visible para todos) -->
             <button class="bs-cart-btn" @click="router.push('/tienda/carrito')">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <circle cx="9" cy="21" r="1" fill="currentColor" stroke="none" />
@@ -53,7 +52,6 @@
               <span v-if="cartStore.totalItems > 0" class="bs-cart-badge">{{ cartStore.totalItems }}</span>
             </button>
 
-            <!-- Avatar -->
             <div class="bs-avatar-wrap">
               <button class="bs-avatar" @click="avatarMenu = !avatarMenu">
                 <img v-if="profileImage" :src="profileImage" :alt="displayNombre" class="bs-avatar-img" />
@@ -76,7 +74,6 @@
                   </div>
                   <div class="avatar-drop-hr" />
 
-                  <!-- Menú usuario Google -->
                   <template v-if="esTipoUsuario">
                     <button class="avatar-drop-item" @click="avatarMenu = false">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -88,7 +85,6 @@
                     </button>
                   </template>
 
-                  <!-- Menú empresa -->
                   <template v-else>
                     <button class="avatar-drop-item" @click="goToDashboard">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -116,7 +112,6 @@
             </div>
           </template>
 
-          <!-- No autenticado -->
           <template v-else>
             <button class="bs-cart-btn" @click="router.push('/tienda/carrito')">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -296,7 +291,6 @@ const year = new Date().getFullYear()
 const whatsappQuoteUrl = 'https://wa.me/573114799224?text=' +
   encodeURIComponent('Hola, quiero solicitar una cotización en ZIFCOR.')
 
-// ── Tipo de sesión
 const esTipoUsuario = computed(() => authStore.sesion?.usuario?.tipo === 'usuario')
 
 const displayNombre = computed(() => {
@@ -333,7 +327,6 @@ onMounted(() => {
   if (esTipoUsuario.value) cartStore.fetch()
 })
 
-// Refresca el carrito cuando el usuario inicia/cierra sesión
 watch(esTipoUsuario, (val) => {
   if (val) cartStore.fetch()
   else cartStore.reset()
@@ -414,7 +407,6 @@ onBeforeUnmount(() => {
   letter-spacing: 0.6px;
 }
 
-/* ── NAV ── */
 .bs-nav {
   display: flex;
   align-items: center;
@@ -489,7 +481,6 @@ onBeforeUnmount(() => {
   }
 }
 
-/* ── CARRITO ── */
 .bs-cart-btn {
   position: relative;
   display: inline-flex;
@@ -539,7 +530,6 @@ onBeforeUnmount(() => {
   font-weight: 700;
 }
 
-/* ── SIGNUP ── */
 .bs-signup-btn {
   height: 38px;
   padding: 0 20px;
@@ -564,7 +554,6 @@ onBeforeUnmount(() => {
   color: rgba(11, 18, 32, 0.72) !important;
 }
 
-/* ── AVATAR ── */
 .bs-avatar-wrap {
   position: relative;
 }
@@ -608,7 +597,6 @@ onBeforeUnmount(() => {
   letter-spacing: -0.5px;
 }
 
-/* ── DROPDOWN ── */
 .bs-avatar-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -734,7 +722,6 @@ onBeforeUnmount(() => {
   transform: translateY(-4px);
 }
 
-/* ── DRAWER ── */
 .bs-drawer {
   background: #fff !important;
 }
@@ -928,7 +915,6 @@ onBeforeUnmount(() => {
   border-color: #dc2626;
 }
 
-/* ── FOOTER ── */
 .bs-footer {
   background: #fff;
   border-top: 1px solid rgba(15, 23, 42, 0.09);

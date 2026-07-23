@@ -73,7 +73,7 @@ async function processFiles(files) {
       const { data } = await uploadsApi.uploadImage(file, props.folder)
       images.value[idx].url = data.url
       images.value[idx].uploading = false
-      emitUpdate() // ← solo emite cuando ya tiene URL
+      emitUpdate()
     } catch {
       images.value.splice(idx, 1)
       emitUpdate()

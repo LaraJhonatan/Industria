@@ -16,10 +16,8 @@
 
     <div v-else class="profile-layout">
 
-      <!-- Columna principal -->
       <div class="profile-main">
 
-        <!-- Datos DIAN -->
         <q-card flat bordered class="profile-card q-mb-md">
           <q-card-section>
             <div class="section-title q-mb-md">Datos oficiales DIAN</div>
@@ -55,7 +53,6 @@
           </q-card-section>
         </q-card>
 
-        <!-- Perfil comercial -->
         <q-card flat bordered class="profile-card q-mb-md">
           <q-card-section>
             <div class="section-title q-mb-md">Perfil comercial</div>
@@ -85,7 +82,6 @@
           </q-card-section>
         </q-card>
 
-        <!-- Redes sociales -->
         <q-card flat bordered class="profile-card">
           <q-card-section>
             <div class="section-title q-mb-md">Redes sociales</div>
@@ -120,10 +116,8 @@
 
       </div>
 
-      <!-- Sidebar -->
       <div class="profile-sidebar">
 
-        <!-- Logo -->
         <q-card flat bordered class="profile-card q-mb-md">
           <q-card-section>
             <div class="section-title q-mb-md">Logo</div>
@@ -141,7 +135,6 @@
           </q-card-section>
         </q-card>
 
-        <!-- Banner -->
         <q-card flat bordered class="profile-card">
           <q-card-section>
             <div class="section-title q-mb-md">Banner</div>
@@ -219,12 +212,10 @@ async function uploadLogo(e) {
   uploadingLogo.value = true
   try {
     const { data } = await uploadsApi.uploadImage(file, 'empresas')
-    console.log('upload response:', data)  // ← ver estructura real
     form.value.logoUrl = data.url
     authStore.updateLogoUrl(data.url)
     $q.notify({ type: 'positive', message: 'Logo actualizado', position: 'top-right' })
   } catch (err) {
-    console.log('upload error:', err)  // ← ver el error real
     $q.notify({ type: 'negative', message: 'Error al subir logo', position: 'top-right' })
   } finally {
     uploadingLogo.value = false

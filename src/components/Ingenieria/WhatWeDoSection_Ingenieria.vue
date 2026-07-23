@@ -4,7 +4,6 @@
     <div class="bs-wrap">
       <div class="layout">
 
-        <!-- ── LEFT ── -->
         <div class="left" :class="{ ready }">
 
           <div class="kicker">
@@ -37,7 +36,6 @@
             </a>
           </div>
 
-          <!-- Trust bar -->
           <div class="trust">
             <div class="trust-item">
               <span class="trust-num">+10</span>
@@ -56,7 +54,6 @@
           </div>
         </div>
 
-        <!-- ── RIGHT panel ── -->
         <div class="right" :class="{ ready }" aria-hidden="true">
           <div class="panel">
             <div class="panel-header">

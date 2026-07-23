@@ -29,7 +29,6 @@
 
         <q-tab-panels v-model="tab" animated>
 
-          <!-- GENERAL -->
           <q-tab-panel name="general" class="q-pa-lg">
             <div class="panel-grid">
               <div class="field-full">
@@ -63,7 +62,6 @@
             </div>
           </q-tab-panel>
 
-          <!-- ATRIBUTOS -->
           <q-tab-panel name="atributos" class="q-pa-lg">
             <div v-if="loadingAttrs" class="column items-center q-py-lg">
               <q-spinner color="blue-6" size="28px" />
@@ -71,12 +69,10 @@
             <ProductDynamicAttributes v-else :atributos="atributos" v-model:values="form.atributosValues" />
           </q-tab-panel>
 
-          <!-- IMÁGENES -->
           <q-tab-panel name="imagenes" class="q-pa-lg">
             <ProductImageUploader v-model="form.imagenes" folder="productos" />
           </q-tab-panel>
 
-          <!-- PRECIO -->
           <q-tab-panel name="precio" class="q-pa-lg">
             <div class="panel-grid">
               <div>
@@ -121,7 +117,6 @@
             </div>
           </q-tab-panel>
 
-          <!-- VARIANTES -->
           <q-tab-panel name="variantes" class="q-pa-lg">
             <ProductVariantsEditor v-model="form.variantes" :atributos-variante="atributosVariante" />
           </q-tab-panel>

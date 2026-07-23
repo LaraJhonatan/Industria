@@ -4,13 +4,7 @@
     <div class="bs-wrap">
       <div class="layout">
 
-        <!-- ── LEFT ── -->
         <div class="left" :class="{ ready }">
-
-          <!-- <div class="kicker">
-            <span class="kicker-dot" />
-            Maquinaria & Equipos
-          </div> -->
 
           <h1 class="headline">
             Suministro de<br />
@@ -35,7 +29,6 @@
             <a href="#que-hacemos" class="btn-ghost">Conocer más</a>
           </div>
 
-          <!-- Feature list -->
           <div class="features">
             <div class="feat" v-for="f in features" :key="f">
               <div class="feat-check">
@@ -48,7 +41,6 @@
           </div>
         </div>
 
-        <!-- ── RIGHT panel ── -->
         <div class="right" :class="{ ready }" aria-hidden="true">
           <div class="panel">
             <div class="panel-header">
@@ -161,7 +153,6 @@ onMounted(() => {
   align-items: center;
 }
 
-/* ─── Entrance ────────────────────────── */
 .left {
   opacity: 0;
   transform: translateY(28px);
@@ -180,7 +171,6 @@ onMounted(() => {
   transform: translateY(0);
 }
 
-/* ─── Kicker ──────────────────────────── */
 .kicker {
   display: inline-flex;
   align-items: center;
@@ -218,7 +208,6 @@ onMounted(() => {
   }
 }
 
-/* ─── Headline ────────────────────────── */
 .headline {
   margin: 0 0 20px;
   font-weight: 900;
@@ -240,7 +229,6 @@ onMounted(() => {
   max-width: 54ch;
 }
 
-/* ─── Actions ─────────────────────────── */
 .actions {
   display: flex;
   gap: 14px;
@@ -293,7 +281,6 @@ onMounted(() => {
   background: rgba(0, 113, 227, 0.04);
 }
 
-/* ─── Features ────────────────────────── */
 .features {
   display: flex;
   flex-direction: column;
@@ -321,7 +308,6 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-/* ─── Panel ───────────────────────────── */
 .panel {
   position: relative;
   border-radius: 18px;
@@ -489,7 +475,6 @@ onMounted(() => {
   margin-top: 2px;
 }
 
-/* ─── Badge ───────────────────────────── */
 .badge {
   position: absolute;
   top: -16px;
@@ -520,7 +505,6 @@ onMounted(() => {
   }
 }
 
-/* ─── Responsive ──────────────────────── */
 @media (max-width: 1024px) {
   .layout {
     grid-template-columns: 1fr;

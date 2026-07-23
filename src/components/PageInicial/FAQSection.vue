@@ -154,14 +154,12 @@ const vReveal = {
   text-decoration: underline;
 }
 
-/* LISTA */
 .faq-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* CARD BLANCA, BORDE SUAVE */
 .faq-item {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -228,7 +226,6 @@ const vReveal = {
   color: rgba(0, 0, 0, 0.66);
 }
 
-/* reveal */
 .reveal {
   opacity: 0;
   transform: translateY(20px);

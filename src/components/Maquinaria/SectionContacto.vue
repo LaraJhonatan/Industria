@@ -3,7 +3,6 @@
     <section id="formulario-maquinaria" class="projects">
       <div class="bs-wrap">
 
-        <!-- ══ COLUMNA IZQUIERDA ══════════════════ -->
         <div class="col-left" :class="{ ready }">
 
           <h1 class="h1">
@@ -42,7 +41,6 @@
 
         </div>
 
-        <!-- ══ COLUMNA DERECHA — FORMULARIO ══════ -->
         <q-form ref="formRef" class="contact-form" :class="{ ready }" @submit.prevent="onSubmit">
 
           <div v-if="success" class="success-msg">
@@ -192,7 +190,6 @@ async function onSubmit() {
     formRef.value?.resetValidation()
 
   } catch (e) {
-    console.error('Error al enviar solicitud:', e)
     error.value = 'Ocurrió un error al enviar la solicitud. Intenta de nuevo.'
   } finally {
     sending.value = false

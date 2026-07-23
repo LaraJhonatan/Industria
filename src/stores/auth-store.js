@@ -50,9 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
       sesion.value = data
       localStorage.setItem('ZIFCOR_sesion', JSON.stringify(data))
-    } catch (e) {
-      console.error('Error decodificando token:', e)
-    }
+    } catch { void 0 }
   }
   return {
     sesion,

@@ -2,7 +2,6 @@
   <section class="checkout-section" aria-label="Proceso de pago">
     <div class="checkout-wrap">
 
-      <!-- ══ Success state ══ -->
       <div v-if="orderPlaced" class="success-screen">
         <div class="success-icon">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
@@ -31,10 +30,8 @@
         </div>
       </div>
 
-      <!-- ══ Checkout form ══ -->
       <template v-else>
 
-        <!-- Header -->
         <div class="checkout-header">
           <button class="back-link" @click="router.push('/carrito')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -45,7 +42,6 @@
           <h1 class="checkout-title">Finalizar compra</h1>
         </div>
 
-        <!-- Steps indicator -->
         <div class="steps">
           <div class="step done">
             <div class="step-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -68,10 +64,8 @@
 
         <div class="checkout-layout">
 
-          <!-- ── Form ── -->
           <div class="form-col">
 
-            <!-- Contact info -->
             <div class="form-section">
               <h2 class="section-title">Información de contacto</h2>
               <div class="form-grid">
@@ -106,7 +100,6 @@
               </div>
             </div>
 
-            <!-- Shipping info -->
             <div class="form-section">
               <h2 class="section-title">Dirección de entrega</h2>
               <div class="form-grid">
@@ -137,7 +130,6 @@
               </div>
             </div>
 
-            <!-- Payment method -->
             <div class="form-section">
               <h2 class="section-title">Método de pago</h2>
               <div class="payment-options">
@@ -154,7 +146,6 @@
               <span v-if="errors.paymentMethod" class="field-err">{{ errors.paymentMethod }}</span>
             </div>
 
-            <!-- Notes -->
             <div class="form-section">
               <h2 class="section-title">Notas del pedido <span class="opt-tag">Opcional</span></h2>
               <div class="field">
@@ -163,7 +154,6 @@
               </div>
             </div>
 
-            <!-- Submit -->
             <button class="submit-btn" :class="{ 'submitting': isSubmitting }" @click="handleSubmit"
               :disabled="isSubmitting">
               <span v-if="isSubmitting" class="submit-spinner"></span>
@@ -182,12 +172,10 @@
 
           </div>
 
-          <!-- ── Order Summary (sidebar) ── -->
           <div class="summary-col">
             <div class="summary-box">
               <h2 class="summary-title">Tu pedido</h2>
 
-              <!-- Items -->
               <div class="order-items">
                 <div v-for="item in cartStore.items" :key="item.productId" class="order-item">
                   <div class="oi-img-wrap">
@@ -204,7 +192,6 @@
 
               <div class="summary-divider"></div>
 
-              <!-- Totals -->
               <div class="totals">
                 <div class="total-row">
                   <span>Subtotal</span>
@@ -242,12 +229,10 @@ import { formatCOP } from '../../data/store-products.js'
 const router = useRouter()
 const cartStore = useCartStore()
 
-// ── Order placed ─────────────────────────────────────────────────────────────
 const orderPlaced = ref(false)
 const isSubmitting = ref(false)
 const orderId = ref('')
 
-// ── Form ─────────────────────────────────────────────────────────────────────
 const form = reactive({
   firstName: '',
   lastName: '',
@@ -264,7 +249,6 @@ const form = reactive({
 
 const errors = reactive({})
 
-// ── Validation ───────────────────────────────────────────────────────────────
 function validate() {
   Object.keys(errors).forEach(k => delete errors[k])
   let ok = true
@@ -290,12 +274,10 @@ function validate() {
   return ok
 }
 
-// ── Submit ───────────────────────────────────────────────────────────────────
 async function handleSubmit() {
   if (!validate()) return
   isSubmitting.value = true
 
-  // Simulación de envío (1.5 s)
   await new Promise(r => setTimeout(r, 1500))
 
   orderId.value = 'NI-' + Date.now().toString(36).toUpperCase()
@@ -307,7 +289,6 @@ async function handleSubmit() {
 function goHome() { router.push('/') }
 function goShop() { router.push('/tienda') }
 
-// ── Static data ───────────────────────────────────────────────────────────────
 const paymentOptions = [
   { id: 'transferencia', icon: '🏦', name: 'Transferencia bancaria', desc: 'PSE / Consignación / Daviplata' },
   { id: 'efectivo', icon: '💵', name: 'Pago contra entrega', desc: 'Efectivo al recibir el pedido' },
@@ -337,7 +318,6 @@ const departments = [
   padding: 0 32px;
 }
 
-/* header */
 .checkout-header {
   margin-bottom: 28px;
 }
@@ -368,7 +348,6 @@ const departments = [
   letter-spacing: -.6px;
 }
 
-/* steps */
 .steps {
   display: flex;
   align-items: center;
@@ -426,7 +405,6 @@ const departments = [
   min-width: 20px;
 }
 
-/* layout */
 .checkout-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -434,7 +412,6 @@ const departments = [
   align-items: start;
 }
 
-/* form */
 .form-col {
   display: flex;
   flex-direction: column;
@@ -528,7 +505,6 @@ select.field-inp {
   font-weight: 600;
 }
 
-/* payment */
 .payment-options {
   display: flex;
   flex-direction: column;
@@ -639,7 +615,6 @@ select.field-inp {
   color: #0071e3;
 }
 
-/* summary */
 .summary-col {}
 
 .summary-box {
@@ -772,7 +747,6 @@ select.field-inp {
   font-weight: 900;
 }
 
-/* success */
 .success-screen {
   max-width: 520px;
   margin: 60px auto;
@@ -855,7 +829,6 @@ select.field-inp {
   cursor: pointer;
 }
 
-/* responsive */
 @media (max-width: 900px) {
   .checkout-layout {
     grid-template-columns: 1fr;

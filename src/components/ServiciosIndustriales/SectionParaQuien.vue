@@ -136,7 +136,6 @@ const vReveal = {
   overflow: hidden;
 }
 
-/* Layout */
 .layout {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -145,7 +144,6 @@ const vReveal = {
   margin-bottom: 72px;
 }
 
-/* LEFT */
 .kicker {
   display: inline-flex;
   align-items: center;
@@ -229,7 +227,6 @@ const vReveal = {
   box-shadow: 0 8px 24px rgba(0, 113, 227, 0.4);
 }
 
-/* RIGHT VISUAL */
 .right {
   display: flex;
   justify-content: center;
@@ -380,7 +377,6 @@ const vReveal = {
   }
 }
 
-/* STATS */
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -443,7 +439,6 @@ const vReveal = {
   font-weight: 600;
 }
 
-/* Reveal */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
@@ -456,7 +451,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .layout {
     grid-template-columns: 1fr;

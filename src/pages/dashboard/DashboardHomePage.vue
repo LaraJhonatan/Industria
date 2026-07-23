@@ -1,7 +1,6 @@
 <template>
   <q-page class="q-pa-lg">
 
-    <!-- Saludo -->
     <div class="row items-center justify-between q-mb-lg">
       <div>
         <h1 class="page-title q-mb-xs">Bienvenido, {{ empresaNombre }}</h1>
@@ -11,7 +10,6 @@
         @click="router.push('/dashboard/productos/nuevo')" />
     </div>
 
-    <!-- Métricas -->
     <div class="metrics-grid q-mb-lg">
       <div v-for="m in metrics" :key="m.label" class="metric-card">
         <div class="metric-icon-wrap" :style="{ background: m.bg }">
@@ -28,10 +26,8 @@
       </div>
     </div>
 
-    <!-- Accesos rápidos + estado productos -->
     <div class="dash-grid">
 
-      <!-- Accesos rápidos -->
       <div class="dash-card">
         <div class="card-header q-mb-md">
           <span class="card-title">Accesos rápidos</span>
@@ -46,7 +42,6 @@
         </div>
       </div>
 
-      <!-- Productos recientes -->
       <div class="dash-card">
         <div class="card-header q-mb-md row items-center justify-between">
           <span class="card-title">Productos recientes</span>

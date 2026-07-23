@@ -50,7 +50,6 @@
               </q-input>
             </div>
 
-            <!-- Botón para abrir el filtro en móvil -->
             <button v-if="categoryTree.length" class="mobile-filter-toggle" @click="mobileFilterOpen = !mobileFilterOpen">
               <q-icon name="tune" size="16px" />
               Categorías
@@ -58,7 +57,7 @@
             </button>
 
             <div class="products-layout">
-              <!-- ═══ Sidebar de categorías (estilo Amazon) ═══ -->
+
               <aside v-if="categoryTree.length" class="category-sidebar" :class="{ 'category-sidebar--open': mobileFilterOpen }">
                 <div class="sidebar-head">
                   <h3 class="sidebar-title">Categorías</h3>
@@ -102,7 +101,6 @@
 
               <div v-if="mobileFilterOpen" class="sidebar-overlay" @click="mobileFilterOpen = false" />
 
-              <!-- ═══ Grid de productos ═══ -->
               <div class="products-main">
                 <div v-if="loadingProducts" class="loading-products column items-center justify-center">
                   <q-spinner color="blue-6" size="34px" />
@@ -176,7 +174,6 @@ const page = ref(1)
 const total = ref(0)
 const pages = ref(0)
 
-// ── Filtro de categorías (estilo Amazon: categoría > subcategoría) ──
 const selectedCategoryId = ref(null)
 const selectedSubcategoryId = ref(null)
 const expanded = ref({})
@@ -184,19 +181,14 @@ const mobileFilterOpen = ref(false)
 
 let searchTimeout = null
 
-// El ID real viene de:
-// 1. ?eid=GUID  — navegación interna desde CompanyCategoriesPage o CompaniesBySectorPage
-// 2. route.params.empresaId — cuando el param ES un GUID (link directo legacy)
 const sectorSlug = computed(() => route.params.sectorSlug)
 const empresaSlug = computed(() => route.params.empresaSlug)
-
 
 const empresaNombre = computed(() =>
   empresa.value?.profile?.nombreComercial ||
   empresa.value?.profile?.razonSocial ||
   'Empresa ZIFCOR'
 )
-
 
 const companyDescription = computed(() =>
   empresa.value?.profile?.descripcion ||
@@ -205,7 +197,6 @@ const companyDescription = computed(() =>
 
 const isZifcor = computed(() => empresaNombre.value.trim().toUpperCase() === 'ZIFCOR')
 
-// Para ZIFCOR se muestra el título del gremio (no "ZIFCOR"), igual que la tarjeta de vitrina
 const ZIFCOR_TITLE_BY_SECTOR = {
   manufacturero: 'Maquinaria industrial',
   agroindustria: 'Productos agroindustriales',
@@ -220,7 +211,6 @@ const displayName = computed(() => {
   return empresaNombre.value
 })
 
-// Ícono del gremio (mismo criterio que la pantalla de sectores) para ZIFCOR
 const SECTOR_ICONS = {
   manufacturero: 'precision_manufacturing',
   agroindustria: 'agriculture',
@@ -232,9 +222,6 @@ const SECTOR_ICONS = {
 
 const sectorIcon = computed(() => SECTOR_ICONS[sectorSlug.value?.toLowerCase()] || 'category')
 
-// Árbol categoría → subcategorías con conteos: viene del backend, calculado sobre
-// TODO el catálogo filtrado (no solo la página actual), para que el panel no
-// cambie al paginar. Se actualiza cada vez que se recargan los productos.
 const categoryTree = ref([])
 const totalCatalogo = ref(0)
 
@@ -251,7 +238,6 @@ const activeFilterLabel = computed(() => {
   return ''
 })
 
-// El filtrado ya lo hace el backend (respeta la paginación); el front solo muestra lo que llega.
 const filteredProducts = computed(() => productos.value)
 
 function selectAll() {
@@ -283,7 +269,6 @@ function toggleExpand(catId) {
   expanded.value[catId] = !expanded.value[catId]
 }
 
-// Tras cargar la empresa limpia el ?eid de la URL → queda /tienda/empresa/zifcor
 function cleanUrl() {
   if (!empresa.value) return
   history.replaceState(history.state, '', `/tienda/empresa/${empresaSlug.value}`)
@@ -308,7 +293,7 @@ async function loadProductos() {
       limit: 12,
       q: search.value || undefined,
       estado: 'published',
-      sectorSlug: sectorSlug.value, // 👈 aquí ya lo tienes directo
+      sectorSlug: sectorSlug.value,
       categoryId: selectedCategoryId.value || undefined,
       subcategoryId: selectedSubcategoryId.value || undefined,
     })
@@ -326,24 +311,17 @@ async function loadProductos() {
   }
 }
 
-
-
 function onSearch() {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => { page.value = 1; loadProductos() }, 400)
 }
 
-// Navega al producto con URL bonita + IDs en query params ocultos
-// URL visible:  /tienda/empresa/zifcor/producto/nombre-del-producto
-// IDs internos: ?eid=GUID-empresa&pid=GUID-producto  (se limpian al cargar)
 function goToProducto(p) {
   const sector = route.params.sectorSlug
   router.push({
     path: `/tienda/${sector}/${empresaSlug.value}/producto/${p.slug}`,
   })
 }
-
-
 
 watch(
   () => route.query.eid || route.params.empresaId,
@@ -399,7 +377,6 @@ watch(
   margin-bottom: 22px;
 }
 
-/* Acento de marca a la izquierda, en vez de un banner enorme */
 .profile-card::before {
   content: '';
   position: absolute;
@@ -444,7 +421,6 @@ watch(
   color: rgba(11, 18, 32, .25);
 }
 
-/* Logo de ZIFCOR: ícono del gremio sobre degradado de marca */
 .profile-logo--zifcor {
   background: linear-gradient(150deg, #1657c9, #4f9cf9);
   border-color: transparent;
@@ -574,7 +550,6 @@ watch(
   width: 240px;
 }
 
-/* ── Botón para abrir el filtro en móvil ── */
 .mobile-filter-toggle {
   display: none;
   align-items: center;
@@ -603,7 +578,6 @@ watch(
   white-space: nowrap;
 }
 
-/* ── Layout: sidebar + grid ── */
 .products-layout {
   display: grid;
   grid-template-columns: 196px 1fr;
@@ -611,7 +585,6 @@ watch(
   align-items: start;
 }
 
-/* ── Sidebar de categorías (estilo Amazon) — panel liviano, sin caja pesada ── */
 .category-sidebar {
   position: sticky;
   top: 20px;
@@ -1052,7 +1025,6 @@ watch(
     grid-template-columns: 1fr;
   }
 
-  /* La sidebar se convierte en un panel deslizante (drawer) */
   .category-sidebar {
     display: none;
   }

@@ -9,7 +9,6 @@
 
       <h1 class="cart-title">Mi carrito</h1>
 
-      <!-- No logueado como usuario -->
       <div v-if="!cart.esUsuario" class="state-card">
         <div class="state-icon">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -23,12 +22,10 @@
         <button class="btn-primary" @click="router.push('/auth')">Iniciar sesión</button>
       </div>
 
-      <!-- Cargando -->
       <div v-else-if="cart.loading && !cart.loaded" class="loading-wrap">
         <q-spinner color="blue-6" size="40px" />
       </div>
 
-      <!-- Vacío -->
       <div v-else-if="cart.isEmpty" class="state-card">
         <div class="state-icon">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -42,10 +39,9 @@
         <button class="btn-primary" @click="router.push('/tienda')">Ir al catálogo</button>
       </div>
 
-      <!-- Con ítems -->
       <div v-else class="cart-grid">
         <div class="cart-lists">
-          <!-- Pagables en línea -->
+
           <div v-if="cart.pagables.length" class="cart-block">
             <div class="block-head">
               <div class="block-head-icon block-head-icon--pse">
@@ -87,7 +83,6 @@
             </div>
           </div>
 
-          <!-- Cotización -->
           <div v-if="cart.cotizacion.length" class="cart-block">
             <div class="block-head">
               <div class="block-head-icon block-head-icon--quote">
@@ -129,7 +124,6 @@
           <button class="clear-btn" @click="cart.clear()" :disabled="cart.loading">Vaciar carrito</button>
         </div>
 
-        <!-- Resumen -->
         <aside class="cart-summary">
           <h3 class="summary-title">Resumen</h3>
 
@@ -191,7 +185,6 @@ function formatPrecio(valor) {
   return Number(valor).toLocaleString('es-CO')
 }
 
-/** ¿La línea ya alcanzó el stock máximo? */
 function atMax(item) {
   return item.stock != null && item.cantidad >= item.stock
 }
@@ -277,7 +270,6 @@ onMounted(() => {
   letter-spacing: -0.6px;
 }
 
-/* ── Estados ── */
 .state-card {
   background: #fff;
   border: 1px solid rgba(11, 18, 32, .08);
@@ -338,7 +330,6 @@ onMounted(() => {
   min-height: 40vh;
 }
 
-/* ── Layout con ítems ── */
 .cart-grid {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -393,7 +384,6 @@ onMounted(() => {
   color: rgba(11, 18, 32, .5);
 }
 
-/* ── Ítem ── */
 .cart-item {
   display: grid;
   grid-template-columns: 64px 1fr auto auto auto;
@@ -542,7 +532,6 @@ onMounted(() => {
   color: #dc2626;
 }
 
-/* ── Resumen ── */
 .cart-summary {
   background: #fff;
   border: 1px solid rgba(11, 18, 32, .08);

@@ -48,7 +48,6 @@
       </div>
     </section>
 
-    <!-- ══ CONFIANZA ═════════════════════════════════════════ -->
     <section class="trust-section">
       <div class="bs-wrap trust-grid">
         <div class="trust-item">
@@ -104,7 +103,6 @@
       </div>
     </section>
 
-    <!-- ══ PRODUCTOS DESTACADOS ══════════════════════════════ -->
     <section v-if="destacados.length > 0" class="destacados-section">
       <div class="bs-wrap">
         <div class="section-head">
@@ -156,7 +154,6 @@
       </div>
     </section>
 
-    <!-- ══ SERVICIOS DESTACADOS ══════════════════════════════ -->
     <section v-if="serviciosDestacados.length > 0" class="destacados-section">
       <div class="bs-wrap">
         <div class="section-head">
@@ -202,7 +199,6 @@
       </div>
     </section>
 
-    <!-- ══ SECTORES ══════════════════════════════════════════ -->
     <section class="catalog-section">
       <div class="bs-wrap">
         <div class="section-head section-head--sectors">
@@ -295,15 +291,12 @@ function formatPrecio(valor) {
   return Number(valor).toLocaleString('es-CO')
 }
 
-// ── Marquee continuo (productos / servicios destacados)
-// Sólo se anima si hay suficientes tarjetas para llenar el ancho; si no, quedan estáticas centradas.
-const MARQUEE_MIN = 5          // a partir de cuántas tarjetas conviene el desplazamiento
-const SECONDS_PER_CARD = 5.5   // ritmo: lento y fluido
+const MARQUEE_MIN = 5
+const SECONDS_PER_CARD = 5.5
 
 const marqueeProductos = computed(() => destacados.value.length >= MARQUEE_MIN)
 const marqueeServicios = computed(() => serviciosDestacados.value.length >= MARQUEE_MIN)
 
-// Se duplica la lista para que el bucle sea perfecto (translateX -50%)
 const prodMarqueeItems = computed(() =>
   marqueeProductos.value ? [...destacados.value, ...destacados.value] : destacados.value,
 )
@@ -314,7 +307,6 @@ const svcMarqueeItems = computed(() =>
 const prodMarqueeDuration = computed(() => `${destacados.value.length * SECONDS_PER_CARD}s`)
 const svcMarqueeDuration = computed(() => `${serviciosDestacados.value.length * SECONDS_PER_CARD}s`)
 
-// ── Fetch con reintento — evita que la sección quede vacía por un timeout puntual del backend
 async function fetchWithRetry(fn, retries = 2, delayMs = 1500) {
   for (let i = 0; i <= retries; i++) {
     try {
@@ -344,7 +336,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* ══ HERO ════════════════════════════════════════════════════ */
+
 .store-hero {
   position: relative;
   display: flex;
@@ -580,7 +572,6 @@ onMounted(async () => {
   font-size: 14px;
 }
 
-/* ══ CONFIANZA ═══════════════════════════════════════════════ */
 .trust-section {
   background: #fff;
   border-bottom: 1px solid rgba(15, 23, 42, .07);
@@ -637,7 +628,6 @@ onMounted(async () => {
   }
 }
 
-/* ══ DESTACADOS ══════════════════════════════════════════════ */
 .destacados-section {
   background: #fff;
   padding: 24px 0 20px;
@@ -694,7 +684,6 @@ onMounted(async () => {
   opacity: .75;
 }
 
-/* Marquee continuo (desplazamiento fluido y lento) */
 .marquee {
   position: relative;
   overflow: hidden;
@@ -731,7 +720,6 @@ onMounted(async () => {
   }
 }
 
-/* Pocas tarjetas: sin animación, centradas */
 .marquee--static {
   -webkit-mask-image: none;
   mask-image: none;
@@ -749,7 +737,6 @@ onMounted(async () => {
   }
 }
 
-/* Tarjeta producto */
 .prod-card {
   flex-shrink: 0;
   width: 160px;
@@ -852,13 +839,11 @@ onMounted(async () => {
   width: 190px;
 }
 
-/* ══ SECTORES ════════════════════════════════════════════════ */
 .catalog-section {
   background: #fafbfc;
   padding: 28px 0 72px;
 }
 
-/* Grid de sectores */
 .sectors-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

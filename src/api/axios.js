@@ -8,21 +8,17 @@ const api = axios.create({
   },
 })
 
-// Interceptor request — agrega token JWT si existe
 api.interceptors.request.use((config) => {
   const sesion = localStorage.getItem('ZIFCOR_sesion')
   if (sesion) {
     try {
       const { accessToken } = JSON.parse(sesion)
       if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
-    } catch {
-      // Si el JSON es inválido, simplemente no se agrega el token
-    }
+    } catch { void 0 }
   }
   return config
 })
 
-// Interceptor response — manejo global de errores
 api.interceptors.response.use(
   (response) => response,
   (error) => {

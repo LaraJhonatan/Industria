@@ -1,13 +1,13 @@
 <template>
   <q-page class="page">
     <div class="bs-wrap">
-      <!-- Breadcrumb -->
+
       <div class="breadcrumb" v-reveal>
         <q-btn flat dense icon="arrow_back" label="Volver al catálogo" @click="goBack" class="back-btn" />
       </div>
 
       <div class="product-layout">
-        <!-- Galería -->
+
         <div class="gallery-section" v-reveal data-delay="0">
           <div class="gallery-grid">
             <div class="thumbnails" aria-label="Miniaturas">
@@ -24,7 +24,6 @@
           </div>
         </div>
 
-        <!-- Información -->
         <div class="info-section" v-reveal data-delay="100">
           <h1 class="product-name">{{ product.name }}</h1>
 
@@ -106,7 +105,6 @@
         </div>
       </div>
 
-      <!-- Tabs -->
       <div class="tabs-section" v-reveal data-delay="200">
         <q-tabs v-model="activeTab" class="product-tabs" align="left" dense>
           <q-tab name="specs" label="Especificaciones técnicas" />
@@ -172,7 +170,6 @@
         </q-tab-panels>
       </div>
 
-      <!-- Relacionados -->
       <div class="related-section" v-reveal data-delay="300">
         <h2 class="related-title">Productos relacionados</h2>
         <div class="related-grid">
@@ -360,7 +357,6 @@ const vReveal = {
   padding: 96px 0 72px;
 }
 
-/* Breadcrumb */
 .breadcrumb {
   margin-bottom: 28px;
 }
@@ -370,7 +366,6 @@ const vReveal = {
   font-weight: 900;
 }
 
-/* Layout */
 .product-layout {
   display: grid;
   grid-template-columns: minmax(420px, 560px) minmax(0, 1fr);
@@ -384,7 +379,6 @@ const vReveal = {
   min-width: 0;
 }
 
-/* Gallery grid */
 .gallery-grid {
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
@@ -430,7 +424,6 @@ const vReveal = {
   display: block;
 }
 
-/* Main image: clave para que "llene" bien */
 .main-image {
   position: relative;
   border-radius: 18px;
@@ -461,7 +454,6 @@ const vReveal = {
   box-shadow: 0 10px 24px rgba(0, 113, 227, 0.25);
 }
 
-/* Info */
 .info-section {
   display: flex;
   flex-direction: column;
@@ -647,7 +639,6 @@ const vReveal = {
   color: rgba(27, 27, 27, 0.70);
 }
 
-/* Tabs */
 .tabs-section {
   margin-bottom: 56px;
 }
@@ -749,7 +740,6 @@ const vReveal = {
   color: rgba(27, 27, 27, 0.72);
 }
 
-/* Related */
 .related-section {
   padding-top: 56px;
   border-top: 2px solid rgba(27, 27, 27, 0.06);
@@ -807,7 +797,6 @@ const vReveal = {
   color: #0071e3;
 }
 
-/* Reveal */
 .reveal {
   opacity: 0;
   transform: translateY(26px);
@@ -819,7 +808,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .product-layout {
     grid-template-columns: 1fr;

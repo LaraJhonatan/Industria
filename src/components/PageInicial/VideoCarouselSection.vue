@@ -239,7 +239,6 @@ onMounted(() => {
   transition: transform 160ms, box-shadow 160ms, background 160ms, border-color 160ms;
 }
 
-/* ── BOTÓN PRIMARIO (azul) ────────────────────────────────────────────────*/
 .cta-primary {
   background: var(--blue);
   color: #fff;
@@ -252,7 +251,6 @@ onMounted(() => {
   box-shadow: 0 10px 28px rgba(0, 113, 227, .38);
 }
 
-/* ── BOTÓN SECUNDARIO (negro) ─────────────────────────────────────────────*/
 .cta-secondary {
   background: #0b1220;
   color: #fff;
@@ -282,7 +280,6 @@ onMounted(() => {
   color: #fff;
 }
 
-/* ── ícono secundario sobre negro ─────────────────────────────────────────*/
 .cta-icon-wrap--secondary {
   background: rgba(255, 255, 255, .10);
   color: #fff;
@@ -320,7 +317,6 @@ onMounted(() => {
   opacity: .85;
 }
 
-/* ── BUSCADOR ─────────────────────────────────────────────────────────────*/
 .search-block {
   width: 100%;
   max-width: 760px;
@@ -426,7 +422,6 @@ onMounted(() => {
   box-shadow: 0 4px 14px rgba(0, 113, 227, .32);
 }
 
-/* ── VIDEO ────────────────────────────────────────────────────────────────*/
 .video-block {
   flex: 1;
   width: 100%;
@@ -462,7 +457,6 @@ onMounted(() => {
   transform: scale(1.06);
 }
 
-/* ── CARRUSEL ─────────────────────────────────────────────────────────────*/
 .carousel-wrap {
   width: 100%;
   opacity: 0;

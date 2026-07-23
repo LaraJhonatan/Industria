@@ -2,7 +2,7 @@
   <section id="que-hacemos" class="sec" aria-label="Qué hacemos">
     <div class="bs-wrap">
       <div class="layout">
-        <!-- LEFT CONTENT -->
+
         <div class="left">
           <div class="kicker" v-reveal data-delay="0">QUÉ HACEMOS</div>
 
@@ -34,7 +34,6 @@
           </a>
         </div>
 
-        <!-- RIGHT VISUAL -->
         <div class="right" v-reveal data-delay="80" aria-hidden="true">
           <div class="img-wrap">
             <div class="industrial-visual">
@@ -79,7 +78,6 @@
         </div>
       </div>
 
-      <!-- STATS ROW -->
       <div class="stats" v-reveal data-delay="0">
         <div class="stat" v-for="(s, i) in stats" :key="i">
           <div class="stat-num">

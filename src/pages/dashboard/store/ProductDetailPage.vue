@@ -24,10 +24,8 @@
 
     <div v-else-if="product" class="detail-layout">
 
-      <!-- Columna izquierda -->
       <div class="detail-main">
 
-        <!-- Galería -->
         <q-card flat bordered class="detail-card q-mb-md">
           <q-card-section>
             <div class="section-title q-mb-md">Imágenes</div>
@@ -47,7 +45,6 @@
           </q-card-section>
         </q-card>
 
-        <!-- Descripción -->
         <q-card flat bordered class="detail-card q-mb-md">
           <q-card-section>
             <div class="section-title q-mb-sm">Descripción</div>
@@ -55,7 +52,6 @@
           </q-card-section>
         </q-card>
 
-        <!-- Atributos -->
         <q-card flat bordered class="detail-card q-mb-md" v-if="product.atributos?.length">
           <q-card-section>
             <div class="section-title q-mb-md">Atributos</div>
@@ -68,7 +64,6 @@
           </q-card-section>
         </q-card>
 
-        <!-- Variantes -->
         <q-card flat bordered class="detail-card" v-if="product.variantes?.length">
           <q-card-section>
             <div class="section-title q-mb-md">Variantes ({{ product.variantes.length }})</div>
@@ -99,7 +94,6 @@
 
       </div>
 
-      <!-- Columna derecha -->
       <div class="detail-sidebar">
 
         <q-card flat bordered class="detail-card q-mb-md">

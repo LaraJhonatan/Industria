@@ -3,7 +3,6 @@
     <section id="formulario-proyectos" class="projects" aria-label="Formulario de proyectos">
       <div class="bs-wrap">
 
-        <!-- TOP -->
         <div class="top" :class="{ ready }">
           <div class="kicker">FORMULARIO DE PROYECTOS</div>
           <div class="headlineRow">
@@ -18,10 +17,8 @@
           </p>
         </div>
 
-        <!-- FORM -->
         <q-form ref="formRef" class="formWrap" @submit.prevent="onSubmit" :class="{ ready }">
 
-          <!-- Fila A: Servicio + Empresa -->
           <div class="card">
             <div class="row-head">
               <span class="step">01</span>
@@ -50,7 +47,6 @@
             </div>
           </div>
 
-          <!-- Fila B: Contacto -->
           <div class="card">
             <div class="row-head">
               <span class="step">02</span>
@@ -83,7 +79,6 @@
             </div>
           </div>
 
-          <!-- Fila C: Proyecto + Ejecución -->
           <div class="card">
             <div class="row-head">
               <span class="step">03</span>
@@ -128,7 +123,6 @@
             </div>
           </div>
 
-          <!-- Fila D: Adjuntos + Submit -->
           <div class="card">
             <div class="row-head">
               <span class="step">04</span>
@@ -274,7 +268,6 @@ onMounted(() => { requestAnimationFrame(() => { ready.value = true }) })
   color: #1b1b1b;
 }
 
-/* ── TOP ──────────────────────────────── */
 .top,
 .formWrap {
   opacity: 0;
@@ -349,7 +342,6 @@ onMounted(() => { requestAnimationFrame(() => { ready.value = true }) })
   flex-shrink: 0;
 }
 
-/* ── FORM ─────────────────────────────── */
 .formWrap {
   margin-top: 36px;
   display: grid;
@@ -449,7 +441,6 @@ onMounted(() => { requestAnimationFrame(() => { ready.value = true }) })
   margin-top: 10px;
 }
 
-/* Footer row inside last card */
 .footer-row {
   display: flex;
   align-items: center;
@@ -489,7 +480,6 @@ onMounted(() => { requestAnimationFrame(() => { ready.value = true }) })
   flex-shrink: 0;
 }
 
-/* ── Quasar overrides ────────────────── */
 .inp :deep(.q-field__control),
 .ta :deep(.q-field__control),
 .file:deep(.q-field__control) {
@@ -542,7 +532,6 @@ onMounted(() => { requestAnimationFrame(() => { ready.value = true }) })
   color: #1b1b1b !important;
 }
 
-/* ── Responsive ──────────────────────── */
 @media (max-width: 1024px) {
   .grid4 {
     grid-template-columns: repeat(2, 1fr);

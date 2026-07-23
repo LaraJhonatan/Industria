@@ -2,7 +2,6 @@
   <section class="store-section">
     <div class="bs-wrap">
 
-      <!-- SKELETON -->
       <template v-if="isLoading">
         <div class="sk-breadcrumb">
           <div class="sk sk-bc-a" />
@@ -34,10 +33,8 @@
         <div class="sk sk-cta" />
       </template>
 
-      <!-- CONTENIDO REAL -->
       <template v-else-if="category">
 
-        <!-- Breadcrumb -->
         <nav class="breadcrumb">
           <button class="bc-link" @click="router.push('/tienda')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -49,7 +46,6 @@
           <span class="bc-current" :style="{ color: category.accentColor }">{{ category.title }}</span>
         </nav>
 
-        <!-- Hero banner -->
         <div class="hero-banner" :style="{ backgroundImage: `url(${category.heroImg})` }">
           <div class="hero-overlay" />
           <div class="hero-content">
@@ -59,7 +55,6 @@
           </div>
         </div>
 
-        <!-- Subcategorías — clic navega a nueva página -->
         <div class="subcat-section">
           <div class="subcat-grid">
             <div v-for="sub in category.subcategories" :key="sub.id" class="subcat-card"
@@ -110,7 +105,7 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
 </script>
 
 <style scoped>
-/* ── Shimmer ── */
+
 @keyframes shimmer {
   0% {
     background-position: -700px 0
@@ -254,7 +249,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   margin-bottom: 32px;
 }
 
-/* ── Page ── */
 .store-section {
   background: #fafbfc;
   padding: 40px 0 80px;
@@ -267,7 +261,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   padding: 0 32px;
 }
 
-/* breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -302,7 +295,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   font-weight: 700;
 }
 
-/* hero */
 .hero-banner {
   position: relative;
   width: 100%;
@@ -446,7 +438,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   font-weight: 600;
 }
 
-/* header row */
 .store-header-row {
   display: flex;
   align-items: flex-start;
@@ -480,7 +471,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   white-space: nowrap;
 }
 
-/* products grid — MÁS GRANDES */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -503,7 +493,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   box-shadow: 0 20px 48px rgba(0, 0, 0, .11);
 }
 
-/* badges */
 .card-badges {
   position: absolute;
   top: 14px;
@@ -547,7 +536,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   width: fit-content;
 }
 
-/* image — MÁS ALTO */
 .card-img-wrap {
   position: relative;
   width: 100%;
@@ -590,7 +578,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   bottom: 0;
 }
 
-/* body */
 .card-body {
   padding: 16px 20px 22px;
   display: flex;
@@ -671,7 +658,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   color: #1aab5c;
 }
 
-/* cta */
 .cta-banner {
   display: flex;
   align-items: center;
@@ -722,7 +708,6 @@ const category = computed(() => STORE_CATEGORIES.find(c => c.id === route.params
   font-size: 15px;
 }
 
-/* responsive */
 @media (max-width: 768px) {
   .bs-wrap {
     padding: 0 16px;

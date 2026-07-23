@@ -2,7 +2,6 @@
   <section id="servicios-especializados" class="sec" aria-label="Servicios especializados">
     <div class="bs-wrap">
 
-      <!-- HEADER -->
       <div class="header">
         <div class="kicker" v-reveal data-delay="0">SERVICIOS ESPECIALIZADOS</div>
 
@@ -15,7 +14,6 @@
         </p>
       </div>
 
-      <!-- CARDS GRID — 12 tarjetas, 4 por fila -->
       <div class="grid" v-reveal data-delay="0">
         <article v-for="(srv, i) in services" :key="srv.title" class="card" :class="{ featured: srv.featured }"
           :style="{ '--delay': `${i * 40}ms` }">
@@ -38,14 +36,12 @@
             </li>
           </ul>
 
-          <!-- <button class="card-btn" @click="goToTienda(srv.title)"> -->
           <button class="card-btn">
             Cotizar servicio
           </button>
         </article>
       </div>
 
-      <!-- CTA bottom -->
       <div class="bottom-cta" v-reveal data-delay="0">
         <span>¿Necesitas varios servicios combinados?</span>
         <button class="btn-full" @click="router.push('/tienda')">
@@ -67,31 +63,6 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-/* ── Mapa título → id de ruta ────────────────────────────── */
-// const SERVICE_IDS = {
-//   'Corte láser y manufactura metálica': 'corte-laser',
-//   'Diseño de piezas': 'diseno-piezas',
-//   'Diseño industrial': 'diseno-industrial',
-//   'CNC mecanizado': 'cnc',
-//   'Probetas': 'probetas',
-//   'Manejo de fibra de carbono': 'fibra-carbono',
-//   'Determinación de masa lineal': 'masa-lineal',
-//   'Doblado': 'doblado',
-//   'Tracción': 'traccion',
-//   'Dimensional': 'dimensional',
-//   'Dureza': 'dureza',
-//   'Ensayo especializado': 'ensayo-especializado',
-// }
-
-/* ── Navega a la tienda del servicio correspondiente ─────── */
-// function goToTienda(serviceTitle) {
-//   const id = SERVICE_IDS[serviceTitle]
-//   if (id) {
-//     router.push(`/tienda/${id}`)
-//   }
-// }
-
-/* ── iconos ───────────────────────────────────────────────── */
 const iconCorte = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`
 const iconDis = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>`
 const iconInd = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`
@@ -105,9 +76,8 @@ const iconDim = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" str
 const iconDur = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
 const iconEns = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>`
 
-/* ── 12 servicios ─────────────────────────────────────────── */
 const services = [
-  /* FILA 1 */
+
   {
     icon: iconCorte,
     title: 'Corte láser y manufactura metálica',
@@ -136,7 +106,7 @@ const services = [
     features: ['Tolerancias ±0.01 mm', 'Metales y plásticos técnicos', 'Series cortas y largas'],
     featured: false,
   },
-  /* FILA 2 */
+
   {
     icon: iconProbeta,
     title: 'Probetas',
@@ -165,7 +135,7 @@ const services = [
     features: ['Normas ASTM E290', 'Ángulos configurables', 'Criterio pasa/no pasa'],
     featured: false,
   },
-  /* FILA 3 */
+
   {
     icon: iconTrac,
     title: 'Tracción',
@@ -196,7 +166,6 @@ const services = [
   },
 ]
 
-/* ── Directiva reveal ────────────────────────────────────── */
 const vReveal = {
   mounted(el) {
     el.classList.add('reveal')
@@ -223,7 +192,6 @@ const vReveal = {
   padding: 0 24px;
 }
 
-/* ── Section ─────────────────────────────── */
 .sec {
   background: #fff;
   padding: 100px 0 80px;
@@ -232,7 +200,6 @@ const vReveal = {
   overflow: hidden;
 }
 
-/* ── Header ──────────────────────────────── */
 .header {
   text-align: center;
   margin-bottom: 56px;
@@ -273,7 +240,6 @@ const vReveal = {
   line-height: 1.6;
 }
 
-/* ── Grid — 4 columnas × 3 filas ─────────── */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -281,7 +247,6 @@ const vReveal = {
   margin-bottom: 48px;
 }
 
-/* ── Card ────────────────────────────────── */
 .card {
   position: relative;
   border-radius: 18px;
@@ -312,7 +277,6 @@ const vReveal = {
   box-shadow: 0 20px 50px rgba(0, 113, 227, 0.22);
 }
 
-/* ── Ribbon ──────────────────────────────── */
 .ribbon {
   position: absolute;
   top: -1px;
@@ -328,7 +292,6 @@ const vReveal = {
   white-space: nowrap;
 }
 
-/* ── Icon ────────────────────────────────── */
 .card-icon {
   width: 52px;
   height: 52px;
@@ -352,7 +315,6 @@ const vReveal = {
   display: block;
 }
 
-/* ── Content ─────────────────────────────── */
 .card-title {
   font-size: 15px;
   font-weight: 900;
@@ -402,7 +364,6 @@ const vReveal = {
   filter: drop-shadow(0 0 3px rgba(253, 218, 36, 0.5));
 }
 
-/* ── Buttons ─────────────────────────────── */
 .card-btn {
   display: block;
   width: 100%;
@@ -438,7 +399,6 @@ const vReveal = {
   box-shadow: 0 6px 20px rgba(0, 113, 227, 0.4);
 }
 
-/* ── Bottom CTA ──────────────────────────── */
 .bottom-cta {
   display: flex;
   align-items: center;
@@ -481,7 +441,6 @@ const vReveal = {
   box-shadow: 0 8px 24px rgba(253, 218, 36, 0.4);
 }
 
-/* ── Reveal ──────────────────────────────── */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -494,7 +453,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* ── Responsive ──────────────────────────── */
 @media (max-width: 1100px) {
   .grid {
     grid-template-columns: repeat(3, 1fr);

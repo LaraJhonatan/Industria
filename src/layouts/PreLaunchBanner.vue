@@ -1,7 +1,7 @@
 <template>
   <div class="plb-wrap">
     <div class="plb-inner">
-      <!-- Left: icon + text -->
+
       <div class="plb-left">
         <span class="plb-rocket" aria-hidden="true">🚀</span>
         <div class="plb-text">
@@ -11,7 +11,6 @@
         </div>
       </div>
 
-      <!-- Center: countdown -->
       <div class="plb-countdown" role="timer" aria-live="polite" aria-label="Tiempo hasta el lanzamiento">
         <div class="plb-unit">
           <span class="plb-num">{{ pad(timeLeft.months) }}</span>
@@ -46,33 +45,23 @@
 <script setup>
 import { reactive, onMounted, onBeforeUnmount } from 'vue'
 
-// ─── TARGET DATE ───────────────────────────────────────────────────────────────
-// 6 months from May 22 2026 12:00 PM (local)
 const TARGET = new Date('2026-11-20T12:00:00')
 
-// ─── STATE ─────────────────────────────────────────────────────────────────────
 const timeLeft = reactive({ months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 })
 let ticker = null
 
-// ─── HELPERS ───────────────────────────────────────────────────────────────────
 function pad(n) {
   return String(Math.max(0, n)).padStart(2, '0')
 }
 
-/**
- * Breaks the remaining milliseconds into months/days/hours/minutes/seconds.
- * "Months" = whole calendar months remaining; remainder goes into days.
- */
 function calcTimeLeft() {
   const now = new Date()
   if (now >= TARGET) {
     return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 }
   }
 
-  // Whole months
   let months = (TARGET.getFullYear() - now.getFullYear()) * 12 + (TARGET.getMonth() - now.getMonth())
 
-  // Remainder: date in same month as target
   const afterMonths = new Date(now)
   afterMonths.setMonth(afterMonths.getMonth() + months)
   if (afterMonths > TARGET) {
@@ -99,7 +88,6 @@ function tick() {
   timeLeft.seconds = t.seconds
 }
 
-// ─── LIFECYCLE ─────────────────────────────────────────────────────────────────
 onMounted(() => {
   tick()
   ticker = setInterval(tick, 1000)
@@ -111,17 +99,16 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* ── Wrapper ──────────────────────────────────────────────────────────────── */
+
 .plb-wrap {
   width: 100%;
   background: linear-gradient(100deg, #1648d4 0%, #0071e3 55%, #1a8fff 100%);
   position: relative;
   overflow: hidden;
   z-index: 9998;
-  /* just below the q-header which uses 9999 */
+
 }
 
-/* subtle shimmer strip */
 .plb-wrap::before {
   content: '';
   position: absolute;
@@ -134,7 +121,6 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
-/* ── Inner row ────────────────────────────────────────────────────────────── */
 .plb-inner {
   position: relative;
   max-width: 1440px;
@@ -145,7 +131,6 @@ onBeforeUnmount(() => {
   gap: 24px;
 }
 
-/* ── Left block ───────────────────────────────────────────────────────────── */
 .plb-left {
   display: flex;
   align-items: center;
@@ -190,7 +175,6 @@ onBeforeUnmount(() => {
   line-height: 1.3;
 }
 
-/* ── Countdown ────────────────────────────────────────────────────────────── */
 .plb-countdown {
   display: flex;
   align-items: center;
@@ -213,7 +197,7 @@ onBeforeUnmount(() => {
   letter-spacing: -0.5px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  /* small card behind each number */
+
   background: rgba(0, 0, 0, 0.18);
   border-radius: 6px;
   padding: 3px 8px;
@@ -235,12 +219,10 @@ onBeforeUnmount(() => {
   font-weight: 900;
   color: rgba(255, 255, 255, 0.45);
   margin-bottom: 10px;
-  /* align with numbers, not labels */
+
   flex-shrink: 0;
 }
 
-
-/* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 960px) {
   .plb-inner {
     flex-wrap: wrap;

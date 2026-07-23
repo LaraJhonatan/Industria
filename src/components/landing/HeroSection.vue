@@ -6,7 +6,7 @@
 
     <div class="bs-wrap">
       <div class="grid" :class="{ ready }">
-        <!-- IZQUIERDA -->
+
         <div class="left">
           <div class="pill">
             Servicios industriales integrales • Importación • Ingeniería a medida
@@ -48,7 +48,6 @@
           </ul>
         </div>
 
-        <!-- DERECHA -->
         <div class="right" aria-hidden="true">
           <div class="mock">
             <div class="mockTop">
@@ -334,7 +333,6 @@ onMounted(() => {
   margin: 2px 0;
 }
 
-/* Mock derecha */
 .right {
   position: relative;
   display: grid;

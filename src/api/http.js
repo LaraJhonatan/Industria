@@ -11,16 +11,14 @@ http.interceptors.request.use((config) => {
     try {
       const { accessToken } = JSON.parse(sesion)
       if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
-    } catch {
-      // ignore malformed session data
-    }
+    } catch { void 0 }
   }
   return config
 })
 
 http.interceptors.response.use(
   (res) => {
-    // console.log('HTTP response url:', res.config.url, 'data:', res.data)
+
     return res
   },
   (err) => {

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useRouterStore = defineStore('router', () => {
-  // view: 'catalog' | 'service' | 'product'
+
   const view = ref('catalog')
   const serviceId = ref(null)
   const productId = ref(null)

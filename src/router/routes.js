@@ -4,7 +4,6 @@ const dashboardGuard = () => {
     const sesion = JSON.parse(raw || 'null')
     if (!sesion?.accessToken) return '/auth'
   } catch (e) {
-    console.log('GUARD ERROR:', e)
     return '/auth'
   }
 }
@@ -34,34 +33,27 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/tienda/CompanyCategoriesPage.vue') },
 
-      // Acceso directo por slug de producto (desde destacados, emails, redes sociales, etc.)
       {
         path: 'producto/:productoSlug',
         component: () => import('pages/tienda/ProductPublicDetailPage.vue'),
       },
 
-      // Empresa por slug (URL amigable)
       {
         path: '/tienda/:sectorSlug/:empresaSlug',
         component: () => import('pages/tienda/CompanyStorePage.vue'),
       },
 
-      // Producto por slug completo (URL jerárquica SEO)
       {
         path: '/tienda/:sectorSlug/:empresaSlug/producto/:productoSlug',
         component: () => import('pages/tienda/ProductPublicDetailPage.vue'),
       },
 
-      // Buscador global de productos
       { path: 'buscar', component: () => import('src/components/tienda/TiendaSearchPage.vue') },
 
-      // Carrito del usuario
       { path: 'carrito', component: () => import('pages/tienda/CartPage.vue') },
 
-      // Checkout: datos de envío + pago
       { path: 'checkout', component: () => import('pages/tienda/CheckoutPage.vue') },
 
-      // Empresas por sector
       { path: ':sectorSlug', component: () => import('pages/tienda/CompaniesBySectorPage.vue') },
     ],
   },

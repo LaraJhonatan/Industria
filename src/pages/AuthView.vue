@@ -1,7 +1,6 @@
 <template>
   <div class="auth-page">
 
-    <!-- HERO -->
     <div class="auth-hero">
       <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&h=1400&fit=crop&q=85"
         class="hero-bg" alt="" />
@@ -102,11 +101,9 @@
       </div>
     </div>
 
-    <!-- PANEL DERECHO -->
     <div class="auth-panel">
       <div class="auth-box">
 
-        <!-- CABECERA -->
         <div class="panel-head">
           <div class="panel-brand">
             <router-link to="/"><img src="/IconoZ.png" alt="ZIFCOR" class="panel-logo" /></router-link>
@@ -115,10 +112,8 @@
           </div>
         </div>
 
-        <!-- CONTENIDO DINÁMICO -->
         <div class="panel-body">
 
-          <!-- ══ SELECTOR DE TIPO ══ -->
           <template v-if="vista === 'selector'">
             <div class="fh fh--center">
               <div class="selector-ico">
@@ -204,7 +199,6 @@
             </div>
           </template>
 
-          <!-- ══ USUARIO: LOGIN / REGISTRO CON GMAIL ══ -->
           <template v-if="vista === 'usuario'">
             <button class="back-btn" @click="vista = 'selector'">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -294,7 +288,6 @@
             </button>
           </template>
 
-          <!-- ══ EMPRESA: SELECTOR LOGIN / REGISTRO ══ -->
           <template v-if="vista === 'empresa-selector'">
             <button class="back-btn" @click="vista = 'selector'">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -324,7 +317,6 @@
               </button>
             </div>
 
-            <!-- LOGIN EMPRESA -->
             <div v-if="modeEmpresa === 'login'" style="margin-top: 20px">
               <div v-if="loginErr" class="alert alert--err">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -383,7 +375,6 @@
               </p>
             </div>
 
-            <!-- REGISTRO EMPRESA -->
             <div v-if="modeEmpresa === 'register'" style="margin-top: 20px">
               <div class="stepper">
                 <div v-for="(s, i) in steps" :key="i" class="st"
@@ -400,7 +391,6 @@
                 </div>
               </div>
 
-              <!-- PASO 1 -->
               <div v-if="reg.step === 1">
                 <div class="section-tag">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -447,7 +437,6 @@
                 </p>
               </div>
 
-              <!-- PASO 2 -->
               <div v-if="reg.step === 2">
                 <div class="fh">
                   <h2 class="fh-title">Empresa encontrada</h2>
@@ -570,7 +559,6 @@
                 </div>
               </div>
 
-              <!-- PASO 3 -->
               <div v-if="reg.step === 3">
                 <div class="otp-icon">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -617,7 +605,6 @@
                 <button class="btn-g w-full mt-8" @click="reg.step = 2">← Volver</button>
               </div>
 
-              <!-- PASO 4 -->
               <div v-if="reg.step === 4">
                 <div class="fh">
                   <h2 class="fh-title">Crea tu contraseña</h2>
@@ -726,7 +713,6 @@
                 </button>
               </div>
 
-              <!-- PASO 5: ÉXITO -->
               <div v-if="reg.step === 5" class="success-block">
                 <div class="success-ico">
                   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -779,9 +765,7 @@ api.interceptors.request.use(config => {
     try {
       const { accessToken } = JSON.parse(sesion)
       if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
-    } catch {
-      console.warn('Error parsing session from localStorage')
-    }
+    } catch { void 0 }
   }
   return config
 })
@@ -795,22 +779,17 @@ function getError(err, fallback = 'Ocurrió un error. Intenta de nuevo.') {
   return fallback
 }
 
-// ── Estado de vista
-// 'selector' | 'usuario' | 'empresa-selector'
 const vista = ref('selector')
 const modeEmpresa = ref('login')
 
-// ── Estado login empresa
 const login = reactive({ id: '', pw: '' })
 const loginErr = ref('')
 const loginLoading = ref(false)
 const showLP = ref(false)
 
-// ── Estado usuario (Google)
 const userErr = ref('')
 const userLoading = ref(false)
 
-// ── Estado registro empresa
 const steps = ['Empresa', 'RUT', 'Verificar', 'Contraseña']
 const reg = reactive({
   step: 1, nit: '', nitErr: '', empresa: null, loading: false,
@@ -849,7 +828,6 @@ function switchToRegister() {
   })
 }
 
-// ── Login empresa
 async function doLogin() {
   if (loginLoading.value) return
   loginErr.value = ''
@@ -870,7 +848,6 @@ async function loginConGoogle() {
   window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`
 }
 
-// ── Registro empresa: pasos
 async function consultarNIT() {
   reg.nitErr = ''
   const n = reg.nit.trim().replace(/\D/g, '')
@@ -1027,7 +1004,6 @@ function irAlLogin() {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ══ HERO ════════════════════════════════════════ */
 .auth-hero {
   position: relative;
   overflow: hidden;
@@ -1211,7 +1187,6 @@ function irAlLogin() {
   max-width: 130px;
 }
 
-/* ══ PANEL ═══════════════════════════════════════ */
 .auth-panel {
   background: #eef0f5;
   display: flex;
@@ -1278,7 +1253,6 @@ function irAlLogin() {
   background: #fff;
 }
 
-/* ══ SELECTOR ════════════════════════════════════ */
 .fh--center {
   text-align: center;
   align-items: center;
@@ -1484,7 +1458,6 @@ function irAlLogin() {
   margin-bottom: 6px;
 }
 
-/* ══ BOTÓN VOLVER ════════════════════════════════ */
 .back-btn {
   display: inline-flex;
   align-items: center;
@@ -1505,7 +1478,6 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-/* ══ BADGE TIPO ══════════════════════════════════ */
 .user-badge {
   display: inline-flex;
   align-items: center;
@@ -1526,7 +1498,6 @@ function irAlLogin() {
   color: #16a34a;
 }
 
-/* ══ GOOGLE BTN ══════════════════════════════════ */
 .google-btn {
   display: flex;
   align-items: center;
@@ -1605,7 +1576,6 @@ function irAlLogin() {
   border-color: rgba(22, 163, 74, .36);
 }
 
-/* ══ TABS EMPRESA ════════════════════════════════ */
 .tabs {
   display: flex;
   background: #f1f3f7;
@@ -1640,7 +1610,6 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-/* ══ FORM SHARED ═════════════════════════════════ */
 .fh {
   margin-bottom: 20px;
 }
@@ -1775,7 +1744,6 @@ function irAlLogin() {
   margin-top: 1px;
 }
 
-/* ══ STEPPER ═════════════════════════════════════ */
 .stepper {
   display: flex;
   align-items: center;
@@ -1858,7 +1826,6 @@ function irAlLogin() {
   color: #0071e3;
 }
 
-/* ══ EMPRESA CARD ════════════════════════════════ */
 .empresa-card {
   background: #fff;
   border: 1.5px solid rgba(15, 23, 42, .09);
@@ -1962,7 +1929,6 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-/* ══ DROPZONE ════════════════════════════════════ */
 .dropzone {
   border: 2px dashed rgba(15, 23, 42, .17);
   border-radius: 12px;
@@ -2055,7 +2021,6 @@ function irAlLogin() {
   color: #ef4444;
 }
 
-/* ══ OTP ═════════════════════════════════════════ */
 .otp-icon {
   width: 52px;
   height: 52px;
@@ -2108,7 +2073,6 @@ function irAlLogin() {
   color: rgba(11, 18, 32, .52);
 }
 
-/* ══ PASSWORD STRENGTH ═══════════════════════════ */
 .strength-row {
   display: flex;
   align-items: center;
@@ -2200,7 +2164,6 @@ function irAlLogin() {
   opacity: 1;
 }
 
-/* ══ CHECKBOX ════════════════════════════════════ */
 .checkbox-row {
   display: flex;
   align-items: flex-start;
@@ -2244,7 +2207,6 @@ function irAlLogin() {
   margin-top: 1px;
 }
 
-/* ══ SUCCESS ═════════════════════════════════════ */
 .success-block {
   display: flex;
   flex-direction: column;
@@ -2297,7 +2259,6 @@ function irAlLogin() {
   color: #0b1220;
 }
 
-/* ══ BUTTONS ═════════════════════════════════════ */
 .btn-p {
   display: inline-flex;
   align-items: center;
@@ -2390,7 +2351,6 @@ function irAlLogin() {
   font-weight: 800;
 }
 
-/* ══ SPINNER ═════════════════════════════════════ */
 .spinner {
   width: 16px;
   height: 16px;
@@ -2418,7 +2378,6 @@ function irAlLogin() {
   margin-top: 14px;
 }
 
-/* ══ UTILIDADES ══════════════════════════════════ */
 .mt-8 {
   margin-top: 8px;
 }
@@ -2431,7 +2390,6 @@ function irAlLogin() {
   margin-top: 16px;
 }
 
-/* ══ RESPONSIVE MÓVIL ════════════════════════════ */
 @media (max-width: 900px) {
   .auth-page {
     grid-template-columns: 1fr;

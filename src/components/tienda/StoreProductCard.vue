@@ -2,7 +2,7 @@
 
   <article class="product-card" :style="{ '--color': service.color }" @click="$emit('view')"
     @mouseenter="hovered = true" @mouseleave="hovered = false">
-    <!-- Image -->
+
     <div class="card-image-wrap">
       <img :src="product.images[0]" :alt="product.name" class="card-image" :class="{ zoomed: hovered }"
         loading="lazy" />
@@ -16,7 +16,6 @@
       </transition>
     </div>
 
-    <!-- Body -->
     <div class="card-body">
       <h3 class="product-name">{{ product.name }}</h3>
       <p class="product-desc">{{ product.shortDesc }}</p>
@@ -85,7 +84,6 @@ async function handleAdd() {
   box-shadow: 0 14px 36px color-mix(in srgb, var(--color) 14%, transparent);
 }
 
-/* Image */
 .card-image-wrap {
   position: relative;
   height: 200px;
@@ -130,7 +128,6 @@ async function handleAdd() {
   place-items: center;
 }
 
-/* Body */
 .card-body {
   padding: 18px 18px 20px;
   display: flex;
@@ -209,7 +206,6 @@ async function handleAdd() {
   box-shadow: 0 6px 20px color-mix(in srgb, var(--color) 45%, transparent);
 }
 
-/* Transitions */
 .check-pop-enter-active {
   transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }

@@ -58,7 +58,6 @@
                 </div>
                 <div class="avatar-drop-hr" />
 
-                <!-- Menú usuario Google -->
                 <template v-if="esTipoUsuario">
                   <button class="avatar-drop-item" @click="avatarMenu = false">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -77,7 +76,6 @@
                   </button>
                 </template>
 
-                <!-- Menú empresa -->
                 <template v-else>
                   <button class="avatar-drop-item" @click="goToDashboard">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -249,7 +247,6 @@
       </div>
     </q-footer>
 
-    <!-- ══ FEEDBACK FLOTANTE ═══════════════════════════════ -->
     <q-page-sticky position="bottom-right" :offset="[24, 90]" class="z-fab">
       <div class="fb-wrap">
         <Transition name="fb-pop">
@@ -297,7 +294,6 @@
       </div>
     </q-page-sticky>
 
-    <!-- ══ WHATSAPP ═══════════════════════════════════════ -->
     <q-page-sticky position="bottom-right" :offset="[24, 24]" class="z-fab">
       <a :href="whatsappUrl" target="_blank" rel="noopener noreferrer" class="bs-whatsapp-float">
         <div class="bs-whatsapp-pulse" />
@@ -331,7 +327,6 @@ const feedbackMsg = ref('')
 const feedbackLoading = ref(false)
 const feedbackSent = ref(false)
 
-// ── Tipo de sesión
 const esTipoUsuario = computed(() => authStore.sesion?.usuario?.tipo === 'usuario')
 
 const displayNombre = computed(() => {
@@ -351,7 +346,6 @@ const initials = computed(() => {
   return name.slice(0, 2).toUpperCase()
 })
 
-// ── Feedback
 function toggleFeedback() {
   feedbackOpen.value = !feedbackOpen.value
   if (!feedbackOpen.value) resetFeedback()
@@ -393,7 +387,6 @@ const ZIFCOR_WHATSAPP = '573114799224'
 const whatsappMessage = 'Hola, me gustaría recibir más información sobre Zifcor y sus servicios.'
 const whatsappUrl = computed(() => `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`)
 
-// ── Acciones
 function goToDashboard() { avatarMenu.value = false; drawer.value = false; router.push('/dashboard') }
 function goToProfile() { avatarMenu.value = false; drawer.value = false; router.push('/dashboard/perfil') }
 function doLogout() { avatarMenu.value = false; drawer.value = false; authStore.logout(); router.push('/') }

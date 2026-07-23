@@ -2,15 +2,12 @@
   <section id="para-quien" class="sec" aria-label="Para quién es este servicio">
     <div class="bs-wrap">
 
-      <!-- Globo absolutamente posicionado DENTRO del bs-wrap,
-           detrás del contenido, centrado sobre las cards -->
       <div class="globe-wrap" aria-hidden="true">
         <img :src="mundoImg" alt="" class="world-img" draggable="false" />
       </div>
 
       <div class="layout">
 
-        <!-- COL 1: Texto + controles -->
         <div class="left" v-reveal data-delay="0">
           <div class="kicker">PARA QUIÉN</div>
           <h2 class="title">
@@ -44,7 +41,6 @@
           </div>
         </div>
 
-        <!-- COL 2: Carrusel cards -->
         <div class="center" v-reveal data-delay="100">
           <div class="carousel-wrap">
             <div class="track" :style="{ transform: `translateX(calc(-${current} * (var(--card-w) + var(--gap))))` }">
@@ -136,9 +132,7 @@ const vReveal = {
 </script>
 
 <style scoped>
-/* ══════════════════════════
-   SECTION — 100% ancho
-   ══════════════════════════ */
+
 .sec {
   width: 100%;
   background: #ffffff;
@@ -148,35 +142,26 @@ const vReveal = {
   position: relative;
 }
 
-/* ══════════════════════════
-   WRAP — idéntico a las demás
-   ══════════════════════════ */
 .bs-wrap {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
   position: relative;
-  /* ancla el globo absoluto */
+
 }
 
-/* ══════════════════════════
-   GLOBO — absoluto dentro del
-   bs-wrap, detrás del contenido.
-   Centrado sobre la zona de cards
-   ══════════════════════════ */
 .globe-wrap {
   position: absolute;
-  /* Empieza en el 38% desde la izquierda (inicio de la zona de cards)
-     y va hasta el borde derecho + un poco más */
+
   right: -60px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 0;
-  /* DETRÁS de todo */
+
   pointer-events: none;
   width: 620px;
-  /* grande */
+
   height: 620px;
 }
 
@@ -190,10 +175,6 @@ const vReveal = {
   filter: drop-shadow(0 12px 48px rgba(0, 113, 227, 0.06));
 }
 
-/* ══════════════════════════
-   GRID 2 COLUMNAS
-   texto | cards
-   ══════════════════════════ */
 .layout {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -201,10 +182,9 @@ const vReveal = {
   align-items: center;
   position: relative;
   z-index: 1;
-  /* encima del globo */
+
 }
 
-/* ── LEFT ───────────────── */
 .kicker {
   display: inline-flex;
   padding: 7px 13px;
@@ -291,7 +271,6 @@ const vReveal = {
   background: #0071e3;
 }
 
-/* ── CENTER: Carousel ─────── */
 .center {
   overflow: hidden;
 }
@@ -309,7 +288,6 @@ const vReveal = {
   --gap: 14px;
 }
 
-/* Cards con fondo sólido para tapar el globo detrás */
 .card {
   flex: 0 0 var(--card-w);
   min-width: var(--card-w);
@@ -385,7 +363,6 @@ const vReveal = {
   flex-shrink: 0;
 }
 
-/* ── Reveal ─────────────────── */
 .reveal {
   opacity: 0;
   transform: translateY(22px);
@@ -398,7 +375,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* ── Responsive ─────────────── */
 @media (max-width: 900px) {
   .globe-wrap {
     width: 460px;

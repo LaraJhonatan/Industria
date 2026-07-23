@@ -10,7 +10,6 @@
         @click="router.push('/dashboard/productos/nuevo')" />
     </div>
 
-    <!-- Filtros -->
     <div class="filters-bar q-mb-md row items-center gap-sm">
       <q-input v-model="filters.q" outlined dense clearable placeholder="Buscar por nombre..." style="width:240px"
         @update:model-value="onFilter">
@@ -28,12 +27,10 @@
       <span class="text-caption text-grey-6">{{ productStore.total }} productos</span>
     </div>
 
-    <!-- Loading -->
     <div v-if="productStore.loading" class="column items-center q-py-xl">
       <q-spinner color="blue-6" size="36px" />
     </div>
 
-    <!-- Empty -->
     <div v-else-if="!productStore.products.length" class="empty-state column items-center q-py-xl">
       <div class="empty-icon q-mb-md">
         <q-icon name="inventory_2" size="48px" color="grey-4" />
@@ -44,7 +41,6 @@
         @click="router.push('/dashboard/productos/nuevo')" />
     </div>
 
-    <!-- Tabla -->
     <div v-else class="products-table-wrap">
       <table class="products-table">
         <thead>
@@ -117,7 +113,6 @@
       </div>
     </div>
 
-    <!-- Dialog cambiar estado -->
     <q-dialog v-model="statusDialog">
       <q-card style="width:360px;border-radius:16px">
         <q-card-section>

@@ -2,7 +2,6 @@
   <section id="como-funciona" class="sec" aria-label="Cómo funciona el proceso">
     <div class="bs-wrap">
 
-      <!-- HEADER -->
       <div class="header" v-reveal data-delay="0">
         <div class="kicker">ONBOARDING</div>
         <h2 class="title">Todo listo en tan solo <span class="accent">4 semanas</span></h2>
@@ -10,7 +9,6 @@
           eficiente</p>
       </div>
 
-      <!-- STEPS -->
       <div class="steps" v-reveal data-delay="80">
         <div v-for="(step, i) in steps" :key="i" class="step">
 
@@ -20,7 +18,6 @@
             <div class="step-desc">{{ step.desc }}</div>
           </div>
 
-          <!-- Círculo completo con icono — igual que la imagen -->
           <div class="step-bottom">
             <div class="circle">
               <div class="circle-icon" v-html="step.icon" />
@@ -96,7 +93,6 @@ const vReveal = {
   position: relative;
 }
 
-/* ── Header ─────────────────────── */
 .header {
   margin-bottom: 48px;
 }
@@ -131,9 +127,6 @@ const vReveal = {
   margin: 0;
 }
 
-/* ══════════════════════════════════
-   STEPS — contenedor único bordeado
-   ══════════════════════════════════ */
 .steps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -144,7 +137,6 @@ const vReveal = {
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 }
 
-/* ── Step card ──────────────────── */
 .step {
   display: flex;
   flex-direction: column;
@@ -161,7 +153,6 @@ const vReveal = {
   background: rgba(0, 113, 227, 0.018);
 }
 
-/* ── Top text ───────────────────── */
 .step-top {
   padding: 24px 20px 20px;
   flex: 1;
@@ -177,7 +168,7 @@ const vReveal = {
 
 .step-title {
   display: none;
-  /* el título está en step-label como en la imagen */
+
 }
 
 .step-desc {
@@ -187,11 +178,6 @@ const vReveal = {
   margin-top: 8px;
 }
 
-/* ══════════════════════════════════
-   CÍRCULO — como en la imagen 2
-   Completo, con borde dashed,
-   fondo azul muy suave, icono azul
-   ══════════════════════════════════ */
 .step-bottom {
   display: flex;
   justify-content: center;
@@ -203,9 +189,9 @@ const vReveal = {
   width: 110px;
   height: 110px;
   border-radius: 999px;
-  /* Fondo azul muy suave igual que la imagen */
+
   background: rgba(0, 113, 227, 0.06);
-  /* Borde dashed azul suave */
+
   border: 1.5px dashed rgba(0, 113, 227, 0.25);
   display: flex;
   align-items: center;
@@ -225,7 +211,6 @@ const vReveal = {
   justify-content: center;
 }
 
-/* ── Reveal ─────────────────────── */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
@@ -238,7 +223,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* ── Responsive ─────────────────── */
 @media (max-width: 1024px) {
   .steps {
     grid-template-columns: repeat(2, 1fr);

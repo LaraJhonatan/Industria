@@ -9,18 +9,15 @@
 
       <h1 class="checkout-title">Finalizar compra</h1>
 
-      <!-- No logueado -->
       <div v-if="!cart.esUsuario" class="state-card">
         <h2 class="state-title">Inicia sesión para continuar</h2>
         <button class="btn-primary" @click="router.push('/auth')">Iniciar sesión</button>
       </div>
 
-      <!-- Cargando carrito -->
       <div v-else-if="cart.loading && !cart.loaded" class="loading-wrap">
         <q-spinner color="blue-6" size="40px" />
       </div>
 
-      <!-- Sin nada que pagar -->
       <div v-else-if="!cart.pagables.length" class="state-card">
         <h2 class="state-title">No tienes productos por pagar</h2>
         <p class="state-sub">Agrega productos al carrito antes de continuar.</p>
@@ -28,7 +25,7 @@
       </div>
 
       <div v-else class="checkout-grid">
-        <!-- Formulario de envío -->
+
         <div class="checkout-form">
           <h2 class="form-title">Datos de envío y contacto</h2>
 
@@ -71,7 +68,6 @@
           <p v-if="formError" class="form-error">{{ formError }}</p>
         </div>
 
-        <!-- Resumen -->
         <aside class="checkout-summary">
           <h3 class="summary-title">Resumen del pedido</h3>
 
@@ -150,7 +146,6 @@ function validar() {
   return ''
 }
 
-// Carga el script del widget de Wompi una sola vez (solo se necesita en esta página).
 let wompiScriptPromise = null
 function loadWompiScript() {
   if (window.WidgetCheckout) return Promise.resolve()
@@ -178,8 +173,6 @@ async function onPagar() {
   try {
     await loadWompiScript()
 
-    // El backend recalcula el monto desde el carrito guardado en el servidor;
-    // el front solo manda los datos de envío, nunca precios ni cantidades.
     const { data } = await ordersApi.checkout({
       nombreCompleto: form.nombreCompleto.trim(),
       telefono: form.telefono.trim(),
@@ -214,6 +207,8 @@ async function onPagar() {
       if (status === 'APPROVED') {
         $q.notify({ message: '¡Pago aprobado! Gracias por tu compra.', color: 'green-6', position: 'top', timeout: 3000 })
         router.push('/tienda')
+
+        setTimeout(() => cart.fetch(), 6000)
       } else if (status === 'DECLINED') {
         $q.notify({ message: 'El pago fue rechazado. Intenta con otro medio de pago.', color: 'red-5', position: 'top', timeout: 3200 })
       } else if (status) {
@@ -329,7 +324,6 @@ onMounted(() => {
   align-items: start;
 }
 
-/* ── Formulario ── */
 .checkout-form {
   background: #fff;
   border: 1px solid rgba(11, 18, 32, .08);
@@ -404,7 +398,6 @@ onMounted(() => {
   font-weight: 700;
 }
 
-/* ── Resumen ── */
 .checkout-summary {
   background: #fff;
   border: 1px solid rgba(11, 18, 32, .08);

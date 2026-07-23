@@ -12,45 +12,36 @@
           <span v-if="attr.unidad" class="unit">({{ attr.unidad }})</span>
         </label>
 
-        <!-- text -->
         <q-input v-if="attr.tipo === 'text'" v-model="localValues[attr.clave]" outlined dense :placeholder="attr.nombre"
           :rules="attr.requerido ? [required] : []" @update:model-value="emit('update:values', localValues)" />
 
-        <!-- textarea -->
         <q-input v-else-if="attr.tipo === 'textarea'" v-model="localValues[attr.clave]" outlined dense type="textarea"
           autogrow :placeholder="attr.nombre" :rules="attr.requerido ? [required] : []"
           @update:model-value="emit('update:values', localValues)" />
 
-        <!-- number / unit -->
         <q-input v-else-if="attr.tipo === 'number' || attr.tipo === 'unit'" v-model.number="localValues[attr.clave]"
           outlined dense type="number" :placeholder="attr.nombre" :suffix="attr.unidad || ''"
           :rules="attr.requerido ? [required] : []" @update:model-value="emit('update:values', localValues)" />
 
-        <!-- boolean -->
         <q-toggle v-else-if="attr.tipo === 'boolean'" v-model="localValues[attr.clave]" color="blue-6"
           @update:model-value="emit('update:values', localValues)" />
 
-        <!-- select -->
         <q-select v-else-if="attr.tipo === 'select'" v-model="localValues[attr.clave]" :options="attr.opciones || []"
           option-value="valor" option-label="label" emit-value map-options outlined dense :placeholder="attr.nombre"
           :rules="attr.requerido ? [required] : []" @update:model-value="emit('update:values', localValues)" />
 
-        <!-- multiselect -->
         <q-select v-else-if="attr.tipo === 'multiselect'" v-model="localValues[attr.clave]"
           :options="attr.opciones || []" option-value="valor" option-label="label" emit-value map-options multiple
           use-chips outlined dense :placeholder="attr.nombre"
           @update:model-value="emit('update:values', localValues)" />
 
-        <!-- date -->
         <q-input v-else-if="attr.tipo === 'date'" v-model="localValues[attr.clave]" outlined dense type="date"
           :rules="attr.requerido ? [required] : []" @update:model-value="emit('update:values', localValues)" />
 
-        <!-- json -->
         <q-input v-else-if="attr.tipo === 'json'" v-model="localValues[attr.clave]" outlined dense type="textarea"
           autogrow placeholder='{"clave": "valor"}' :rules="attr.requerido ? [required, validJson] : [validJson]"
           @update:model-value="emit('update:values', localValues)" />
 
-        <!-- fallback -->
         <q-input v-else v-model="localValues[attr.clave]" outlined dense :placeholder="attr.nombre"
           @update:model-value="emit('update:values', localValues)" />
 

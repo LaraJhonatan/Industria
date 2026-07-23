@@ -2,7 +2,6 @@
   <section class="catalog-section" aria-label="Tienda ZIFCOR">
     <div class="bs-wrap">
 
-      <!-- ══ HERO ═══════════════════════════════════════ -->
       <div class="hero" v-reveal>
         <div class="hero-text">
           <span class="kicker">Tienda B2B · ZIFCOR</span>
@@ -27,7 +26,6 @@
         </div>
       </div>
 
-      <!-- ══ SECCIÓN HEAD ═══════════════════════════════ -->
       <div class="section-head" v-reveal>
         <h2 class="section-title">Explora nuestros productos</h2>
         <p class="section-sub">
@@ -36,27 +34,20 @@
         </p>
       </div>
 
-      <!-- ══ GRID DINÁMICO ══════════════════════════════ -->
-      <!--
-        auto-fit + minmax: con 2 cats → 2 col, con 3 → 3 col, con 4 → 2×2, etc.
-        Ajusta min(100%, 540px) si quieres cards más anchas/angostas.
-      -->
       <div class="categories-grid" v-reveal>
         <div v-for="cat in STORE_CATEGORIES" :key="cat.id" class="cat-card" @click="router.push(`/tienda/${cat.id}`)">
-          <!-- Imagen de fondo -->
+
           <div class="cat-img-wrap">
             <img :src="cat.heroImg" :alt="cat.title" class="cat-img" />
             <div class="cat-overlay" :style="{ background: buildOverlay(cat.color) }" />
           </div>
 
-          <!-- Contenido -->
           <div class="cat-body">
             <span class="cat-kicker">{{ cat.kicker }}</span>
 
             <h3 class="cat-name">{{ cat.title }}</h3>
             <p class="cat-desc">{{ cat.description }}</p>
 
-            <!-- Subcategorías — máx 4 + contador de resto -->
             <div class="cat-subs">
               <span v-for="sub in cat.subcategories.slice(0, 4)" :key="sub.id" class="cat-sub-chip">
                 {{ sub.name }}
@@ -66,7 +57,6 @@
               </span>
             </div>
 
-            <!-- Info productos -->
             <div class="cat-meta">
               <span class="cat-prod-count">
                 {{ cat.products.length }} productos
@@ -83,7 +73,6 @@
         </div>
       </div>
 
-      <!-- ══ CTA BANNER ══════════════════════════════════ -->
       <div class="cta-banner" v-reveal>
         <div>
           <p class="cta-title">¿No encuentras lo que necesitas?</p>
@@ -105,17 +94,14 @@ import { STORE_CATEGORIES } from '../../data/store-products.js'
 
 const router = useRouter()
 
-// Total de productos sumando todos los arrays
 const totalProducts = computed(() =>
   STORE_CATEGORIES.reduce((acc, cat) => acc + (cat.products?.length ?? 0), 0)
 )
 
-// Overlay degradado que usa el color base de la categoría
 function buildOverlay(color) {
   return `linear-gradient(160deg, ${hexAlpha(color, 0.88)} 0%, ${hexAlpha(color, 0.35)} 100%)`
 }
 
-// Convierte hex a rgba con opacidad
 function hexAlpha(hex = '#000000', alpha = 1) {
   const h = hex.replace('#', '')
   const r = parseInt(h.substring(0, 2), 16)
@@ -124,7 +110,6 @@ function hexAlpha(hex = '#000000', alpha = 1) {
   return `rgba(${r},${g},${b},${alpha})`
 }
 
-// Reveal directive
 const vReveal = {
   mounted(el) {
     el.classList.add('reveal')
@@ -147,7 +132,7 @@ const vReveal = {
 </script>
 
 <style scoped>
-/* ══ Section ═════════════════════════════════════ */
+
 .catalog-section {
   background: #fafbfc;
   padding: 56px 0 80px;
@@ -160,7 +145,6 @@ const vReveal = {
   padding: 0 32px;
 }
 
-/* ══ Hero ════════════════════════════════════════ */
 .hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -210,7 +194,6 @@ const vReveal = {
   max-width: 44ch;
 }
 
-/* Botones hero — uno por categoría */
 .hero-btns {
   display: flex;
   gap: 10px;
@@ -235,7 +218,6 @@ const vReveal = {
   transform: translateY(-2px);
 }
 
-/* Mapa */
 .hero-map {
   display: flex;
   align-items: center;
@@ -258,7 +240,6 @@ const vReveal = {
   mask-composite: intersect;
 }
 
-/* ══ Section head ════════════════════════════════ */
 .section-head {
   margin-bottom: 24px
 }
@@ -277,16 +258,6 @@ const vReveal = {
   color: rgba(27, 27, 27, 0.5);
 }
 
-/* ══ Grid dinámico ═══════════════════════════════ */
-/*
-  auto-fit hace el trabajo:
-  · 1 cat  → 1 col
-  · 2 cats → 2 col
-  · 3 cats → 3 col
-  · 4 cats → 2×2
-  · 5 cats → 3+2
-  Sin tocar CSS al agregar categorías.
-*/
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
@@ -294,7 +265,6 @@ const vReveal = {
   margin-bottom: 72px;
 }
 
-/* ══ Card ════════════════════════════════════════ */
 .cat-card {
   position: relative;
   border-radius: 22px;
@@ -375,7 +345,6 @@ const vReveal = {
   max-width: 40ch;
 }
 
-/* Chips de subcategorías */
 .cat-subs {
   display: flex;
   flex-wrap: wrap;
@@ -398,7 +367,6 @@ const vReveal = {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Contador de productos */
 .cat-meta {
   margin-bottom: 14px;
 }
@@ -409,7 +377,6 @@ const vReveal = {
   color: rgba(255, 255, 255, 0.50);
 }
 
-/* Botón */
 .cat-btn {
   display: inline-flex;
   align-items: center;
@@ -432,7 +399,6 @@ const vReveal = {
   transform: translateY(-1px);
 }
 
-/* ══ CTA ═════════════════════════════════════════ */
 .cta-banner {
   display: flex;
   align-items: center;
@@ -476,7 +442,6 @@ const vReveal = {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
-/* ══ Reveal ══════════════════════════════════════ */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -488,7 +453,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 1024px) {
   .hero {
     grid-template-columns: 1fr;

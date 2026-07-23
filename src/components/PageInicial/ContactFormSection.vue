@@ -2,7 +2,6 @@
   <section id="contacto" class="contact">
     <div class="bs-wrap">
 
-      <!-- ══ COLUMNA IZQUIERDA ══════════════════════ -->
       <div class="col-left" v-reveal>
 
         <div class="status-badge">
@@ -22,7 +21,6 @@
 
       </div>
 
-      <!-- ══ COLUMNA DERECHA — FORMULARIO ══════════ -->
       <q-form ref="formRef" class="contact-form" @submit.prevent="onSubmit" v-reveal data-delay="100">
 
         <div v-if="success" class="success-msg">
@@ -140,7 +138,6 @@ async function onSubmit() {
     formRef.value?.resetValidation()
 
   } catch (e) {
-    console.error('Error al enviar contacto:', e)
     error.value = 'Ocurrió un error al enviar el mensaje. Intenta de nuevo.'
   } finally {
     sending.value = false
@@ -149,7 +146,7 @@ async function onSubmit() {
 </script>
 
 <style scoped>
-/* ══ Variables ═══════════════════════════════════ */
+
 .contact {
   --blue: #0071e3;
   --blue-dark: #005fcd;
@@ -159,7 +156,6 @@ async function onSubmit() {
   color: #0b1220;
 }
 
-/* ══ Wrap — 2 columnas ═══════════════════════════ */
 .bs-wrap {
   width: 100%;
   max-width: 1180px;
@@ -171,7 +167,6 @@ async function onSubmit() {
   align-items: start;
 }
 
-/* ══ Columna izquierda ═══════════════════════════ */
 .col-left {
   display: flex;
   flex-direction: column;
@@ -222,7 +217,6 @@ async function onSubmit() {
   max-width: 420px;
 }
 
-/* ══ Mensajes ════════════════════════════════════ */
 .success-msg {
   display: flex;
   align-items: center;
@@ -248,7 +242,6 @@ async function onSubmit() {
   margin-bottom: 20px;
 }
 
-/* ══ Formulario ══════════════════════════════════ */
 .contact-form {
   background: #ffffff;
   border: 1.5px solid rgba(11, 18, 32, 0.10);
@@ -360,7 +353,6 @@ async function onSubmit() {
   transform: translateY(-1px);
 }
 
-/* ══ Reveal ══════════════════════════════════════ */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -372,7 +364,6 @@ async function onSubmit() {
   transform: translateY(0);
 }
 
-/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 900px) {
   .bs-wrap {
     grid-template-columns: 1fr;

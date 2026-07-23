@@ -20,7 +20,7 @@
         </nav>
 
         <div class="detail-layout">
-          <!-- GALERÍA sticky -->
+
           <div class="gallery-col">
             <div class="gallery-shell">
               <div class="gallery-main" @click="zoomOpen = true">
@@ -49,7 +49,6 @@
             </div>
           </div>
 
-          <!-- INFO -->
           <div class="info-col">
             <h1 class="product-title">{{ product.nombre }}</h1>
 
@@ -66,7 +65,6 @@
               Requiere cotización — el precio depende de tu solicitud
             </span>
 
-            <!-- Stock (solo productos con inventario controlado) -->
             <div v-else-if="stockDisponible != null" class="stock-line">
               <span v-if="agotado" class="stock-badge stock-badge--out">
                 <span class="stock-dot" /> Agotado
@@ -125,7 +123,6 @@
           </div>
         </div>
 
-        <!-- ESPECIFICACIONES COMPLETAS -->
         <div v-if="atributosUnicos.length" class="specs-full">
           <div class="specs-full-header">
             <h2 class="specs-full-title">Especificaciones técnicas</h2>
@@ -146,7 +143,6 @@
           </div>
         </div>
 
-        <!-- ZOOM MODAL -->
         <q-dialog v-model="zoomOpen">
           <div class="zoom-modal">
             <button class="zoom-close" @click="zoomOpen = false">
@@ -207,11 +203,6 @@ const empresaNombreDisplay = computed(() =>
 
 const empresaSlug = computed(() => slugify(empresaNombreDisplay.value))
 
-/* ============================================================
-   SEO DINÁMICO — useHead + JSON-LD (Schema.org)
-   ============================================================ */
-
-// URL canónica jerárquica: /tienda/:sectorSlug/:empresaSlug/producto/:productoSlug
 const canonicalUrl = computed(() => {
   if (!product.value) return `${SITE_URL}/tienda`
   const sector = route.params.sectorSlug || 'tienda'
@@ -219,20 +210,18 @@ const canonicalUrl = computed(() => {
   return `${SITE_URL}/tienda/${sector}/${empresaSlug.value}/producto/${slug}`
 })
 
-// <title>: máx ~60 caracteres para que Google no lo corte
 const pageTitle = computed(() => {
   if (loading.value) return 'Cargando producto... | ZIFCOR'
   if (!product.value) return 'Producto no encontrado | ZIFCOR'
 
   const empresa = empresaNombreDisplay.value
-  // Si la empresa es ZIFCOR (o variantes), evita "ZIFCOR | ZIFCOR"
+
   const esZifcor = /^zifcor/i.test(empresa.trim())
   return esZifcor
     ? `${product.value.nombre} | ZIFCOR`
     : `${product.value.nombre} | ${empresa} | ZIFCOR`
 })
 
-// <meta description>: máx ~155 caracteres, con fallback si no hay descripción
 const metaDescription = computed(() => {
   if (!product.value) return 'Marketplace industrial B2B en Colombia. Encuentra productos y maquinaria de empresas verificadas.'
   const base = product.value.descripcion?.trim() ||
@@ -240,13 +229,11 @@ const metaDescription = computed(() => {
   return base.length > 155 ? `${base.slice(0, 152)}...` : base
 })
 
-// Marca: primero el atributo "marca", si no existe usa la empresa
 const productBrand = computed(() => {
   const attr = product.value?.atributos?.find(a => a.atributo?.clave === 'marca')
   return attr?.valor || empresaNombreDisplay.value
 })
 
-// JSON-LD: Schema.org Product
 const productJsonLd = computed(() => {
   if (!product.value) return null
   const p = product.value
@@ -260,7 +247,7 @@ const productJsonLd = computed(() => {
     brand: { '@type': 'Brand', name: productBrand.value },
   }
   if (p.sku || p.variantes?.[0]?.sku) ld.sku = p.sku || p.variantes[0].sku
-  // Solo incluir offers si hay precio; si es "por cotización" Google penaliza price: 0
+
   if (p.precioBase && Number(p.precioBase) > 0) {
     const stockTotal = (p.variantes || []).reduce((acc, v) => acc + (Number(v.stock) || 0), 0)
     ld.offers = {
@@ -277,10 +264,10 @@ const productJsonLd = computed(() => {
 })
 const sectorNombreDisplay = computed(() => {
   const slug = route.params.sectorSlug || ''
-  // Capitaliza la primera letra: "manufacturero" → "Manufacturero"
+
   return slug.charAt(0).toUpperCase() + slug.slice(1)
 })
-// JSON-LD: BreadcrumbList (refuerza la jerarquía sector > empresa > producto)
+
 const breadcrumbJsonLd = computed(() => {
   if (!product.value) return null
   const sector = route.params.sectorSlug || 'tienda'
@@ -301,7 +288,7 @@ useHead({
   meta: [
     { name: 'description', content: () => metaDescription.value },
     { name: 'robots', content: () => (product.value ? 'index, follow' : 'noindex') },
-    // Open Graph (WhatsApp, Facebook, LinkedIn)
+
     { property: 'og:type', content: 'product' },
     { property: 'og:site_name', content: 'ZIFCOR' },
     { property: 'og:title', content: () => pageTitle.value },
@@ -311,7 +298,7 @@ useHead({
     { property: 'og:locale', content: 'es_CO' },
     { property: 'product:price:amount', content: () => product.value?.precioBase ? String(product.value.precioBase) : undefined },
     { property: 'product:price:currency', content: () => product.value?.moneda || 'COP' },
-    // Twitter
+
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: () => pageTitle.value },
     { name: 'twitter:description', content: () => metaDescription.value },
@@ -334,18 +321,12 @@ useHead({
   ],
 })
 
-// Serializa JSON-LD escapando el carácter U+003C para impedir que un texto
-// con una etiqueta de cierre de script rompa el bloque (XSS almacenado).
 function safeJsonLd(value) {
   if (!value) return '{}'
   const LT = String.fromCharCode(60)
   return JSON.stringify(value).split(LT).join('\\u003c')
 }
 
-/* ============================================================ */
-
-// Tras cargar el producto normaliza la URL jerárquica
-// → /tienda/:sectorSlug/:empresaSlug/producto/:productoSlug
 function cleanUrl() {
   if (!product.value) return
 
@@ -360,8 +341,6 @@ function cleanUrl() {
   )
 }
 
-// Primer crumb: si el usuario llegó navegando dentro del sitio (búsqueda, destacados, etc.)
-// vuelve a esa página; si entró por link directo, cae a la home de la tienda.
 function goBackToSectores() {
   if (window.history.state?.back) {
     router.back()
@@ -370,7 +349,6 @@ function goBackToSectores() {
   router.push('/tienda')
 }
 
-// Vuelve a la tienda manteniendo la jerarquía sector/empresa
 function goBackToStore() {
   if (!route.params.sectorSlug) {
     router.push('/tienda')
@@ -448,13 +426,10 @@ function onCotizar() {
   window.open(`https://wa.me/${ZIFCOR_WHATSAPP}?text=${msg}`, '_blank')
 }
 
-// ¿Este producto se paga en línea (PSE) o requiere cotización?
 const esPagable = computed(() =>
   product.value?.pagableEnLinea !== false && product.value?.precioBase != null
 )
 
-// Stock efectivo: suma de variantes activas, o el stock propio del producto.
-// null = sin control de inventario.
 const stockDisponible = computed(() => {
   const p = product.value
   if (!p) return null
@@ -471,7 +446,6 @@ const cartQty = computed(() =>
 
 const yaEnCarrito = computed(() => cartQty.value > 0)
 
-// ¿Se puede agregar una unidad más? (respeta el stock)
 const puedeAgregar = computed(() =>
   stockDisponible.value == null || cartQty.value < stockDisponible.value
 )

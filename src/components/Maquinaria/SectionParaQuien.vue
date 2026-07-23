@@ -2,9 +2,6 @@
   <section id="suministro-maquinaria" class="sec" aria-label="Suministro de maquinaria y equipos industriales">
     <div class="bs-wrap">
 
-      <!-- ========================= -->
-      <!-- STATS SECTION -->
-      <!-- ========================= -->
       <div class="stats" v-reveal>
         <div class="stat" v-for="(s, i) in stats" :key="i">
           <div class="stat-icon-wrap">
@@ -86,7 +83,7 @@ const vReveal = {
 .sec {
   background: #fff;
   padding: 40px 0;
-  /* compacto: sin tanto espacio arriba/abajo */
+
   overflow: hidden;
 }
 
@@ -97,7 +94,6 @@ const vReveal = {
   padding: 0 24px;
 }
 
-/* ══ Stats — estilo Factory, fondo blanco ════════ */
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -118,7 +114,6 @@ const vReveal = {
   background: rgba(0, 113, 227, 0.03);
 }
 
-/* Ícono en círculo */
 .stat-icon-wrap {
   flex-shrink: 0;
   width: 52px;
@@ -138,7 +133,6 @@ const vReveal = {
   color: #fff;
 }
 
-/* Texto */
 .stat-info {
   display: flex;
   flex-direction: column;
@@ -178,7 +172,6 @@ const vReveal = {
   max-width: 130px;
 }
 
-/* ══ Reveal ══════════════════════════════════════ */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -190,7 +183,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 900px) {
   .stats {
     grid-template-columns: repeat(2, 1fr);

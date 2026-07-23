@@ -3,7 +3,6 @@
     <section id="formulario-proyectos" class="projects">
       <div class="bs-wrap">
 
-        <!-- ══ COLUMNA IZQUIERDA ══════════════════ -->
         <div class="col-left" :class="{ ready }">
 
           <div class="kicker">SERVICIO DE INGENIERÍA</div>
@@ -19,7 +18,6 @@
             Desde el diagnóstico hasta la implementación final.
           </p>
 
-          <!-- Calendly card -->
           <a href="https://calendly.com/ZIFCOR/llamada" target="_blank" class="calendly-card" rel="noopener">
             <div class="cal-inner">
               <div class="cal-icon">
@@ -45,10 +43,8 @@
 
         </div>
 
-        <!-- ══ COLUMNA DERECHA — FORMULARIO ══════ -->
         <q-form ref="formRef" class="contact-form" :class="{ ready }" @submit.prevent="onSubmit">
 
-          <!-- Fila 1: Empresa + NIT -->
           <div class="form-grid">
             <div class="field">
               <label class="label">Nombre de la empresa *</label>
@@ -61,7 +57,6 @@
             </div>
           </div>
 
-          <!-- Fila 2: Contacto + Teléfono -->
           <div class="form-grid">
             <div class="field">
               <label class="label">Nombre de contacto *</label>
@@ -75,21 +70,18 @@
             </div>
           </div>
 
-          <!-- Correo -->
           <div class="field">
             <label class="label">Correo corporativo *</label>
             <q-input v-model="form.correo" outlined dense class="inp" type="email" placeholder="nombre@empresa.com"
               :rules="[required, emailRule]" />
           </div>
 
-          <!-- Cuéntanos -->
           <div class="field">
             <label class="label">Cuéntanos qué necesitas *</label>
             <q-input v-model="form.detalle" outlined class="ta" type="textarea" autogrow
               placeholder="Describe tu proyecto o el problema que buscas resolver..." :rules="[required]" />
           </div>
 
-          <!-- Fase del proyecto -->
           <div class="field">
             <label class="label">¿En qué fase están?</label>
             <div class="fase-grid">
@@ -101,7 +93,6 @@
             </div>
           </div>
 
-          <!-- Footer -->
           <div class="form-footer">
             <q-checkbox v-model="form.aceptaDatos" class="chk">
               <span class="check-lbl">
@@ -182,12 +173,11 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
 </script>
 
 <style scoped>
-/* ══ Page ════════════════════════════════════════ */
+
 .page {
   background: #ffffff;
 }
 
-/* ══ Section ═════════════════════════════════════ */
 .projects {
   --blue: #0071e3;
   --blue-dark: #005fcd;
@@ -197,7 +187,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   color: #0b1220;
 }
 
-/* ══ Wrap — 2 columnas ═══════════════════════════ */
 .bs-wrap {
   width: 100%;
   max-width: 1180px;
@@ -209,7 +198,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   align-items: start;
 }
 
-/* ══ Columna izquierda ═══════════════════════════ */
 .col-left {
   display: flex;
   flex-direction: column;
@@ -257,7 +245,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   color: rgba(11, 18, 32, 0.55);
 }
 
-/* ══ Calendly card ═══════════════════════════════ */
 .calendly-card {
   display: flex;
   flex-direction: column;
@@ -359,7 +346,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   margin-left: 4px;
 }
 
-/* ══ Formulario ══════════════════════════════════ */
 .contact-form {
   background: #ffffff;
   border: 1.5px solid rgba(11, 18, 32, 0.10);
@@ -400,7 +386,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   color: #0b1220;
 }
 
-/* Inputs */
 .inp :deep(.q-field__control),
 .ta :deep(.q-field__control) {
   background: #ffffff !important;
@@ -437,7 +422,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   min-height: 100px !important;
 }
 
-/* Fase selector */
 .fase-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -484,7 +468,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   background: var(--blue);
 }
 
-/* Footer */
 .form-footer {
   display: flex;
   flex-direction: column;
@@ -532,7 +515,6 @@ onMounted(() => requestAnimationFrame(() => (ready.value = true)))
   transform: translateY(-1px);
 }
 
-/* ══ Responsive ══════════════════════════════════ */
 @media (max-width: 960px) {
   .bs-wrap {
     grid-template-columns: 1fr;

@@ -2,7 +2,6 @@
   <section id="como-funciona" class="process" aria-label="Cómo funciona el proceso">
     <div class="bs-wrap">
       <div class="top" :class="{ ready }">
-        <!-- <div class="kicker">PROCESO DE SUMINISTRO</div> -->
 
         <div class="headlineRow">
           <div class="headlineLeft">
@@ -10,14 +9,6 @@
               Desde la selección hasta <span>la máquina operando</span>
             </h2>
 
-            <!-- <p class="sub">
-              Importamos maquinaria industrial de alto desempeño bajo criterios técnicos rigurosos.
-              Gestionamos todo el proceso: desde la selección técnica hasta la instalación y puesta en marcha en tu
-              planta.
-              <br /><br />
-              No es solo "traer una máquina": es integrarla inteligentemente a tu operación,
-              dejándola funcionando según tus especificaciones productivas.
-            </p> -->
           </div>
 
           <div class="headlineRight">
@@ -50,17 +41,6 @@
         </article>
       </div>
 
-      <!-- <div class="note" :class="{ ready }">
-        <div class="noteCard">
-          <div class="noteTitle">Tiempos de entrega</div>
-          <div class="noteText">
-            El tiempo total desde orden hasta instalación varía según disponibilidad del fabricante y complejidad de
-            instalación.
-            Típicamente: <strong>12-16 semanas para importación</strong> + <strong>2-3 semanas para instalación</strong>
-            y puesta en marcha.
-          </div>
-        </div>
-      </div> -->
     </div>
   </section>
 </template>

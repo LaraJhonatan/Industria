@@ -4,7 +4,6 @@
     <div class="bs-wrap">
       <div class="layout">
 
-        <!-- ── LEFT ── -->
         <div class="left" :class="{ ready }">
 
           <div class="kicker">
@@ -37,7 +36,6 @@
             </a>
           </div>
 
-          <!-- Trust bar -->
           <div class="trust">
             <div class="trust-item">
               <span class="trust-num">+15</span>
@@ -56,10 +54,9 @@
           </div>
         </div>
 
-        <!-- ── RIGHT panel ── -->
         <div class="right" :class="{ ready }" aria-hidden="true">
           <div class="panel">
-            <!-- macOS-style header -->
+
             <div class="panel-header">
               <span class="panel-dot red" />
               <span class="panel-dot yellow" />
@@ -102,7 +99,6 @@
               </div>
             </div>
 
-            <!-- Floating badge -->
             <div class="badge">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                 <path
@@ -136,7 +132,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ─── Wrapper ─────────────────────────── */
+
 .bs-wrap {
   width: 100%;
   max-width: 1200px;
@@ -144,7 +140,6 @@ onMounted(() => {
   padding: 0 24px;
 }
 
-/* ─── Section ─────────────────────────── */
 .hero {
   position: relative;
   overflow: hidden;
@@ -153,10 +148,6 @@ onMounted(() => {
   color: #1b1b1b;
 }
 
-/* top accent line */
-
-
-/* ─── Layout ──────────────────────────── */
 .layout {
   position: relative;
   z-index: 2;
@@ -166,7 +157,6 @@ onMounted(() => {
   align-items: center;
 }
 
-/* ─── Entrance animations ─────────────── */
 .left {
   opacity: 0;
   transform: translateY(28px);
@@ -185,7 +175,6 @@ onMounted(() => {
   transform: translateY(0);
 }
 
-/* ─── Kicker ──────────────────────────── */
 .kicker {
   display: inline-flex;
   align-items: center;
@@ -223,7 +212,6 @@ onMounted(() => {
   }
 }
 
-/* ─── Headline ────────────────────────── */
 .headline {
   margin: 0 0 20px;
   font-weight: 900;
@@ -245,7 +233,6 @@ onMounted(() => {
   max-width: 54ch;
 }
 
-/* ─── Actions ─────────────────────────── */
 .actions {
   display: flex;
   gap: 14px;
@@ -297,7 +284,6 @@ onMounted(() => {
   background: rgba(0, 113, 227, 0.04);
 }
 
-/* ─── Trust bar ───────────────────────── */
 .trust {
   display: flex;
   align-items: center;
@@ -332,7 +318,6 @@ onMounted(() => {
   background: rgba(27, 27, 27, 0.1);
 }
 
-/* ─── Panel ───────────────────────────── */
 .panel {
   position: relative;
   border-radius: 18px;
@@ -502,7 +487,6 @@ onMounted(() => {
   margin-top: 2px;
 }
 
-/* ─── Floating badge ──────────────────── */
 .badge {
   position: absolute;
   top: -16px;
@@ -533,7 +517,6 @@ onMounted(() => {
   }
 }
 
-/* ─── Responsive ──────────────────────── */
 @media (max-width: 1024px) {
   .layout {
     grid-template-columns: 1fr;

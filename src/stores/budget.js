@@ -9,7 +9,7 @@ async function loadFromStorage() {
       const r = await window.storage.get(STORAGE_KEY)
       return r ? JSON.parse(r.value) : []
     }
-  } catch { /* no storage available */ }
+  } catch { void 0 }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     return raw ? JSON.parse(raw) : []
@@ -22,10 +22,10 @@ async function saveToStorage(items) {
       await window.storage.set(STORAGE_KEY, JSON.stringify(items))
       return
     }
-  } catch { /* no storage available */ }
+  } catch { void 0 }
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-  } catch { /* noop */ }
+  } catch { void 0 }
 }
 
 export const useBudgetStore = defineStore('budget', () => {

@@ -1,6 +1,5 @@
-// ─────────────────────────────────────────────────────────────
-//  IMÁGENES
-// ─────────────────────────────────────────────────────────────
+
+
 const D = {
   hero: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1400&h=560&fit=crop&q=85',
   fly1: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0rOvzgvHR62tKqU-84RROViuwGJzHwaCkwQ&s',
@@ -35,16 +34,11 @@ const F = {
 const A = {
   hero: '/achira2.jpeg',
   cafe: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB4AuYQOGkKpF3EIPdz0WVjril445qWWb1mQ&s',
-  achiras: '/achira2.jpeg', // ← slash al inicio, sin "public"
+  achiras: '/achira2.jpeg',
 }
 
-// ─────────────────────────────────────────────────────────────
-//  CATEGORÍAS
-// ─────────────────────────────────────────────────────────────
 export const STORE_CATEGORIES = [
-  // ════════════════════════════════════════
-  //  DRONES
-  // ════════════════════════════════════════
+
   {
     id: 'drones',
     title: 'Drones',
@@ -432,9 +426,6 @@ export const STORE_CATEGORIES = [
     ],
   },
 
-  // ════════════════════════════════════════
-  //  FILAMENTOS
-  // ════════════════════════════════════════
   {
     id: 'filamentos',
     title: 'Filamentos',
@@ -734,9 +725,6 @@ export const STORE_CATEGORIES = [
     ],
   },
 
-  // ════════════════════════════════════════
-  //  ALIMENTOS
-  // ════════════════════════════════════════
   {
     id: 'alimentos',
     title: 'Alimentos',
@@ -751,7 +739,7 @@ export const STORE_CATEGORIES = [
       { id: 'achiras', name: 'Achiras', count: 3, img: A.achiras },
     ],
     products: [
-      // ── CAFÉ ────────────────────────────
+
       {
         id: 'ali-cafe-250',
         subcategory: 'cafe',
@@ -825,7 +813,6 @@ export const STORE_CATEGORIES = [
         images: [A.cafe, A.hero],
       },
 
-      // ── ACHIRAS ─────────────────────────
       {
         id: 'ali-ach-100',
         subcategory: 'achiras',
@@ -902,9 +889,6 @@ export const STORE_CATEGORIES = [
   },
 ]
 
-// ─────────────────────────────────────────────────────────────
-//  HELPERS
-// ─────────────────────────────────────────────────────────────
 export function getCategoryById(id) {
   return STORE_CATEGORIES.find((c) => c.id === id) ?? null
 }

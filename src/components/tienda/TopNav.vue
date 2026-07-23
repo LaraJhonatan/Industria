@@ -1,7 +1,7 @@
 <template>
   <nav class="top-nav" aria-label="Navegación principal">
     <div class="nav-inner">
-      <!-- Brand -->
+
       <button class="brand" @click="routerStore.goToCatalog()">
         <div class="brand-icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
@@ -14,7 +14,6 @@
         <span class="brand-sub">Servicios de ingeniería</span>
       </button>
 
-      <!-- Budget button -->
       <button class="budget-btn" :class="{ active: budgetStore.items.length > 0 }" @click="$emit('openBudget')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="9" cy="21" r="1" />

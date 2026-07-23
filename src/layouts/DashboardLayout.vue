@@ -24,7 +24,7 @@
 
         <div class="header-empresa row items-center q-pl-sm"
           style="border-left:1px solid rgba(11,18,32,.08); cursor:pointer" @click="router.push('/dashboard/perfil')">
-          <!-- Avatar con logo o inicial -->
+
           <div class="empresa-avatar-wrap">
             <img v-if="empresaLogoUrl" :src="empresaLogoUrl" class="empresa-avatar-img" :alt="empresaNombre" />
             <span v-else class="empresa-avatar-inicial">{{ empresaInicial }}</span>
@@ -175,12 +175,11 @@ function logout() {
   color: #9ca3af;
 }
 
-/* ── AVATAR EMPRESA ── */
 .empresa-avatar-wrap {
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  /* cuadrado redondeado para logos */
+
   background: #f0f4f8;
   border: 1.5px solid rgba(11, 18, 32, .10);
   overflow: hidden;
@@ -189,7 +188,6 @@ function logout() {
   flex-shrink: 0;
 }
 
-/* Cuando hay imagen: contain para no recortar */
 .empresa-avatar-img {
   width: 100%;
   height: 100%;
@@ -199,7 +197,6 @@ function logout() {
   display: block;
 }
 
-/* Cuando hay inicial: fondo azul */
 .empresa-avatar-inicial {
   font-size: 15px;
   font-weight: 900;
@@ -212,7 +209,6 @@ function logout() {
   border-color: transparent;
 }
 
-/* ── SIDEBAR ── */
 .dash-sidebar {
   background: #ffffff;
   border-right: 1.5px solid rgba(11, 18, 32, .08);

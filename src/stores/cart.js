@@ -1,9 +1,5 @@
-// src/stores/cart.js
-// ─────────────────────────────────────────────────────────────────────────────
-// Carrito persistido en la base de datos, atado al usuario logueado con Gmail.
-// Requiere sesión de tipo 'usuario'. Si no hay sesión, addItem lanza
-// 'LOGIN_REQUIRED' para que la UI redirija al login.
-// ─────────────────────────────────────────────────────────────────────────────
+
+
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { cartApi } from '../api/cart'
@@ -24,22 +20,19 @@ export const useCartStore = defineStore('cart', () => {
   const loading = ref(false)
   const loaded = ref(false)
 
-  // ── Getters ────────────────────────────────────────────────────────────────
   const esUsuario = computed(() => auth.sesion?.usuario?.tipo === 'usuario')
   const totalItems = computed(() => resumen.value.totalItems)
   const isEmpty = computed(() => items.value.length === 0)
 
-  /** Ítems que se pueden pagar por PSE (tienen precio y flag pagableEnLinea) */
   const pagables = computed(() =>
     items.value.filter((i) => i.pagableEnLinea && i.precioBase != null),
   )
-  /** Ítems que requieren cotización (servicios / sin precio fijo) */
+
   const cotizacion = computed(() =>
     items.value.filter((i) => !i.pagableEnLinea || i.precioBase == null),
   )
   const subtotalPagable = computed(() => resumen.value.subtotalPagable)
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
   function setFromResponse(data) {
     items.value = data?.items || []
     resumen.value = data?.resumen || { ...EMPTY_RESUMEN }
@@ -59,7 +52,6 @@ export const useCartStore = defineStore('cart', () => {
     return items.value.find((i) => i.productId === productId)?.cantidad ?? 0
   }
 
-  // ── Actions ──────────────────────────────────────────────────────────────
   async function fetch() {
     if (!esUsuario.value) {
       reset()
@@ -78,7 +70,6 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
-  /** Agrega un producto. Lanza 'LOGIN_REQUIRED' si no hay sesión de usuario. */
   async function addItem(productId, cantidad = 1) {
     if (!esUsuario.value) throw new Error('LOGIN_REQUIRED')
     loading.value = true
@@ -132,19 +123,19 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   return {
-    // state
+
     items,
     resumen,
     loading,
     loaded,
-    // getters
+
     esUsuario,
     totalItems,
     isEmpty,
     pagables,
     cotizacion,
     subtotalPagable,
-    // actions
+
     fetch,
     reset,
     isInCart,

@@ -256,7 +256,6 @@ const vReveal = {
   background: #fff;
 }
 
-/* Hero */
 .hero {
   padding: 100px 0 60px;
   background: #fff;
@@ -303,7 +302,6 @@ const vReveal = {
   color: rgba(27, 27, 27, 0.7);
 }
 
-/* Catalog */
 .catalog {
   padding: 60px 0 100px;
 }
@@ -333,7 +331,6 @@ const vReveal = {
   min-width: 200px;
 }
 
-/* Grid */
 .machines-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -476,7 +473,6 @@ const vReveal = {
   background: #0066cc;
 }
 
-/* CTA */
 .cta-section {
   padding: 60px 0 100px;
   background: rgba(0, 113, 227, 0.02);
@@ -524,7 +520,6 @@ const vReveal = {
   background: #0066cc;
 }
 
-/* Reveal */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -536,7 +531,6 @@ const vReveal = {
   transform: translateY(0);
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .machines-grid {
     grid-template-columns: repeat(2, 1fr);

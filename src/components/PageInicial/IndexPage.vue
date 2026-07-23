@@ -9,31 +9,6 @@
       <FAQSection />
     </div>
 
-    <!-- (Opcional) CTA para ir a Servicios industriales -->
-    <!--
-    <div class="divider-section">
-      <div class="bs-wrap">
-        <div class="divider-content">
-          <h2 class="divider-title">
-            ¿Quieres conocer más detalles
-            <span>sobre nuestros servicios?</span>
-          </h2>
-          <p class="divider-text">
-            Descubre cómo trabajamos, para quién son nuestras soluciones
-            y nuestro proceso de implementación paso a paso.
-          </p>
-
-          <q-btn
-            unelevated
-            class="divider-btn"
-            label="Ver servicios industriales"
-            icon-right="arrow_forward"
-            :to="{ path: '/servicios-industriales' }"
-          />
-        </div>
-      </div>
-    </div>
-    -->
   </q-page>
 </template>
 
@@ -60,12 +35,10 @@ import FAQSection from 'src/components/PageInicial/VideoCarouselSection.vue/FAQS
   background: #1b1b1b;
 }
 
-/* Smooth scroll global */
 :global(html) {
   scroll-behavior: smooth;
 }
 
-/* (Opcional) CTA */
 .divider-section {
   padding: 120px 0;
   background: linear-gradient(135deg, #0071e3 0%, #0066cc 100%);

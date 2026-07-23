@@ -52,7 +52,7 @@
 
           <div v-else class="companies-grid">
             <template v-for="empresa in empresas" :key="empresa.slug">
-              <!-- Empresa general ZIFCOR: misma tarjeta que las demás, con acento y contenido de vitrina -->
+
               <article v-if="isZifcor(empresa) && zifcorCard" class="company-card company-card--zifcor"
                 @click="router.push(`/tienda/${route.params.sectorSlug}/${empresa.profile?.slug || empresa.id}`)">
                 <div class="card-banner" :style="{ backgroundImage: `url('${zifcorCard.image}')` }">
@@ -183,7 +183,6 @@ const SECTOR_ICONS = {
 
 const sectorIcon = computed(() => SECTOR_ICONS[sectorSlug.value?.toLowerCase()] || 'category')
 
-// Tarjeta de vitrina para la empresa general ZIFCOR dentro de cada gremio
 const ZIFCOR_CARD_BY_SECTOR = {
   manufacturero: {
     image: '/manofacturero.png', title: 'Maquinaria industrial', linkLabel: 'Ver todos los productos',
@@ -244,7 +243,7 @@ function getDesc(e) {
 </script>
 
 <style scoped>
-/* ── HERO ── */
+
 .sector-hero {
   position: relative;
   overflow: hidden;
@@ -254,7 +253,6 @@ function getDesc(e) {
   display: flex;
 }
 
-/* Puntos decorativos suaves, en vez de foto */
 .hero-deco {
   position: absolute;
   inset: 0;
@@ -407,7 +405,6 @@ function getDesc(e) {
   opacity: 0.75;
 }
 
-/* ── BODY ── */
 .page-body {
   background: #f2f3f6;
   padding: 44px 0 80px;
@@ -438,7 +435,6 @@ function getDesc(e) {
   font-weight: 600;
 }
 
-/* ── CARDS ── */
 .companies-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
@@ -461,7 +457,6 @@ function getDesc(e) {
   box-shadow: 0 16px 40px rgba(11, 18, 32, 0.12);
 }
 
-/* Banner con imagen real de la empresa */
 .card-banner {
   position: relative;
   height: 118px;
@@ -477,7 +472,6 @@ function getDesc(e) {
   background: linear-gradient(to top, rgba(8, 14, 30, 0.75) 0%, rgba(8, 14, 30, 0.15) 60%, transparent 100%);
 }
 
-/* Logo flotante esquina inferior izquierda */
 .card-logo {
   position: absolute;
   bottom: 10px;
@@ -521,7 +515,6 @@ function getDesc(e) {
   color: rgba(255, 255, 255, 0.75);
 }
 
-/* Cuerpo */
 .card-body {
   padding: 13px 14px 14px;
   display: flex;
@@ -594,7 +587,6 @@ function getDesc(e) {
   transform: translateX(3px);
 }
 
-/* ── ZIFCOR (misma tarjeta, con acento oficial) ── */
 .company-card--zifcor {
   border: 2px solid rgba(19, 84, 211, 0.45);
   box-shadow: 0 0 0 4px rgba(19, 84, 211, 0.10), 0 12px 30px rgba(19, 84, 211, 0.20);
@@ -604,7 +596,6 @@ function getDesc(e) {
   box-shadow: 0 0 0 5px rgba(19, 84, 211, 0.16), 0 18px 40px rgba(19, 84, 211, 0.30);
 }
 
-/* Sin descripción: el link queda pegado abajo */
 .card-footer--zifcor {
   margin-top: auto;
 }
@@ -628,7 +619,6 @@ function getDesc(e) {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20);
 }
 
-/* ── EMPTY ── */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -682,7 +672,6 @@ function getDesc(e) {
   background: #0f44b0;
 }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .hero-content {
     padding: 24px 24px 32px;

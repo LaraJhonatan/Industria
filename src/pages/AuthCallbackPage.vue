@@ -27,7 +27,6 @@ onMounted(async () => {
 
   authStore.setTokenUsuario(token)
 
-  // Usuarios van al inicio, no al dashboard
   router.replace('/')
 })
 </script>

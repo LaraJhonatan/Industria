@@ -2,7 +2,6 @@
   <section class="store-section">
     <div class="bs-wrap">
 
-      <!-- SKELETON -->
       <template v-if="isLoading">
         <div class="sk-breadcrumb">
           <div class="sk sk-bc-a" />
@@ -32,10 +31,8 @@
         </div>
       </template>
 
-      <!-- CONTENIDO -->
       <template v-else-if="category && subcategory">
 
-        <!-- Breadcrumb -->
         <nav class="breadcrumb">
           <button class="bc-link" @click="router.push('/tienda')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -51,7 +48,6 @@
           <span class="bc-current" :style="{ color: category.accentColor }">{{ subcategory.name }}</span>
         </nav>
 
-        <!-- Mini hero con imagen de la subcategoría -->
         <div class="hero-banner" :style="{ backgroundImage: `url(${subcategory.img})` }">
           <div class="hero-overlay" />
           <div class="hero-content">
@@ -66,7 +62,6 @@
           </div>
         </div>
 
-        <!-- Header -->
         <div class="store-header-row">
           <div>
             <h2 class="store-title">{{ subcategory.name }}</h2>
@@ -79,7 +74,6 @@
           <span class="count-badge">{{ filteredProducts.length }} productos</span>
         </div>
 
-        <!-- Products grid -->
         <div class="products-grid" v-if="filteredProducts.length">
           <div v-for="product in filteredProducts" :key="product.id" class="product-card"
             @click="router.push(`/tienda/${category.id}/${product.id}`)">
@@ -116,7 +110,6 @@
           </div>
         </div>
 
-        <!-- Sin productos -->
         <div v-else class="empty-state">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
             opacity=".3">
@@ -129,7 +122,6 @@
           </button>
         </div>
 
-        <!-- CTA -->
         <div class="cta-banner">
           <div>
             <p class="cta-title">¿No encuentras lo que necesitas?</p>
@@ -194,7 +186,7 @@ function quickAdd(product) {
 </script>
 
 <style scoped>
-/* ── Shimmer ── */
+
 @keyframes shimmer {
   0% {
     background-position: -700px 0
@@ -325,7 +317,6 @@ function quickAdd(product) {
   border-radius: 12px;
 }
 
-/* ── Page ── */
 .store-section {
   background: #fafbfc;
   padding: 40px 0 80px;
@@ -338,7 +329,6 @@ function quickAdd(product) {
   padding: 0 32px;
 }
 
-/* breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -373,7 +363,6 @@ function quickAdd(product) {
   font-weight: 700;
 }
 
-/* hero banner (más bajo) */
 .hero-banner {
   position: relative;
   width: 100%;
@@ -437,7 +426,6 @@ function quickAdd(product) {
   color: rgba(255, 255, 255, .72);
 }
 
-/* header row */
 .store-header-row {
   display: flex;
   align-items: flex-start;
@@ -488,7 +476,6 @@ function quickAdd(product) {
   white-space: nowrap;
 }
 
-/* products grid */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -676,7 +663,6 @@ function quickAdd(product) {
   color: #1aab5c;
 }
 
-/* empty state */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -706,7 +692,6 @@ function quickAdd(product) {
   background: #005fcd;
 }
 
-/* cta */
 .cta-banner {
   display: flex;
   align-items: center;
@@ -761,7 +746,6 @@ function quickAdd(product) {
   font-size: 15px;
 }
 
-/* responsive */
 @media (max-width: 768px) {
   .bs-wrap {
     padding: 0 16px;
