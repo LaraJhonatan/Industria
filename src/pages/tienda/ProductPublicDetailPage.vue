@@ -59,6 +59,26 @@
             </p>
             <p v-else class="product-price-na">Precio por cotización</p>
 
+            <span v-if="!esPagable" class="quote-tag">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              Requiere cotización — el precio depende de tu solicitud
+            </span>
+
+            <!-- Stock (solo productos con inventario controlado) -->
+            <div v-else-if="stockDisponible != null" class="stock-line">
+              <span v-if="agotado" class="stock-badge stock-badge--out">
+                <span class="stock-dot" /> Agotado
+              </span>
+              <span v-else-if="stockDisponible <= 5" class="stock-badge stock-badge--low">
+                <span class="stock-dot" /> ¡Últimas {{ stockDisponible }} unidades!
+              </span>
+              <span v-else class="stock-badge stock-badge--in">
+                <span class="stock-dot" /> {{ stockDisponible }} disponibles
+              </span>
+            </div>
+
             <p v-if="product.descripcion" class="product-desc">{{ product.descripcion }}</p>
 
             <div v-if="specsSummary.length" class="specs-summary">
@@ -79,6 +99,18 @@
             </div>
 
             <div class="cta-card">
+              <button class="btn-cart" :disabled="adding || agotado || !puedeAgregar" @click="onAddToCart">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+                <template v-if="agotado">Agotado</template>
+                <template v-else-if="!puedeAgregar">Máximo disponible en carrito</template>
+                <template v-else-if="yaEnCarrito">Agregar otra unidad</template>
+                <template v-else>Agregar al carrito</template>
+              </button>
+
               <button class="btn-whatsapp" @click="onCotizar">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path
@@ -138,11 +170,16 @@
 import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
+import { useQuasar } from 'quasar'
 import { publicApi } from '../../api/publicCatalog'
 import { slugify } from '../../utils/slugify'
+import { useCartStore } from '../../stores/cart'
 
 const router = useRouter()
 const route = useRoute()
+const $q = useQuasar()
+const cart = useCartStore()
+const adding = ref(false)
 
 const ZIFCOR_WHATSAPP = '573114799224'
 const SITE_URL = 'https://www.zifcor.com'
@@ -287,15 +324,23 @@ useHead({
     {
       key: 'ld-product',
       type: 'application/ld+json',
-      innerHTML: () => (productJsonLd.value ? JSON.stringify(productJsonLd.value) : '{}'),
+      innerHTML: () => safeJsonLd(productJsonLd.value),
     },
     {
       key: 'ld-breadcrumb',
       type: 'application/ld+json',
-      innerHTML: () => (breadcrumbJsonLd.value ? JSON.stringify(breadcrumbJsonLd.value) : '{}'),
+      innerHTML: () => safeJsonLd(breadcrumbJsonLd.value),
     },
   ],
 })
+
+// Serializa JSON-LD escapando el carácter U+003C para impedir que un texto
+// con una etiqueta de cierre de script rompa el bloque (XSS almacenado).
+function safeJsonLd(value) {
+  if (!value) return '{}'
+  const LT = String.fromCharCode(60)
+  return JSON.stringify(value).split(LT).join('\\u003c')
+}
 
 /* ============================================================ */
 
@@ -401,6 +446,60 @@ function onCotizar() {
     `Hola, estoy interesado en el producto *${product.value.nombre}*${variante ? ` (${variante})` : ''} que vi en ZIFCOR.`
   )
   window.open(`https://wa.me/${ZIFCOR_WHATSAPP}?text=${msg}`, '_blank')
+}
+
+// ¿Este producto se paga en línea (PSE) o requiere cotización?
+const esPagable = computed(() =>
+  product.value?.pagableEnLinea !== false && product.value?.precioBase != null
+)
+
+// Stock efectivo: suma de variantes activas, o el stock propio del producto.
+// null = sin control de inventario.
+const stockDisponible = computed(() => {
+  const p = product.value
+  if (!p) return null
+  const activas = (p.variantes || []).filter(v => v.activo !== false)
+  if (activas.length) return activas.reduce((s, v) => s + (Number(v.stock) || 0), 0)
+  return p.stock != null ? Number(p.stock) : null
+})
+
+const agotado = computed(() => stockDisponible.value === 0)
+
+const cartQty = computed(() =>
+  product.value ? cart.getQty(product.value.id) : 0
+)
+
+const yaEnCarrito = computed(() => cartQty.value > 0)
+
+// ¿Se puede agregar una unidad más? (respeta el stock)
+const puedeAgregar = computed(() =>
+  stockDisponible.value == null || cartQty.value < stockDisponible.value
+)
+
+async function onAddToCart() {
+  if (!product.value || adding.value || agotado.value || !puedeAgregar.value) return
+  adding.value = true
+  try {
+    await cart.addItem(product.value.id, 1)
+    $q.notify({
+      message: 'Producto agregado al carrito',
+      color: 'green-6',
+      icon: 'shopping_cart',
+      position: 'top',
+      timeout: 1800,
+      actions: [{ label: 'Ver carrito', color: 'white', handler: () => router.push('/tienda/carrito') }],
+    })
+  } catch (e) {
+    if (e.message === 'LOGIN_REQUIRED') {
+      $q.notify({ message: 'Inicia sesión para agregar al carrito', color: 'blue-6', position: 'top', timeout: 2200 })
+      router.push('/auth')
+    } else {
+      const msg = e.response?.data?.message || 'No se pudo agregar al carrito'
+      $q.notify({ message: msg, color: 'red-5', position: 'top' })
+    }
+  } finally {
+    adding.value = false
+  }
 }
 
 async function loadProduct() {
@@ -655,6 +754,62 @@ watch(
   margin: 0 0 16px;
 }
 
+.quote-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  margin: 0 0 16px;
+  border-radius: 999px;
+  background: rgba(37, 211, 102, .1);
+  color: #12924a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.stock-line {
+  margin: 0 0 16px;
+}
+
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.stock-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.stock-badge--in {
+  color: #12924a;
+}
+
+.stock-badge--in .stock-dot {
+  background: #16a34a;
+}
+
+.stock-badge--low {
+  color: #d97706;
+}
+
+.stock-badge--low .stock-dot {
+  background: #f59e0b;
+}
+
+.stock-badge--out {
+  color: #dc2626;
+}
+
+.stock-badge--out .stock-dot {
+  background: #dc2626;
+}
+
 .product-desc {
   font-size: 14px;
   color: rgba(11, 18, 32, .62);
@@ -746,6 +901,36 @@ watch(
   box-shadow: 0 14px 34px rgba(15, 23, 42, .06);
 }
 
+.btn-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  background: #0071e3;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+  cursor: pointer;
+  transition: filter 160ms, transform 160ms, background 160ms;
+  box-shadow: 0 12px 24px rgba(0, 113, 227, .22);
+  font-family: inherit;
+}
+
+.btn-cart:hover:not(:disabled) {
+  background: #005fcd;
+  transform: translateY(-1px);
+}
+
+.btn-cart:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+}
+
 .btn-whatsapp {
   display: flex;
   align-items: center;
@@ -763,6 +948,7 @@ watch(
   cursor: pointer;
   transition: filter 160ms, transform 160ms;
   box-shadow: 0 12px 24px rgba(37, 211, 102, .20);
+  font-family: inherit;
 }
 
 .btn-whatsapp:hover {

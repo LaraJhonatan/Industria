@@ -108,8 +108,35 @@
                 <q-select v-model="form.moneda" :options="monedas" outlined dense />
               </div>
               <div>
+                <label class="field-label">Stock disponible</label>
+                <q-input v-model.number="form.stock" outlined dense type="number" min="0"
+                  placeholder="Déjalo vacío si no controlas inventario" />
+              </div>
+              <div>
                 <label class="field-label">Estado inicial</label>
                 <q-select v-model="form.estado" :options="statusOptions" emit-value map-options outlined dense />
+              </div>
+
+              <div class="field-full">
+                <label class="field-label">Modalidad de venta</label>
+                <div class="pago-toggle">
+                  <button type="button" class="pago-opt" :class="{ 'pago-opt--active': form.pagableEnLinea }"
+                    @click="form.pagableEnLinea = true">
+                    <q-icon name="credit_card" size="18px" />
+                    <div>
+                      <div class="pago-opt-title">Pago en línea (PSE)</div>
+                      <div class="pago-opt-sub">Precio fijo. El cliente paga desde el carrito.</div>
+                    </div>
+                  </button>
+                  <button type="button" class="pago-opt" :class="{ 'pago-opt--active': !form.pagableEnLinea }"
+                    @click="form.pagableEnLinea = false">
+                    <q-icon name="chat" size="18px" />
+                    <div>
+                      <div class="pago-opt-title">Requiere cotización</div>
+                      <div class="pago-opt-sub">Servicios/precio variable. Va a WhatsApp.</div>
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
             <div class="tab-actions row justify-between q-mt-lg">
@@ -200,6 +227,8 @@ const form = ref({
   descripcion: '',
   precioBase: null,
   moneda: 'COP',
+  pagableEnLinea: true,
+  stock: null,
   estado: 'draft',
   atributosValues: {},
   imagenes: [],
@@ -290,6 +319,8 @@ async function onSave() {
       marca: form.value.marca || undefined,
       precioBase: form.value.precioBase || undefined,
       moneda: form.value.moneda,
+      pagableEnLinea: form.value.pagableEnLinea,
+      stock: form.value.stock === '' || form.value.stock == null ? undefined : Number(form.value.stock),
       estado: form.value.estado,
       atributos: Object.entries(form.value.atributosValues).map(([clave, valor]) => {
         const attr = atributos.value.find(a => a.clave === clave)
@@ -375,6 +406,57 @@ onMounted(async () => {
 
 .req {
   color: #dc2626;
+}
+
+.pago-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pago-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(11, 18, 32, .12);
+  background: #fff;
+  color: rgba(11, 18, 32, .6);
+  cursor: pointer;
+  transition: all 150ms;
+  font-family: inherit;
+}
+
+.pago-opt:hover {
+  border-color: rgba(0, 113, 227, .3);
+}
+
+.pago-opt--active {
+  border-color: #0071e3;
+  background: rgba(0, 113, 227, .05);
+  color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, .1);
+}
+
+.pago-opt-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0b1220;
+}
+
+.pago-opt-sub {
+  font-size: 11px;
+  color: rgba(11, 18, 32, .5);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+@media (max-width: 560px) {
+  .pago-toggle {
+    grid-template-columns: 1fr;
+  }
 }
 
 .tab-actions {

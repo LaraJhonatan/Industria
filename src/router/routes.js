@@ -55,6 +55,9 @@ const routes = [
       // Buscador global de productos
       { path: 'buscar', component: () => import('src/components/tienda/TiendaSearchPage.vue') },
 
+      // Carrito del usuario
+      { path: 'carrito', component: () => import('pages/tienda/CartPage.vue') },
+
       // Empresas por sector
       { path: ':sectorSlug', component: () => import('pages/tienda/CompaniesBySectorPage.vue') },
     ],

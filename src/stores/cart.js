@@ -1,160 +1,159 @@
 // src/stores/cart.js
 // ─────────────────────────────────────────────────────────────────────────────
-// Pinia cart store con persistencia en localStorage
-// Compatible con Vue 3 + Quasar (usa localStorage nativo para máx. compatibilidad)
+// Carrito persistido en la base de datos, atado al usuario logueado con Gmail.
+// Requiere sesión de tipo 'usuario'. Si no hay sesión, addItem lanza
+// 'LOGIN_REQUIRED' para que la UI redirija al login.
 // ─────────────────────────────────────────────────────────────────────────────
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { cartApi } from '../api/cart'
+import { useAuthStore } from './auth-store'
 
-const STORAGE_KEY = 'nova_cart_v1'
-
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
-  }
-}
-
-function saveToStorage(items) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-  } catch {
-    // storage lleno o modo privado — continúa sin persistencia
-  }
+const EMPTY_RESUMEN = {
+  totalItems: 0,
+  subtotalPagable: 0,
+  totalPagables: 0,
+  totalCotizacion: 0,
 }
 
 export const useCartStore = defineStore('cart', () => {
-  // ── State ────────────────────────────────────────────────────────────────
-  const items = ref(loadFromStorage())
+  const auth = useAuthStore()
 
-  // ── Persist helper ───────────────────────────────────────────────────────
-  function persist() {
-    saveToStorage(items.value)
-  }
+  const items = ref([])
+  const resumen = ref({ ...EMPTY_RESUMEN })
+  const loading = ref(false)
+  const loaded = ref(false)
 
-  // ── Getters ──────────────────────────────────────────────────────────────
-  /** Número total de unidades en el carrito */
-  const totalItems = computed(() => items.value.reduce((sum, item) => sum + item.qty, 0))
-
-  /** Precio total sin envío */
-  const subtotal = computed(() => items.value.reduce((sum, item) => sum + item.price * item.qty, 0))
-
-  /** Envío: gratis si subtotal >= 500000 */
-  const shipping = computed(() => (subtotal.value >= 500000 ? 0 : 25000))
-
-  /** Total final */
-  const total = computed(() => subtotal.value + shipping.value)
-
-  /** Carrito vacío */
+  // ── Getters ────────────────────────────────────────────────────────────────
+  const esUsuario = computed(() => auth.sesion?.usuario?.tipo === 'usuario')
+  const totalItems = computed(() => resumen.value.totalItems)
   const isEmpty = computed(() => items.value.length === 0)
 
-  // ── Actions ──────────────────────────────────────────────────────────────
+  /** Ítems que se pueden pagar por PSE (tienen precio y flag pagableEnLinea) */
+  const pagables = computed(() =>
+    items.value.filter((i) => i.pagableEnLinea && i.precioBase != null),
+  )
+  /** Ítems que requieren cotización (servicios / sin precio fijo) */
+  const cotizacion = computed(() =>
+    items.value.filter((i) => !i.pagableEnLinea || i.precioBase == null),
+  )
+  const subtotalPagable = computed(() => resumen.value.subtotalPagable)
 
-  /** Verifica si un producto ya está en el carrito */
+  // ── Helpers ──────────────────────────────────────────────────────────────
+  function setFromResponse(data) {
+    items.value = data?.items || []
+    resumen.value = data?.resumen || { ...EMPTY_RESUMEN }
+  }
+
+  function reset() {
+    items.value = []
+    resumen.value = { ...EMPTY_RESUMEN }
+    loaded.value = false
+  }
+
   function isInCart(productId) {
     return items.value.some((i) => i.productId === productId)
   }
 
-  /** Obtiene la cantidad de un producto en el carrito */
   function getQty(productId) {
-    return items.value.find((i) => i.productId === productId)?.qty ?? 0
+    return items.value.find((i) => i.productId === productId)?.cantidad ?? 0
   }
 
-  /**
-   * Añade un ítem al carrito.
-   * Si ya existe, suma la cantidad.
-   *
-   * @param {{ productId, name, categoryId, categoryTitle, image, price, qty?, variant? }} item
-   */
-  function addItem(item) {
-    const existing = items.value.find((i) => i.productId === item.productId)
-    if (existing) {
-      existing.qty += item.qty ?? 1
-    } else {
-      items.value.push({
-        productId: item.productId,
-        name: item.name,
-        categoryId: item.categoryId,
-        categoryTitle: item.categoryTitle,
-        image: item.image,
-        price: item.price,
-        qty: item.qty ?? 1,
-        variant: item.variant ?? null, // ej: "1.75mm", "3S 11.1V"
-      })
-    }
-    persist()
-  }
-
-  /**
-   * Elimina completamente un ítem del carrito por productId.
-   */
-  function removeItem(productId) {
-    items.value = items.value.filter((i) => i.productId !== productId)
-    persist()
-  }
-
-  /**
-   * Actualiza la cantidad de un ítem.
-   * Si qty <= 0, elimina el ítem.
-   */
-  function setQty(productId, qty) {
-    if (qty <= 0) {
-      removeItem(productId)
+  // ── Actions ──────────────────────────────────────────────────────────────
+  async function fetch() {
+    if (!esUsuario.value) {
+      reset()
+      loaded.value = true
       return
     }
-    const item = items.value.find((i) => i.productId === productId)
-    if (item) {
-      item.qty = qty
-      persist()
+    loading.value = true
+    try {
+      const { data } = await cartApi.get()
+      setFromResponse(data)
+    } catch {
+      reset()
+    } finally {
+      loading.value = false
+      loaded.value = true
     }
   }
 
-  /** Incrementa la cantidad en 1 */
+  /** Agrega un producto. Lanza 'LOGIN_REQUIRED' si no hay sesión de usuario. */
+  async function addItem(productId, cantidad = 1) {
+    if (!esUsuario.value) throw new Error('LOGIN_REQUIRED')
+    loading.value = true
+    try {
+      const { data } = await cartApi.addItem(productId, cantidad)
+      setFromResponse(data)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function setQty(productId, cantidad) {
+    if (!esUsuario.value) return
+    loading.value = true
+    try {
+      const { data } = await cartApi.updateItem(productId, cantidad)
+      setFromResponse(data)
+    } finally {
+      loading.value = false
+    }
+  }
+
   function increment(productId) {
-    const item = items.value.find((i) => i.productId === productId)
-    if (item) {
-      item.qty++
-      persist()
-    }
+    return setQty(productId, getQty(productId) + 1)
   }
 
-  /** Decrementa la cantidad en 1 (mínimo 1) */
   function decrement(productId) {
-    const item = items.value.find((i) => i.productId === productId)
-    if (item) {
-      if (item.qty <= 1) removeItem(productId)
-      else {
-        item.qty--
-        persist()
-      }
+    return setQty(productId, getQty(productId) - 1)
+  }
+
+  async function removeItem(productId) {
+    if (!esUsuario.value) return
+    loading.value = true
+    try {
+      const { data } = await cartApi.removeItem(productId)
+      setFromResponse(data)
+    } finally {
+      loading.value = false
     }
   }
 
-  /** Vacía el carrito completamente */
-  function clear() {
-    items.value = []
-    persist()
+  async function clear() {
+    if (!esUsuario.value) return
+    loading.value = true
+    try {
+      const { data } = await cartApi.clear()
+      setFromResponse(data)
+    } finally {
+      loading.value = false
+    }
   }
 
   return {
     // state
     items,
+    resumen,
+    loading,
+    loaded,
     // getters
+    esUsuario,
     totalItems,
-    subtotal,
-    shipping,
-    total,
     isEmpty,
+    pagables,
+    cotizacion,
+    subtotalPagable,
     // actions
+    fetch,
+    reset,
     isInCart,
     getQty,
     addItem,
-    removeItem,
     setQty,
     increment,
     decrement,
+    removeItem,
     clear,
   }
 })

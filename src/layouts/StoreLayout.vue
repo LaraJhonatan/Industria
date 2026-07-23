@@ -50,6 +50,7 @@
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
               <span class="bs-cart-label">Carrito</span>
+              <span v-if="cartStore.totalItems > 0" class="bs-cart-badge">{{ cartStore.totalItems }}</span>
             </button>
 
             <!-- Avatar -->
@@ -277,13 +278,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth-store'
+import { useCartStore } from '../stores/cart'
 import PreLaunchBanner from './PreLaunchBanner.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const cartStore = useCartStore()
 
 const drawer = ref(false)
 const scrolled = ref(false)
@@ -327,6 +330,13 @@ onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
   window.addEventListener('click', onClickOutside)
   onScroll()
+  if (esTipoUsuario.value) cartStore.fetch()
+})
+
+// Refresca el carrito cuando el usuario inicia/cierra sesión
+watch(esTipoUsuario, (val) => {
+  if (val) cartStore.fetch()
+  else cartStore.reset()
 })
 
 onBeforeUnmount(() => {
@@ -481,6 +491,7 @@ onBeforeUnmount(() => {
 
 /* ── CARRITO ── */
 .bs-cart-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -497,6 +508,24 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
   transition: border-color 150ms, background 150ms, color 150ms;
   white-space: nowrap;
+}
+
+.bs-cart-badge {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #0071e3;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 113, 227, 0.4);
 }
 
 .bs-cart-btn:hover {
