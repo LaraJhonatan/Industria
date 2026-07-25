@@ -218,7 +218,7 @@ const route = useRoute()
 const $q = useQuasar()
 const cart = useCartStore()
 const adding = ref(false)
-const { openWhatsApp } = useWhatsAppQuote()
+const { openWhatsApp, hasWhatsApp } = useWhatsAppQuote()
 const authStore = useAuthStore()
 
 const quoteMensaje = ref('')
@@ -290,6 +290,16 @@ async function onSubmitQuoteRequest() {
 
   quoteError.value = ''
   sendingQuote.value = true
+
+  // El navegador solo permite abrir una pestaña nueva de forma síncrona,
+  // dentro del mismo click. Como el envío hace varios `await` (subir
+  // archivos, guardar la solicitud), si abriéramos WhatsApp después de eso
+  // el navegador la bloquea en silencio. Por eso se reserva la pestaña AQUÍ
+  // — antes de cualquier await — y luego solo se redirige esa pestaña ya
+  // reservada hacia la URL de WhatsApp una vez todo termine.
+  const puedeAbrirWhatsapp = hasWhatsApp(product.value.empresa)
+  const waWindow = puedeAbrirWhatsapp ? window.open('', '_blank') : null
+
   try {
     const archivos = []
     for (const file of quoteFiles.value) {
@@ -325,11 +335,13 @@ async function onSubmitQuoteRequest() {
       producto: product.value.nombre,
       empresa: product.value.empresa,
       mensaje: `Hola, buen día. Estoy interesado en *${product.value.nombre}*.${quienEscribe} Acabo de enviar la solicitud de cotización por ZIFCOR (referencia *#${referencia}*).${docsText}`,
+      targetWindow: waWindow,
     })
 
     quoteMensaje.value = ''
     quoteFiles.value = []
   } catch (e) {
+    waWindow?.close()
     quoteError.value = e.response?.data?.message || 'No se pudo enviar la solicitud. Intenta de nuevo.'
   } finally {
     sendingQuote.value = false
