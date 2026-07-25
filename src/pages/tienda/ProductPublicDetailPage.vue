@@ -96,6 +96,44 @@
               </div>
             </div>
 
+            <div v-if="!esPagable" class="quote-form-card">
+              <p class="quote-form-title">Solicitar cotización</p>
+              <p class="quote-form-sub">Cuéntanos qué necesitas y adjunta archivos si te sirve (diagramas, planos, hojas de cálculo, etc.).</p>
+
+              <textarea v-model="quoteMensaje" class="quote-textarea" rows="3"
+                placeholder="Ej: Necesito una tarjeta PCB de 4 capas para un controlador de motores..."
+                maxlength="2000" />
+
+              <div v-if="quoteFiles.length" class="quote-files-list">
+                <div v-for="(f, idx) in quoteFiles" :key="idx" class="quote-file-chip">
+                  <q-icon name="description" size="15px" color="grey-6" />
+                  <span class="quote-file-name">{{ f.name }}</span>
+                  <span class="quote-file-size">{{ formatFileSize(f.size) }}</span>
+                  <button class="quote-file-remove" @click="removeQuoteFile(idx)">
+                    <q-icon name="close" size="13px" />
+                  </button>
+                </div>
+              </div>
+
+              <p v-if="quoteError" class="quote-form-error">{{ quoteError }}</p>
+
+              <div class="quote-form-actions">
+                <button class="btn-attach" :disabled="sendingQuote" @click="quoteFileInput?.click()">
+                  <q-icon name="attach_file" size="17px" />
+                  Adjuntar archivo
+                </button>
+                <input ref="quoteFileInput" type="file" multiple class="hidden-file-input"
+                  accept=".pdf,.zip,.rar,.xls,.xlsx,.doc,.docx,.png,.jpg,.jpeg"
+                  @change="onSelectQuoteFiles" />
+
+                <button class="btn-send-quote" :disabled="sendingQuote" @click="onSubmitQuoteRequest">
+                  <q-spinner v-if="sendingQuote" color="white" size="16px" />
+                  <template v-else>Enviar solicitud</template>
+                </button>
+              </div>
+              <p class="quote-form-hint">PDF, ZIP, RAR, Excel, Word o imágenes — máx. 15 MB por archivo, hasta 10 archivos.</p>
+            </div>
+
             <div class="cta-card">
               <button class="btn-cart" :disabled="adding || agotado || !puedeAgregar" @click="onAddToCart">
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -170,12 +208,133 @@ import { useQuasar } from 'quasar'
 import { publicApi } from '../../api/publicCatalog'
 import { slugify } from '../../utils/slugify'
 import { useCartStore } from '../../stores/cart'
+import { uploadsApi } from '../../api/uploads'
+import { quoteRequestsApi } from '../../api/quoteRequests'
+import { useWhatsAppQuote } from '../../composables/useWhatsAppQuote'
+import { useAuthStore } from '../../stores/auth-store'
 
 const router = useRouter()
 const route = useRoute()
 const $q = useQuasar()
 const cart = useCartStore()
 const adding = ref(false)
+const { openWhatsApp } = useWhatsAppQuote()
+const authStore = useAuthStore()
+
+const quoteMensaje = ref('')
+const quoteFiles = ref([])
+const quoteFileInput = ref(null)
+const quoteError = ref('')
+const sendingQuote = ref(false)
+
+const MAX_QUOTE_FILE_SIZE = 15 * 1024 * 1024
+const MAX_QUOTE_FILES = 10
+const ALLOWED_QUOTE_MIMETYPES = [
+  'application/pdf',
+  'application/zip', 'application/x-zip-compressed',
+  'application/vnd.rar', 'application/x-rar-compressed',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'image/jpeg', 'image/png', 'image/webp',
+]
+const ALLOWED_QUOTE_EXTENSIONS = ['.pdf', '.zip', '.rar', '.xls', '.xlsx', '.doc', '.docx', '.png', '.jpg', '.jpeg']
+
+function formatFileSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function isAllowedQuoteFile(file) {
+  if (ALLOWED_QUOTE_MIMETYPES.includes(file.type)) return true
+  const name = file.name.toLowerCase()
+  return ALLOWED_QUOTE_EXTENSIONS.some((ext) => name.endsWith(ext))
+}
+
+function onSelectQuoteFiles(e) {
+  const selected = Array.from(e.target.files || [])
+  e.target.value = ''
+  quoteError.value = ''
+
+  for (const file of selected) {
+    if (quoteFiles.value.length >= MAX_QUOTE_FILES) {
+      quoteError.value = `Máximo ${MAX_QUOTE_FILES} archivos.`
+      break
+    }
+    if (!isAllowedQuoteFile(file)) {
+      quoteError.value = `"${file.name}" no es un tipo de archivo permitido.`
+      continue
+    }
+    if (file.size > MAX_QUOTE_FILE_SIZE) {
+      quoteError.value = `"${file.name}" pesa más de 15 MB.`
+      continue
+    }
+    quoteFiles.value.push(file)
+  }
+}
+
+function removeQuoteFile(idx) {
+  quoteFiles.value.splice(idx, 1)
+}
+
+async function onSubmitQuoteRequest() {
+  if (sendingQuote.value || !product.value) return
+
+  if (!cart.esUsuario) {
+    $q.notify({ message: 'Inicia sesión para solicitar una cotización', color: 'blue-6', position: 'top', timeout: 2200 })
+    router.push('/auth')
+    return
+  }
+
+  quoteError.value = ''
+  sendingQuote.value = true
+  try {
+    const archivos = []
+    for (const file of quoteFiles.value) {
+      const { data } = await uploadsApi.uploadFile(file, 'cotizaciones')
+      archivos.push({
+        url: data.url,
+        nombreOriginal: file.name,
+        mimeType: file.type || undefined,
+        tamanoBytes: file.size,
+      })
+    }
+
+    const { data } = await quoteRequestsApi.create({
+      productId: product.value.id,
+      mensaje: quoteMensaje.value.trim() || undefined,
+      archivos,
+    })
+
+    const referencia = data.id.slice(0, 8).toUpperCase()
+
+    $q.notify({
+      message: `Solicitud enviada (referencia #${referencia}). La empresa te contactará pronto.`,
+      color: 'green-6',
+      icon: 'check_circle',
+      position: 'top',
+      timeout: 4000,
+    })
+
+    const nombreSolicitante = authStore.sesion?.usuario?.nombre
+    const quienEscribe = nombreSolicitante ? ` Soy ${nombreSolicitante}.` : ''
+    const docsText = archivos.length ? ' Ya adjunté los documentos con los detalles.' : ''
+    openWhatsApp({
+      producto: product.value.nombre,
+      empresa: product.value.empresa,
+      mensaje: `Hola, buen día. Estoy interesado en *${product.value.nombre}*.${quienEscribe} Acabo de enviar la solicitud de cotización por ZIFCOR (referencia *#${referencia}*).${docsText}`,
+    })
+
+    quoteMensaje.value = ''
+    quoteFiles.value = []
+  } catch (e) {
+    quoteError.value = e.response?.data?.message || 'No se pudo enviar la solicitud. Intenta de nuevo.'
+  } finally {
+    sendingQuote.value = false
+  }
+}
 
 const ZIFCOR_WHATSAPP = '573114799224'
 const SITE_URL = 'https://www.zifcor.com'
@@ -789,6 +948,7 @@ watch(
   color: rgba(11, 18, 32, .62);
   line-height: 1.8;
   margin: 0 0 20px;
+  white-space: pre-line;
 }
 
 .specs-summary {
@@ -861,6 +1021,183 @@ watch(
   background: rgba(0, 113, 227, .06);
   color: #0071e3;
   box-shadow: 0 10px 20px rgba(0, 113, 227, .10);
+}
+
+.quote-form-card {
+  margin-top: 6px;
+  margin-bottom: 14px;
+  background: #fff;
+  border: 1.5px solid rgba(11, 18, 32, .08);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, .06);
+}
+
+.quote-form-title {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #0b1220;
+}
+
+.quote-form-sub {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  color: rgba(11, 18, 32, .5);
+  line-height: 1.5;
+}
+
+.quote-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid rgba(11, 18, 32, .12);
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: #0b1220;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 150ms;
+}
+
+.quote-textarea:focus {
+  border-color: #0071e3;
+}
+
+.quote-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.quote-file-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  background: #f7f8fb;
+  border: 1px solid rgba(11, 18, 32, .07);
+  border-radius: 10px;
+}
+
+.quote-file-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0b1220;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quote-file-size {
+  font-size: 11px;
+  color: rgba(11, 18, 32, .42);
+  white-space: nowrap;
+}
+
+.quote-file-remove {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(11, 18, 32, .08);
+  color: rgba(11, 18, 32, .55);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.quote-file-remove:hover {
+  background: rgba(220, 38, 38, .12);
+  color: #dc2626;
+}
+
+.quote-form-error {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(220, 38, 38, .08);
+  color: #dc2626;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.quote-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.btn-attach {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 14px;
+  background: #fff;
+  border: 1.5px solid rgba(11, 18, 32, .14);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, .68);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms;
+}
+
+.btn-attach:hover:not(:disabled) {
+  border-color: #0071e3;
+  color: #0071e3;
+}
+
+.btn-attach:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.btn-send-quote {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 14px;
+  background: #0b1220;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms;
+}
+
+.btn-send-quote:hover:not(:disabled) {
+  background: #1c2536;
+}
+
+.btn-send-quote:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.quote-form-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: rgba(11, 18, 32, .38);
+  line-height: 1.4;
 }
 
 .cta-card {

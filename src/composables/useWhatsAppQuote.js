@@ -1,12 +1,13 @@
 export function useWhatsAppQuote() {
-  function openWhatsApp({ producto, empresa, variante = null }) {
+  function openWhatsApp({ producto, empresa, variante = null, mensaje = null }) {
     const numero = empresa?.profile?.whatsapp || empresa?.telefono
     if (!numero) return
 
     const cleanNumero = numero.replace(/\D/g, '')
     const varianteText = variante ? ` en presentación ${variante}` : ''
     const nombre = empresa?.profile?.nombreComercial || empresa?.razonSocial || 'su empresa'
-    const msg = `Hola, estoy interesado en *${producto}*${varianteText} de *${nombre}*. Los contacto desde ZIFCOR. ¿Me pueden dar más información?`
+    const msg = mensaje ||
+      `Hola, estoy interesado en *${producto}*${varianteText} de *${nombre}*. Los contacto desde ZIFCOR. ¿Me pueden dar más información?`
 
     window.open(
       `https://wa.me/${cleanNumero}?text=${encodeURIComponent(msg)}`,

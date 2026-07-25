@@ -80,6 +80,7 @@ const routes = [
       },
       { path: 'perfil', component: () => import('pages/dashboard/company/CompanyProfilePage.vue') },
       { path: 'pedidos', component: () => import('pages/dashboard/orders/OrdersPage.vue') },
+      { path: 'cotizaciones', component: () => import('pages/dashboard/quotes/QuoteRequestsPage.vue') },
       { path: 'mensajes', component: () => import('pages/dashboard/messages/MessagesPage.vue') },
       { path: 'alianzas', component: () => import('pages/dashboard/alliances/AlliancesPage.vue') },
       {
