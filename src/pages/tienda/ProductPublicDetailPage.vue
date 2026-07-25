@@ -210,7 +210,6 @@ import { slugify } from '../../utils/slugify'
 import { useCartStore } from '../../stores/cart'
 import { uploadsApi } from '../../api/uploads'
 import { quoteRequestsApi } from '../../api/quoteRequests'
-import { useWhatsAppQuote } from '../../composables/useWhatsAppQuote'
 import { useAuthStore } from '../../stores/auth-store'
 
 const router = useRouter()
@@ -218,7 +217,6 @@ const route = useRoute()
 const $q = useQuasar()
 const cart = useCartStore()
 const adding = ref(false)
-const { openWhatsApp, hasWhatsApp } = useWhatsAppQuote()
 const authStore = useAuthStore()
 
 const quoteMensaje = ref('')
@@ -297,8 +295,9 @@ async function onSubmitQuoteRequest() {
   // el navegador la bloquea en silencio. Por eso se reserva la pestaña AQUÍ
   // — antes de cualquier await — y luego solo se redirige esa pestaña ya
   // reservada hacia la URL de WhatsApp una vez todo termine.
-  const puedeAbrirWhatsapp = hasWhatsApp(product.value.empresa)
-  const waWindow = puedeAbrirWhatsapp ? window.open('', '_blank') : null
+  // Las solicitudes de cotización siempre avisan al WhatsApp de ZIFCOR
+  // (no al de la empresa individual, que muchas aún no tienen configurado).
+  const waWindow = window.open('', '_blank')
 
   try {
     const archivos = []
@@ -331,12 +330,15 @@ async function onSubmitQuoteRequest() {
     const nombreSolicitante = authStore.sesion?.usuario?.nombre
     const quienEscribe = nombreSolicitante ? ` Soy ${nombreSolicitante}.` : ''
     const docsText = archivos.length ? ' Ya adjunté los documentos con los detalles.' : ''
-    openWhatsApp({
-      producto: product.value.nombre,
-      empresa: product.value.empresa,
-      mensaje: `Hola, buen día. Estoy interesado en *${product.value.nombre}*.${quienEscribe} Acabo de enviar la solicitud de cotización por ZIFCOR (referencia *#${referencia}*).${docsText}`,
-      targetWindow: waWindow,
-    })
+    const waMsg = encodeURIComponent(
+      `Hola, buen día. Estoy interesado en *${product.value.nombre}*.${quienEscribe} Acabo de enviar la solicitud de cotización por ZIFCOR (referencia *#${referencia}*).${docsText}`
+    )
+    const waUrl = `https://wa.me/${ZIFCOR_WHATSAPP}?text=${waMsg}`
+    if (waWindow && !waWindow.closed) {
+      waWindow.location.href = waUrl
+    } else {
+      window.open(waUrl, '_blank', 'noopener')
+    }
 
     quoteMensaje.value = ''
     quoteFiles.value = []
