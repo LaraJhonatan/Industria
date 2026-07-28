@@ -59,18 +59,19 @@
                 <div class="avatar-drop-hr" />
 
                 <template v-if="esTipoUsuario">
-                  <button class="avatar-drop-item" @click="avatarMenu = false">
+                  <button class="avatar-drop-item" @click="goToMisCompras">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
-                    Mi perfil
-                  </button>
-                  <button class="avatar-drop-item" @click="avatarMenu = false">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                      <path d="M3 6h18" />
                       <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    Mis compras
+                  </button>
+                  <button class="avatar-drop-item" @click="goToCarrito">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="9" cy="21" r="1" />
+                      <circle cx="20" cy="21" r="1" />
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                     </svg>
                     Mi carrito
                   </button>
@@ -157,8 +158,8 @@
             </div>
 
             <template v-if="esTipoUsuario">
-              <button class="drawer-btn-fill" @click="drawer = false">Mi perfil</button>
-              <button class="drawer-btn-fill" @click="drawer = false">Mi carrito</button>
+              <button class="drawer-btn-fill" @click="goToMisCompras">Mis compras</button>
+              <button class="drawer-btn-fill" @click="goToCarrito">Mi carrito</button>
             </template>
             <template v-else>
               <button class="drawer-btn-fill" @click="goToDashboard; drawer = false">Mi dashboard</button>
@@ -389,6 +390,8 @@ const whatsappUrl = computed(() => `https://wa.me/${ZIFCOR_WHATSAPP}?text=${enco
 
 function goToDashboard() { avatarMenu.value = false; drawer.value = false; router.push('/dashboard') }
 function goToProfile() { avatarMenu.value = false; drawer.value = false; router.push('/dashboard/perfil') }
+function goToMisCompras() { avatarMenu.value = false; drawer.value = false; router.push('/tienda/mis-compras') }
+function goToCarrito() { avatarMenu.value = false; drawer.value = false; router.push('/tienda/carrito') }
 function doLogout() { avatarMenu.value = false; drawer.value = false; authStore.logout(); router.push('/') }
 
 function scrollToSection(id) {

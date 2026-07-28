@@ -7,10 +7,6 @@
 
         <router-link to="/" class="bs-brand">
           <img src="/IconoZ.png" alt="ZIFCOR" class="bs-logo-img" />
-          <span class="bs-brand-text">
-            <span class="bs-brand-name">ZIFCOR</span>
-            <span class="bs-brand-tag">Distribuidora</span>
-          </span>
         </router-link>
 
         <nav class="bs-nav gt-sm">
@@ -83,14 +79,6 @@
                         <path d="M16 10a4 4 0 0 1-8 0" />
                       </svg>
                       Mis compras
-                    </button>
-                    <button class="avatar-drop-item" @click="avatarMenu = false">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                      </svg>
-                      Mi perfil
                     </button>
                   </template>
 
@@ -185,10 +173,9 @@
             </button>
 
             <template v-if="esTipoUsuario">
-              <button class="drawer-btn-secondary" @click="router.push('/tienda/mis-compras'); drawer = false">
+              <button class="drawer-btn-fill" @click="router.push('/tienda/mis-compras'); drawer = false">
                 Mis compras
               </button>
-              <button class="drawer-btn-fill" @click="drawer = false">Mi perfil</button>
             </template>
             <template v-else>
               <button class="drawer-btn-fill" @click="goToDashboard; drawer = false">Mi dashboard</button>
@@ -396,27 +383,6 @@ onBeforeUnmount(() => {
   width: auto;
   object-fit: contain;
   display: block;
-}
-
-.bs-brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-
-.bs-brand-name {
-  font-size: 15px;
-  font-weight: 900;
-  color: #0b1220;
-  letter-spacing: -0.3px;
-}
-
-.bs-brand-tag {
-  font-size: 10px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, 0.45);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
 }
 
 .bs-nav {
