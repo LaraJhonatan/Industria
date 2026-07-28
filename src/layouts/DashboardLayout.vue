@@ -129,6 +129,7 @@ const navItems = [
   { path: '/dashboard/tienda', label: 'Mi Tienda', icon: 'storefront' },
   { path: '/dashboard/productos', label: 'Productos', icon: 'inventory_2' },
   { path: '/dashboard/pedidos', label: 'Pedidos', icon: 'receipt_long', badge: 2 },
+  { path: '/dashboard/ventas-manuales', label: 'Ventas manuales', icon: 'point_of_sale' },
   { path: '/dashboard/cotizaciones', label: 'Cotizaciones', icon: 'request_quote' },
   { path: '/dashboard/mensajes', label: 'Mensajes', icon: 'chat_bubble_outline', badge: 1 },
   { path: '/dashboard/alianzas', label: 'Alianzas B2B', icon: 'handshake' },

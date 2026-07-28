@@ -54,6 +54,8 @@ const routes = [
 
       { path: 'checkout', component: () => import('pages/tienda/CheckoutPage.vue') },
 
+      { path: 'mis-compras', component: () => import('pages/tienda/MyOrdersPage.vue') },
+
       { path: ':sectorSlug', component: () => import('pages/tienda/CompaniesBySectorPage.vue') },
     ],
   },
@@ -81,6 +83,7 @@ const routes = [
       { path: 'perfil', component: () => import('pages/dashboard/company/CompanyProfilePage.vue') },
       { path: 'pedidos', component: () => import('pages/dashboard/orders/OrdersPage.vue') },
       { path: 'cotizaciones', component: () => import('pages/dashboard/quotes/QuoteRequestsPage.vue') },
+      { path: 'ventas-manuales', component: () => import('pages/dashboard/orders/ManualOrdersPage.vue') },
       { path: 'mensajes', component: () => import('pages/dashboard/messages/MessagesPage.vue') },
       { path: 'alianzas', component: () => import('pages/dashboard/alliances/AlliancesPage.vue') },
       {
