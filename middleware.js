@@ -8,7 +8,7 @@ import { next } from '@vercel/edge'
 // reales del producto (título, descripción, imagen). Los navegadores
 // normales pasan de largo (next()) y reciben la SPA de siempre.
 const BOT_UA_REGEX =
-  /facebookexternalhit|Facebot|WhatsApp|Twitterbot|TelegramBot|Slackbot|LinkedInBot|Discordbot|SkypeUriPreview|Pinterest|redditbot|Applebot|vkShare|W3C_Validator|Google-InspectionTool|Bingbot|iMessage/i
+  /facebookexternalhit|Facebot|WhatsApp|Twitterbot|TelegramBot|Slackbot|LinkedInBot|Discordbot|SkypeUriPreview|Pinterest|redditbot|Applebot|vkShare|W3C_Validator|Google-InspectionTool|Googlebot|AdsBot-Google|Bingbot|DuckDuckBot|iMessage/i
 
 const SITE_URL = 'https://www.zifcor.com'
 
