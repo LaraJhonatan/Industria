@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://zifcor-api-azepc8f7a3cxfdfg.westus2-01.azurewebsites.net/sitemap.xml"
+    }
+  ]
+}
