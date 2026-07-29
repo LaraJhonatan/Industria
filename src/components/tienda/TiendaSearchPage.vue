@@ -7,7 +7,7 @@
           <div>
             <p class="search-kicker">Resultados de búsqueda</p>
             <h1 class="search-title">
-              <span v-if="q">« {{ q }} »</span>
+              <span v-if="displayLabel">« {{ displayLabel }} »</span>
               <span v-else>Todos los productos</span>
             </h1>
           </div>
@@ -27,7 +27,7 @@
 
         <p v-if="!loading" class="search-meta">
           {{ total }} resultado{{ total !== 1 ? 's' : '' }} encontrado{{ total !== 1 ? 's' : '' }}
-          <span v-if="q"> para <strong>« {{ q }} »</strong></span>
+          <span v-if="displayLabel"> para <strong>« {{ displayLabel }} »</strong></span>
         </p>
       </div>
 
@@ -45,7 +45,7 @@
         </div>
         <h2 class="empty-title">Sin resultados</h2>
         <p class="empty-sub">
-          No encontramos productos para <strong>« {{ q }} »</strong> en nuestro catálogo actual.<br />
+          No encontramos productos para <strong>« {{ displayLabel }} »</strong> en nuestro catálogo actual.<br />
           Intenta con otras palabras clave o escríbenos directamente.
         </p>
 
@@ -157,6 +157,9 @@ const router = useRouter()
 const ZIFCOR_WHATSAPP = '573114799224'
 
 const q = ref(route.query.q || '')
+const categoryId = ref(route.query.categoryId || '')
+const subcategoryId = ref(route.query.subcategoryId || '')
+const categoryLabel = ref(route.query.label || '')
 const localQuery = ref(q.value)
 const focused = ref(false)
 const productos = ref([])
@@ -165,9 +168,11 @@ const page = ref(1)
 const total = ref(0)
 const pages = ref(0)
 
+const displayLabel = computed(() => categoryLabel.value || q.value)
+
 const whatsappUrl = computed(() => {
-  const msg = q.value
-    ? `Hola, busqué «${q.value}» en ZIFCOR y no encontré resultados. ¿Me pueden ayudar a conseguirlo?`
+  const msg = displayLabel.value
+    ? `Hola, busqué «${displayLabel.value}» en ZIFCOR y no encontré resultados. ¿Me pueden ayudar a conseguirlo?`
     : 'Hola, me gustaría recibir más información sobre los productos de ZIFCOR.'
   return `https://wa.me/${ZIFCOR_WHATSAPP}?text=${encodeURIComponent(msg)}`
 })
@@ -177,6 +182,8 @@ async function fetchResults() {
   try {
     const { data } = await publicApi.searchProductos({
       q: q.value || undefined,
+      categoryId: categoryId.value || undefined,
+      subcategoryId: subcategoryId.value || undefined,
       page: page.value,
       limit: 16,
     })
@@ -198,9 +205,12 @@ function doSearch() {
 }
 
 watch(
-  () => route.query.q,
-  (val) => {
-    q.value = val || ''
+  () => [route.query.q, route.query.categoryId, route.query.subcategoryId, route.query.label],
+  () => {
+    q.value = route.query.q || ''
+    categoryId.value = route.query.categoryId || ''
+    subcategoryId.value = route.query.subcategoryId || ''
+    categoryLabel.value = route.query.label || ''
     localQuery.value = q.value
     page.value = 1
     fetchResults()
