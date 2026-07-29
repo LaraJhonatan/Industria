@@ -1,5 +1,5 @@
 <template>
-  <div class="plb-wrap">
+  <div v-if="SHOW_PRELAUNCH_BANNER" class="plb-wrap">
     <div class="plb-inner">
 
       <div class="plb-left">
@@ -45,6 +45,9 @@
 <script setup>
 import { reactive, onMounted, onBeforeUnmount } from 'vue'
 
+// Apaga/enciende el banner de "pre lanzamiento" en todo el sitio desde un solo lugar.
+const SHOW_PRELAUNCH_BANNER = false
+
 const TARGET = new Date('2026-11-20T12:00:00')
 
 const timeLeft = reactive({ months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 })
@@ -89,6 +92,7 @@ function tick() {
 }
 
 onMounted(() => {
+  if (!SHOW_PRELAUNCH_BANNER) return
   tick()
   ticker = setInterval(tick, 1000)
 })
