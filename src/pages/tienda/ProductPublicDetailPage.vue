@@ -538,6 +538,7 @@ const atributosUnicos = computed(() => {
   if (!product.value?.atributos?.length) return []
   const seen = new Set()
   return product.value.atributos.filter(av => {
+    if (!av.valor || !String(av.valor).trim()) return false
     const key = av.atributo?.id || av.atributoId || av.id
     if (seen.has(key)) return false
     seen.add(key)
