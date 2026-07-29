@@ -26,7 +26,10 @@
               <div class="gallery-main" @click="zoomOpen = true">
                 <img v-if="selectedImageUrl" :src="selectedImageUrl" :alt="product.nombre" class="gallery-img" />
                 <div v-else class="gallery-empty">
-                  <q-icon name="inventory_2" size="52px" color="grey-4" />
+                  <div class="gallery-empty-icon">
+                    <q-icon name="inventory_2" size="38px" />
+                  </div>
+                  <p class="gallery-empty-text">Imagen no disponible</p>
                 </div>
                 <button v-if="productImages.length > 1" class="gallery-nav gallery-nav-left" @click.stop="prevImage">
                   <q-icon name="chevron_left" size="22px" />
@@ -778,8 +781,32 @@ watch(
   height: 100%;
   min-height: 360px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 16px;
+  background:
+    radial-gradient(circle at 26% 22%, rgba(0, 113, 227, .07), transparent 55%),
+    radial-gradient(circle at 78% 78%, rgba(0, 113, 227, .05), transparent 50%),
+    #f8fafc;
+}
+
+.gallery-empty-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(0, 113, 227, .14), rgba(0, 113, 227, .04));
+  color: #0071e3;
+  display: grid;
+  place-items: center;
+}
+
+.gallery-empty-text {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, .35);
+  letter-spacing: .2px;
 }
 
 .zoom-badge {
