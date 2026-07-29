@@ -52,6 +52,10 @@ export default async function middleware(request) {
 
     const image = escapeHtml(product.imagenes?.[0]?.url || `${SITE_URL}/icons/favicon-128x128.png`)
     const canonical = escapeHtml(`${SITE_URL}${url.pathname}`)
+    const precio =
+      product.precioBase != null
+        ? `$${Number(product.precioBase).toLocaleString('es-CO')} ${escapeHtml(product.moneda || 'COP')}`
+        : null
 
     const html = `<!doctype html>
 <html lang="es">
@@ -71,9 +75,16 @@ export default async function middleware(request) {
 <meta name="twitter:title" content="${title}" />
 <meta name="twitter:description" content="${description}" />
 <meta name="twitter:image" content="${image}" />
-<meta http-equiv="refresh" content="0; url=${canonical}" />
 </head>
-<body></body>
+<body>
+<main>
+<h1>${nombreProducto}</h1>
+<p>${description}</p>
+${precio ? `<p>${precio}</p>` : ''}
+<p>Vendido por ${empresaNombre} en <a href="${SITE_URL}">ZIFCOR</a>.</p>
+<img src="${image}" alt="${nombreProducto}" width="300" />
+</main>
+</body>
 </html>`
 
     return new Response(html, {
