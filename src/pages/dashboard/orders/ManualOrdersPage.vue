@@ -57,7 +57,8 @@
               style="font-weight:700;font-size:12.5px" @click="openEdit(o)" />
             <q-btn v-if="o.estado !== 'approved'" unelevated dense no-caps label="Marcar pagada" color="blue-6"
               style="font-weight:700;font-size:12.5px" @click="openPagar(o)" />
-            <q-btn v-else unelevated dense no-caps label="Comprobante" icon="download" color="dark"
+            <q-btn unelevated dense no-caps :label="o.estado === 'approved' ? 'Comprobante' : 'Cotización (PDF)'"
+              icon="download" :color="o.estado === 'approved' ? 'dark' : 'orange-8'"
               :loading="descargando === o.id" style="font-weight:700;font-size:12.5px" @click="onDescargar(o)" />
           </div>
         </div>
