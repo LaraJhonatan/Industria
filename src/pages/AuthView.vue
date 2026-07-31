@@ -360,7 +360,7 @@
                   </button>
                 </div>
                 <div style="text-align:right;margin-top:6px">
-                  <button type="button" class="tlink" @click.prevent="() => { }">
+                  <button type="button" class="tlink" @click.prevent="irARecuperar">
                     ¿Olvidaste tu contraseña?
                   </button>
                 </div>
@@ -739,6 +739,70 @@
             </div>
           </template>
 
+          <template v-if="vista === 'recuperar'">
+            <button class="back-btn" @click="vista = 'empresa-selector'; modeEmpresa = 'login'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              Volver
+            </button>
+
+            <div class="fh">
+              <div class="user-badge user-badge--green">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                Recuperar acceso
+              </div>
+              <h2 class="fh-title">¿Olvidaste tu contraseña?</h2>
+              <p class="fh-sub">Ingresa el NIT o correo corporativo de tu empresa y te enviaremos instrucciones para
+                restablecerla.</p>
+            </div>
+
+            <template v-if="!recuperar.enviado">
+              <div v-if="recuperar.err" class="alert alert--err">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <circle cx="12" cy="16" r=".6" fill="currentColor" />
+                </svg>
+                {{ recuperar.err }}
+              </div>
+
+              <div class="fg">
+                <label class="fl">NIT o correo corporativo <span class="req">*</span></label>
+                <div class="iw">
+                  <input v-model="recuperar.identificador" class="fi" type="text"
+                    placeholder="900123456 o correo@empresa.com" @keydown.enter="solicitarRecuperacion" />
+                  <svg class="fi-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+              </div>
+
+              <button class="btn-p w-full" :class="{ loading: recuperar.loading }" @click="solicitarRecuperacion"
+                :disabled="recuperar.loading || !recuperar.identificador.trim()">
+                <span v-if="recuperar.loading" class="spinner" />
+                <span v-else>Enviar instrucciones →</span>
+              </button>
+            </template>
+
+            <div v-else class="success-block">
+              <div class="success-ico">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </div>
+              <h2 class="fh-title" style="text-align:center">Revisa tu correo</h2>
+              <p class="fh-sub" style="text-align:center">{{ recuperar.mensaje }}</p>
+              <button class="btn-p w-full mt-16" @click="irAlLogin">Volver a iniciar sesión →</button>
+            </div>
+          </template>
+
         </div>
       </div>
     </div>
@@ -790,6 +854,8 @@ const showLP = ref(false)
 const userErr = ref('')
 const userLoading = ref(false)
 
+const recuperar = reactive({ identificador: '', loading: false, err: '', enviado: false, mensaje: '' })
+
 const steps = ['Empresa', 'RUT', 'Verificar', 'Contraseña']
 const reg = reactive({
   step: 1, nit: '', nitErr: '', empresa: null, loading: false,
@@ -839,6 +905,29 @@ async function doLogin() {
     loginErr.value = getError(err)
   } finally {
     loginLoading.value = false
+  }
+}
+
+function irARecuperar() {
+  recuperar.identificador = login.id
+  recuperar.err = ''
+  recuperar.enviado = false
+  recuperar.mensaje = ''
+  vista.value = 'recuperar'
+}
+
+async function solicitarRecuperacion() {
+  if (recuperar.loading || !recuperar.identificador.trim()) return
+  recuperar.err = ''
+  recuperar.loading = true
+  try {
+    const { data } = await api.post('/auth/olvide-password', { identificador: recuperar.identificador.trim() })
+    recuperar.mensaje = data.mensaje || 'Si los datos son correctos, enviamos instrucciones a tu correo.'
+    recuperar.enviado = true
+  } catch (err) {
+    recuperar.err = getError(err, 'No se pudo procesar la solicitud. Intenta de nuevo.')
+  } finally {
+    recuperar.loading = false
   }
 }
 

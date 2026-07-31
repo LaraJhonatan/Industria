@@ -217,7 +217,7 @@ async function onPagar() {
       await cart.fetch()
     })
   } catch (e) {
-    const msg = e.response?.data?.message || e.message || 'No se pudo iniciar el pago.'
+    const msg = e.response?.data?.message || 'No se pudo iniciar el pago. Intenta de nuevo.'
     $q.notify({ message: msg, color: 'red-5', position: 'top' })
   } finally {
     paying.value = false

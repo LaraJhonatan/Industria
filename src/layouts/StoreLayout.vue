@@ -178,7 +178,7 @@
               </button>
             </template>
             <template v-else>
-              <button class="drawer-btn-fill" @click="goToDashboard; drawer = false">Mi dashboard</button>
+              <button class="drawer-btn-fill" @click="goToDashboard()">Mi dashboard</button>
             </template>
 
             <button class="drawer-btn-outline" @click="doLogout">Cerrar sesión</button>

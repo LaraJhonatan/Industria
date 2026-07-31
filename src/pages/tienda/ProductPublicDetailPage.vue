@@ -199,6 +199,12 @@
           </div>
         </q-dialog>
       </template>
+
+      <div v-else class="state-card">
+        <h2 class="state-title">Producto no encontrado</h2>
+        <p class="state-sub">Puede que ya no esté disponible o que el enlace esté mal escrito.</p>
+        <button class="btn-primary" @click="router.push('/tienda')">Ir al catálogo</button>
+      </div>
     </div>
   </section>
 </template>
@@ -703,6 +709,41 @@ watch(
   font-size: 14px;
   color: rgba(11, 18, 32, .48);
   font-weight: 600;
+}
+
+.state-card {
+  background: #fff;
+  border: 1px solid rgba(11, 18, 32, .08);
+  border-radius: 18px;
+  padding: 56px 24px;
+  text-align: center;
+  margin-top: 24px;
+}
+
+.state-title {
+  margin: 0 0 14px;
+  font-size: 18px;
+  font-weight: 900;
+  color: #0b1220;
+}
+
+.state-sub {
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: rgba(11, 18, 32, .5);
+}
+
+.btn-primary {
+  height: 44px;
+  padding: 0 26px;
+  border: none;
+  border-radius: 12px;
+  background: #0071e3;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .breadcrumb {

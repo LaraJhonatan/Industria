@@ -162,7 +162,7 @@
               <button class="drawer-btn-fill" @click="goToCarrito">Mi carrito</button>
             </template>
             <template v-else>
-              <button class="drawer-btn-fill" @click="goToDashboard; drawer = false">Mi dashboard</button>
+              <button class="drawer-btn-fill" @click="goToDashboard()">Mi dashboard</button>
             </template>
 
             <button class="drawer-btn-outline" @click="doLogout">Cerrar sesión</button>
@@ -266,6 +266,7 @@
               ✅ ¡Gracias! Tu sugerencia fue enviada.
             </div>
             <div v-else>
+              <p v-if="feedbackError" class="fb-error">⚠️ No se pudo enviar. Intenta de nuevo.</p>
               <textarea v-model="feedbackMsg" class="fb-input" placeholder="Ej: Mejorar el filtro de búsqueda..."
                 rows="3" @keydown.enter.prevent="sendFeedback" :disabled="feedbackLoading" />
               <div class="fb-footer">
@@ -327,6 +328,7 @@ const feedbackOpen = ref(false)
 const feedbackMsg = ref('')
 const feedbackLoading = ref(false)
 const feedbackSent = ref(false)
+const feedbackError = ref(false)
 
 const esTipoUsuario = computed(() => authStore.sesion?.usuario?.tipo === 'usuario')
 
@@ -360,12 +362,14 @@ function closeFeedback() {
 function resetFeedback() {
   feedbackMsg.value = ''
   feedbackSent.value = false
+  feedbackError.value = false
   feedbackLoading.value = false
 }
 
 async function sendFeedback() {
   if (!feedbackMsg.value.trim() || feedbackLoading.value) return
   feedbackLoading.value = true
+  feedbackError.value = false
   try {
     await publicApi.enviarContacto({
       firstName: 'Sugerencia',
@@ -377,8 +381,7 @@ async function sendFeedback() {
     feedbackSent.value = true
     setTimeout(() => closeFeedback(), 2500)
   } catch {
-    feedbackSent.value = true
-    setTimeout(() => closeFeedback(), 2500)
+    feedbackError.value = true
   } finally {
     feedbackLoading.value = false
   }
@@ -1234,6 +1237,13 @@ onBeforeUnmount(() => {
   color: #16a34a;
   text-align: center;
   padding: 12px 0 4px;
+}
+
+.fb-error {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #dc2626;
+  margin: 0 0 8px;
 }
 
 .fb-pop-enter-active {
