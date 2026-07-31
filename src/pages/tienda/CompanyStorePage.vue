@@ -121,7 +121,10 @@
                     <div class="product-img">
                       <img v-if="p.imagenes?.[0]?.url" :src="p.imagenes[0].url" :alt="p.nombre" />
                       <div v-else class="product-img-empty">
-                        <q-icon name="inventory_2" size="32px" color="grey-4" />
+                        <div class="product-img-empty-icon">
+                          <q-icon name="inventory_2" size="22px" />
+                        </div>
+                        <span class="product-img-empty-text">Sin imagen</span>
                       </div>
                     </div>
                     <div class="product-info">
@@ -678,7 +681,7 @@ watch(
 .sidebar-row-main {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
   padding: 9px 6px 9px 10px;
@@ -699,9 +702,9 @@ watch(
   font-size: 13.5px;
   font-weight: 700;
   color: #0b1220;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.35;
+  word-break: break-word;
 }
 
 .sidebar-count {
@@ -866,8 +869,32 @@ watch(
 .product-img-empty {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background:
+    radial-gradient(circle at 28% 25%, rgba(0, 113, 227, .08), transparent 55%),
+    radial-gradient(circle at 76% 80%, rgba(0, 113, 227, .06), transparent 50%),
+    #f3f6f9;
+}
+
+.product-img-empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(0, 113, 227, .14), rgba(0, 113, 227, .04));
+  color: #0071e3;
   display: grid;
   place-items: center;
+}
+
+.product-img-empty-text {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: rgba(11, 18, 32, .32);
+  letter-spacing: .2px;
 }
 
 .product-info {
