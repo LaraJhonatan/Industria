@@ -104,7 +104,7 @@
               <p class="quote-form-sub">Cuéntanos qué necesitas y adjunta archivos si te sirve (diagramas, planos, hojas de cálculo, etc.).</p>
 
               <textarea v-model="quoteMensaje" class="quote-textarea" rows="3"
-                placeholder="Ej: Necesito una tarjeta PCB de 4 capas para un controlador de motores..."
+                placeholder="Ej: Necesito una cotización para este producto, cantidad e información adicional..."
                 maxlength="2000" />
 
               <div v-if="quoteFiles.length" class="quote-files-list">
