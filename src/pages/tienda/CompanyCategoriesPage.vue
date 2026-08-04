@@ -1,50 +1,17 @@
 <template>
   <div>
     <section class="store-hero">
-      <div class="sh-bg-pattern" />
+      <div class="sh-bg">
+        <img src="/winston-chen-ZAk0UY8xYh0-unsplash.jpg" alt="" class="sh-bg-img" />
+        <div class="sh-overlay" />
+      </div>
       <div class="sh-content">
         <h1 class="sh-title">
-          Hacemos que <span class="sh-title-blue">vendas más</span><span class="sh-title-dot">.</span>
+          Encuentra proveedores,<br />
+          <span class="sh-title-blue">productos y servicios</span><br />
+          para tu empresa
         </h1>
-
-        <div class="sh-cta-row">
-          <button class="sh-cta-card sh-cta-card--primary" @click="scrollToCatalog">
-            <span class="sh-cta-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-                <path d="M3 6h18" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-            </span>
-            <span class="sh-cta-text">
-              <strong>Explorar tienda</strong>
-              <small>Encuentra proveedores industriales en minutos.</small>
-            </span>
-            <svg class="sh-cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2.5">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </button>
-
-          <router-link to="/auth?mode=registro-empresa" class="sh-cta-card sh-cta-card--dark">
-            <span class="sh-cta-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 10.5 12 3l9 7.5" />
-                <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
-              </svg>
-            </span>
-            <span class="sh-cta-text">
-              <strong>Vender en ZIFCOR</strong>
-              <small>Regístrate gratis y empieza a vender hoy.</small>
-            </span>
-            <svg class="sh-cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2.5">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </router-link>
-        </div>
+        <p class="sh-sub">Busca entre miles de empresas y encuentra exactamente lo que necesitas.</p>
 
         <div class="search-block">
           <div class="search-bar" :class="{ focused: searchFocused }">
@@ -225,7 +192,7 @@
       </div>
     </section>
 
-    <section class="catalog-section" ref="catalogSectionRef">
+    <section class="catalog-section">
       <div class="bs-wrap">
         <div class="section-head section-head--sectors">
           <h2 class="section-title">Explora empresas por sector</h2>
@@ -281,11 +248,6 @@ const serviciosDestacados = ref([])
 const loading = ref(true)
 const searchQuery = ref('')
 const searchFocused = ref(false)
-const catalogSectionRef = ref(null)
-
-function scrollToCatalog() {
-  catalogSectionRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
 
 const examples = [
   { icon: '🚁', label: 'Drones' },
@@ -374,134 +336,56 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 48px 32px 40px;
-  background: #fff;
+  padding: 40px 32px 38px;
 }
 
-.sh-bg-pattern {
+.sh-bg {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(11, 18, 32, .05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(11, 18, 32, .05) 1px, transparent 1px);
-  background-size: 34px 34px;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 75%);
-  mask-image: radial-gradient(ellipse at center, #000 0%, transparent 75%);
+}
+
+.sh-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sh-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(0, 20, 60, 0.90) 0%, rgba(0, 50, 110, 0.75) 100%);
 }
 
 .sh-content {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 780px;
+  max-width: 820px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 20px;
+  gap: 14px;
 }
 
 .sh-title {
   margin: 0;
-  font-size: clamp(26px, 3.6vw, 42px);
+  font-size: clamp(24px, 3.2vw, 38px);
   font-weight: 900;
-  color: #0b1220;
+  color: #fff;
   line-height: 1.12;
   letter-spacing: -1px;
 }
 
 .sh-title-blue {
-  color: #0071e3;
+  color: #60a5fa;
 }
 
-.sh-title-dot {
-  color: #fdda24;
-}
-
-.sh-cta-row {
-  width: 100%;
-  max-width: 720px;
-  display: flex;
-  gap: 14px;
-}
-
-.sh-cta-card {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border: none;
-  border-radius: 16px;
-  cursor: pointer;
-  text-align: left;
-  text-decoration: none;
-  font-family: inherit;
-  transition: transform 180ms, box-shadow 180ms, filter 180ms;
-}
-
-.sh-cta-card:hover {
-  transform: translateY(-2px);
-}
-
-.sh-cta-card--primary {
-  background: #0071e3;
-  color: #fff;
-  box-shadow: 0 12px 28px rgba(0, 113, 227, .28);
-}
-
-.sh-cta-card--primary:hover {
-  filter: brightness(1.05);
-}
-
-.sh-cta-card--dark {
-  background: #0b1220;
-  color: #fff;
-  box-shadow: 0 12px 28px rgba(11, 18, 32, .22);
-}
-
-.sh-cta-card--dark:hover {
-  filter: brightness(1.15);
-}
-
-.sh-cta-icon {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, .16);
-  display: grid;
-  place-items: center;
-}
-
-.sh-cta-text {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.sh-cta-text strong {
-  font-size: 14.5px;
-  font-weight: 900;
-}
-
-.sh-cta-text small {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, .72);
-  line-height: 1.3;
-}
-
-.sh-cta-arrow {
-  flex-shrink: 0;
-  opacity: .75;
-  transition: transform 180ms;
-}
-
-.sh-cta-card:hover .sh-cta-arrow {
-  transform: translateX(3px);
+.sh-sub {
+  margin: 0;
+  font-size: 15px;
+  color: rgba(255, 255, 255, .65);
 }
 
 .search-block {
@@ -573,7 +457,7 @@ onMounted(async () => {
 .sh-examples-label {
   font-size: 11px;
   font-weight: 700;
-  color: rgba(11, 18, 32, .38);
+  color: rgba(255, 255, 255, .45);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -613,10 +497,10 @@ onMounted(async () => {
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: rgba(11, 18, 32, .04);
-  border: 1px solid rgba(11, 18, 32, .10);
+  background: rgba(255, 255, 255, .10);
+  border: 1px solid rgba(255, 255, 255, .20);
   border-radius: 999px;
-  color: rgba(11, 18, 32, .68);
+  color: rgba(255, 255, 255, .85);
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
@@ -626,8 +510,8 @@ onMounted(async () => {
 }
 
 .sh-chip:hover {
-  background: rgba(0, 113, 227, .08);
-  border-color: rgba(0, 113, 227, .30);
+  background: rgba(255, 255, 255, .20);
+  border-color: rgba(255, 255, 255, .40);
 }
 
 .sh-chip-icon {
@@ -1064,10 +948,6 @@ onMounted(async () => {
 @media (max-width: 640px) {
   .store-hero {
     padding: 32px 16px 30px;
-  }
-
-  .sh-cta-row {
-    flex-direction: column;
   }
 
   .cat-card {

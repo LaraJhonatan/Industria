@@ -10,10 +10,24 @@
         </router-link>
 
         <nav class="bs-nav gt-sm">
-          <router-link to="/nosotros" class="bs-nav-link">
+          <router-link to="/nosotros" class="bs-nav-pill bs-nav-pill--ghost">
+            <span class="bs-nav-pill-icon">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path
+                  d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+            </span>
             Descubre ZIFCOR
           </router-link>
-          <router-link to="/auth?mode=registro-empresa" class="bs-nav-link bs-nav-link--accent">
+          <router-link to="/auth?mode=registro-empresa" class="bs-nav-pill bs-nav-pill--accent">
+            <span class="bs-nav-pill-icon">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 10.5 12 3l9 7.5" />
+                <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
+              </svg>
+            </span>
             Vende en ZIFCOR
           </router-link>
         </nav>
@@ -369,37 +383,61 @@ onBeforeUnmount(() => {
 .bs-nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 10px;
   margin-left: 28px;
 }
 
-.bs-nav-link {
-  position: relative;
+.bs-nav-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   height: 38px;
-  padding: 0 14px;
-  border: none;
-  background: none;
-  border-radius: 8px;
+  padding: 0 16px 0 6px;
+  border-radius: 999px;
   font-size: 13.5px;
-  font-weight: 700;
-  color: rgba(11, 18, 32, 0.68);
+  font-weight: 800;
   text-decoration: none;
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;
-  transition: background 150ms, color 150ms;
+  transition: background 160ms, color 160ms, transform 160ms, box-shadow 160ms;
 }
 
-.bs-nav-link:hover {
+.bs-nav-pill-icon {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.bs-nav-pill--ghost {
   background: rgba(0, 113, 227, 0.06);
   color: #0071e3;
 }
 
-.bs-nav-link--accent {
-  color: #0071e3;
+.bs-nav-pill--ghost .bs-nav-pill-icon {
+  background: rgba(0, 113, 227, 0.12);
+}
+
+.bs-nav-pill--ghost:hover {
+  background: rgba(0, 113, 227, 0.12);
+}
+
+.bs-nav-pill--accent {
+  background: #0071e3;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(0, 113, 227, 0.22);
+}
+
+.bs-nav-pill--accent .bs-nav-pill-icon {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.bs-nav-pill--accent:hover {
+  background: #005fcd;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 1200px) {
