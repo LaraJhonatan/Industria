@@ -5,28 +5,14 @@
       <PreLaunchBanner />
       <q-toolbar class="bs-toolbar">
 
-        <router-link to="/" class="bs-brand">
+        <router-link to="/tienda" class="bs-brand">
           <img src="/IconoZ.png" alt="ZIFCOR" class="bs-logo-img" />
         </router-link>
 
         <nav class="bs-nav gt-sm">
-          <router-link to="/tienda" class="bs-nav-link">
-            Categorías
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
+          <router-link to="/nosotros" class="bs-nav-link">
+            Descubre ZIFCOR
           </router-link>
-          <button class="bs-nav-link bs-nav-link--soon" type="button">
-            Empresas
-            <span class="bs-nav-soon">Próximamente</span>
-          </button>
-          <button class="bs-nav-link bs-nav-link--soon" type="button">
-            Ofertas
-            <span class="bs-nav-soon">Próximamente</span>
-          </button>
-          <a class="bs-nav-link" :href="whatsappQuoteUrl" target="_blank" rel="noopener noreferrer">
-            Solicita cotización
-          </a>
           <router-link to="/auth?mode=registro-empresa" class="bs-nav-link bs-nav-link--accent">
             Vende en ZIFCOR
           </router-link>
@@ -141,11 +127,9 @@
         </div>
 
         <nav class="drawer-nav">
-          <router-link to="/tienda" class="drawer-link drawer-link--tienda"
-            @click="drawer = false">Catálogo</router-link>
-          <div class="drawer-divider" />
-          <router-link to="/" class="drawer-link drawer-link--back" @click="drawer = false">← Volver al sitio
-            principal</router-link>
+          <router-link to="/auth?mode=registro-empresa" class="drawer-link drawer-link--tienda"
+            @click="drawer = false">Vende en ZIFCOR</router-link>
+          <router-link to="/nosotros" class="drawer-link" @click="drawer = false">Descubre ZIFCOR</router-link>
         </nav>
 
         <div class="drawer-actions">
@@ -287,9 +271,6 @@ const scrolled = ref(false)
 const avatarMenu = ref(false)
 const year = new Date().getFullYear()
 
-const whatsappQuoteUrl = 'https://wa.me/573114799224?text=' +
-  encodeURIComponent('Hola, quiero solicitar una cotización en ZIFCOR.')
-
 const esTipoUsuario = computed(() => authStore.sesion?.usuario?.tipo === 'usuario')
 
 const displayNombre = computed(() => {
@@ -419,38 +400,6 @@ onBeforeUnmount(() => {
 
 .bs-nav-link--accent {
   color: #0071e3;
-}
-
-.bs-nav-link--soon {
-  cursor: default;
-  color: rgba(11, 18, 32, 0.35);
-}
-
-.bs-nav-link--soon:hover {
-  background: none;
-  color: rgba(11, 18, 32, 0.35);
-}
-
-.bs-nav-link--soon:hover .bs-nav-soon {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-.bs-nav-soon {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: #0b1220;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 4px 9px;
-  border-radius: 7px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 180ms, transform 180ms;
 }
 
 @media (max-width: 1200px) {
@@ -768,17 +717,6 @@ onBeforeUnmount(() => {
 
 .drawer-link--tienda:hover {
   background: #005fcd;
-}
-
-.drawer-link--back {
-  color: rgba(11, 18, 32, 0.45);
-  font-size: 13.5px;
-}
-
-.drawer-divider {
-  height: 1px;
-  background: rgba(15, 23, 42, 0.08);
-  margin: 6px 0;
 }
 
 .drawer-actions {

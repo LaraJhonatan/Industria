@@ -4,12 +4,12 @@
     <q-header :class="['bs-header', { 'bs-header--scrolled': scrolled }]" height-hint="104">
       <PreLaunchBanner />
       <q-toolbar class="bs-toolbar">
-        <router-link to="/" class="bs-brand">
+        <router-link to="/nosotros" class="bs-brand">
           <img src="/IconoZ.png" alt="ZIFCOR" class="bs-logo-img" />
         </router-link>
 
         <nav class="bs-nav gt-sm" aria-label="Navegación principal">
-          <router-link to="/" class="bs-link">Inicio</router-link>
+          <router-link to="/nosotros" class="bs-link">Inicio</router-link>
 
           <router-link to="/tienda" class="bs-tienda-link">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -133,7 +133,7 @@
         </div>
 
         <nav class="drawer-nav">
-          <router-link to="/" class="drawer-link" @click="drawer = false">Inicio</router-link>
+          <router-link to="/nosotros" class="drawer-link" @click="drawer = false">Inicio</router-link>
           <router-link to="/tienda" class="drawer-link drawer-link--tienda" @click="drawer = false">Tienda</router-link>
           <router-link to="/maquinaria" class="drawer-link" @click="drawer = false">Importación de
             maquinaria</router-link>
@@ -398,8 +398,8 @@ function goToCarrito() { avatarMenu.value = false; drawer.value = false; router.
 function doLogout() { avatarMenu.value = false; drawer.value = false; authStore.logout(); router.push('/') }
 
 function scrollToSection(id) {
-  if (router.currentRoute.value.path !== '/') {
-    router.push('/').then(() => setTimeout(() => {
+  if (router.currentRoute.value.path !== '/nosotros') {
+    router.push('/nosotros').then(() => setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 300))
   } else {
