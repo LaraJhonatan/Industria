@@ -19,9 +19,7 @@ const routes = [
         path: 'servicios-industriales',
         component: () => import('pages/ServiciosIndustrialesPage.vue'),
       },
-      { path: 'maquinaria', component: () => import('pages/MaquinariaIndexpage.vue') },
       { path: 'ingenieria', component: () => import('pages/IndexIngenieria.vue') },
-      { path: 'maquinaria/:id', component: () => import('pages/MaquinariaDetailPage.vue') },
     ],
   },
 

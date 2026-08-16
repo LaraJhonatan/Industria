@@ -51,7 +51,7 @@
             </svg>
           </div>
           <div>
-            <p class="trust-title">Miles de proveedores verificados</p>
+            <p class="trust-title">Proveedores verificados</p>
             <p class="trust-sub">Empresas confiables</p>
           </div>
         </div>
@@ -63,8 +63,8 @@
             </svg>
           </div>
           <div>
-            <p class="trust-title">Cotiza y compra fácilmente</p>
-            <p class="trust-sub">Ahorra tiempo y dinero</p>
+            <p class="trust-title">Cotiza por WhatsApp</p>
+            <p class="trust-sub">Rápido, fácil y sin vueltas</p>
           </div>
         </div>
         <div class="trust-item">
@@ -89,8 +89,8 @@
             </svg>
           </div>
           <div>
-            <p class="trust-title">Compra protegida</p>
-            <p class="trust-sub">Transacciones seguras</p>
+            <p class="trust-title">Pasarela de pagos 100% segura</p>
+            <p class="trust-sub">Transacciones débito o crédito con facturación electrónica</p>
           </div>
         </div>
       </div>
@@ -225,11 +225,58 @@
         </div>
 
         <div class="cta-banner">
-          <div>
-            <p class="cta-title">¿Tu empresa no está aquí?</p>
-            <p class="cta-sub">Regístrate y empieza a vender en ZIFCOR</p>
+          <div class="cta-left">
+            <div class="cta-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12.04 2c-5.52 0-10 4.48-10 10 0 1.77.46 3.45 1.27 4.9L2 22l5.25-1.38A9.96 9.96 0 0 0 12.04 22c5.52 0 10-4.48 10-10s-4.48-10-10-10zm0 18.13a8.1 8.1 0 0 1-4.14-1.13l-.3-.18-3.11.82.83-3.03-.19-.31a8.13 8.13 0 1 1 6.91 3.83zm4.46-6.08c-.24-.12-1.44-.71-1.66-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.78.95-.14.16-.29.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.65-1.21-1.44-1.36-1.68-.14-.24-.02-.37.11-.49.11-.11.24-.29.36-.43.12-.14.16-.24.24-.4.08-.16.04-.31-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.42-.55-.42-.14-.01-.31-.01-.47-.01-.16 0-.43.06-.65.31-.22.24-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.16 1.73 2.64 4.19 3.7.59.25 1.04.4 1.4.52.59.19 1.12.16 1.55.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z" />
+              </svg>
+            </div>
+            <div class="cta-text">
+              <p class="cta-title">¿No encuentras lo que buscas?</p>
+              <p class="cta-sub">Escríbenos por WhatsApp y conseguimos el producto o servicio que necesitas.</p>
+              <div class="cta-features">
+                <span class="cta-feature">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2l8 4v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6z" />
+                  </svg>
+                  Respuesta rápida
+                </span>
+                <span class="cta-feature-sep">|</span>
+                <span class="cta-feature">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="9" />
+                    <polyline points="8 12 11 15 16 9" />
+                  </svg>
+                  Atención personalizada
+                </span>
+                <span class="cta-feature-sep">|</span>
+                <span class="cta-feature">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 12l-2-2h-4l-2 2M2 12h5l2 3h6l2-3h5" />
+                    <path d="M12 3v6" />
+                  </svg>
+                  Lo conseguimos por ti
+                </span>
+              </div>
+            </div>
           </div>
-          <button class="cta-btn" @click="router.push('/auth')">Registrar empresa →</button>
+          <div class="cta-right">
+            <a class="cta-btn" :href="ctaWhatsappUrl" target="_blank" rel="noopener">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="#25D366">
+                <path
+                  d="M12.04 2c-5.52 0-10 4.48-10 10 0 1.77.46 3.45 1.27 4.9L2 22l5.25-1.38A9.96 9.96 0 0 0 12.04 22c5.52 0 10-4.48 10-10s-4.48-10-10-10zm0 18.13a8.1 8.1 0 0 1-4.14-1.13l-.3-.18-3.11.82.83-3.03-.19-.31a8.13 8.13 0 1 1 6.91 3.83zm4.46-6.08c-.24-.12-1.44-.71-1.66-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.78.95-.14.16-.29.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.65-1.21-1.44-1.36-1.68-.14-.24-.02-.37.11-.49.11-.11.24-.29.36-.43.12-.14.16-.24.24-.4.08-.16.04-.31-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.42-.55-.42-.14-.01-.31-.01-.47-.01-.16 0-.43.06-.65.31-.22.24-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.16 1.73 2.64 4.19 3.7.59.25 1.04.4 1.4.52.59.19 1.12.16 1.55.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z" />
+              </svg>
+              Solicitar por WhatsApp →
+            </a>
+            <p class="cta-protected">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="4" y="10" width="16" height="10" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              Tu información está 100% protegida.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -250,18 +297,18 @@ const searchQuery = ref('')
 const searchFocused = ref(false)
 
 const examples = [
+  { icon: '🏭', label: 'Máquinas' },
+  { icon: '💻', label: 'Electrónica' },
+  { icon: '⚙️', label: 'Acero' },
   { icon: '🚁', label: 'Drones' },
   { icon: '🔋', label: 'Baterías' },
-  { icon: '⚙️', label: 'Acero' },
-  { icon: '☕', label: 'Café' },
-  { icon: '📱', label: 'Celulares' },
-  { icon: '🔧', label: 'Repuestos' },
-  { icon: '💻', label: 'Electrónica' },
-  { icon: '🚚', label: 'Transporte' },
-  { icon: '📦', label: 'Empaques' },
-  { icon: '🖥️', label: 'Software' },
 ]
 const loopedExamples = [...examples, ...examples]
+
+const ctaWhatsappUrl = computed(() => {
+  const msg = '¡Hola! No encontré lo que buscaba en ZIFCOR, ¿me pueden ayudar a conseguirlo?'
+  return `https://wa.me/573114799224?text=${encodeURIComponent(msg)}`
+})
 
 function goToSearch() {
   const q = searchQuery.value.trim()
@@ -896,43 +943,112 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 24px;
   padding: 28px 36px;
   background: linear-gradient(135deg, #0056b3 0%, #0071e3 100%);
   border-radius: 18px;
   flex-wrap: wrap;
 }
 
+.cta-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+
+.cta-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .15);
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+
+.cta-text {
+  min-width: 0;
+}
+
 .cta-title {
   margin: 0 0 4px;
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 900;
+  letter-spacing: -0.2px;
   color: #fff;
+  text-transform: uppercase;
 }
 
 .cta-sub {
-  margin: 0;
+  margin: 0 0 14px;
   font-size: 13.5px;
-  color: rgba(255, 255, 255, .75);
+  color: rgba(255, 255, 255, .8);
+  max-width: 46ch;
+}
+
+.cta-features {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cta-feature {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .78);
+  white-space: nowrap;
+}
+
+.cta-feature-sep {
+  color: rgba(255, 255, 255, .3);
+  font-size: 11px;
+}
+
+.cta-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .cta-btn {
-  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 13px 26px;
   background: #fff;
   border: none;
   border-radius: 12px;
   font-size: 13.5px;
   font-weight: 900;
-  color: #0071e3;
+  color: #16a34a;
   cursor: pointer;
   white-space: nowrap;
+  text-decoration: none;
   transition: transform 180ms, box-shadow 180ms;
 }
 
 .cta-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+}
+
+.cta-protected {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, .7);
+  white-space: nowrap;
 }
 
 @media (max-width: 900px) {
@@ -960,8 +1076,13 @@ onMounted(async () => {
     padding: 22px 24px;
   }
 
+  .cta-right {
+    width: 100%;
+  }
+
   .cta-btn {
     width: 100%;
+    justify-content: center;
     text-align: center;
   }
 

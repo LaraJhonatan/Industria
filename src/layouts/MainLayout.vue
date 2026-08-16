@@ -20,10 +20,6 @@
             Marketplace B2B
           </router-link>
 
-          <router-link to="/maquinaria" class="bs-link" active-class="bs-link--active">
-            Importación de maquinaria
-          </router-link>
-
           <button class="bs-link" @click="scrollToSection('preguntas-frecuentes')">
             Preguntas frecuentes
           </button>
@@ -135,8 +131,6 @@
         <nav class="drawer-nav">
           <router-link to="/nosotros" class="drawer-link" @click="drawer = false">Inicio</router-link>
           <router-link to="/tienda" class="drawer-link drawer-link--tienda" @click="drawer = false">Tienda</router-link>
-          <router-link to="/maquinaria" class="drawer-link" @click="drawer = false">Importación de
-            maquinaria</router-link>
           <button class="drawer-link" @click="scrollToSection('preguntas-frecuentes'); drawer = false">Preguntas
             frecuentes</button>
           <button class="drawer-link" @click="scrollToSection('contacto'); drawer = false">Contáctanos</button>
@@ -187,7 +181,7 @@
             <img src="/IconoZ.png" alt="ZIFCOR" class="foot-logo-img" />
             <div class="bs-foot-brand-text">
               <div class="bs-foot-name">ZIFCOR</div>
-              <div class="bs-foot-tag">Importación de maquinaria, ingeniería a medida y soporte técnico confiable.</div>
+              <div class="bs-foot-tag">Ingeniería a medida y soporte técnico confiable.</div>
             </div>
           </div>
           <div class="bs-foot-right">

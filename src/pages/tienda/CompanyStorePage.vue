@@ -203,7 +203,7 @@ const isZifcor = computed(() => empresaNombre.value.trim().toUpperCase() === 'ZI
 const ZIFCOR_TITLE_BY_SECTOR = {
   manufacturero: 'Maquinaria industrial',
   agroindustria: 'Productos agroindustriales',
-  servicios: 'Servicios industriales',
+  servicios: 'SERVICIOS PROPORCIONADOS POR ZIFCOR',
   tecnologia: 'Productos tecnológicos',
 }
 

@@ -10,13 +10,13 @@
         </div>
 
         <h2 class="title">
-          Hablemos de tu
-          <span>proyecto industrial</span>
+          ¿Qué necesita
+          <span>tu empresa?</span>
         </h2>
 
         <p class="subtitle">
-          Cuéntanos qué necesitas y te responderemos en menos de 24 horas
-          con una propuesta clara y sin compromisos.
+          Cuéntanos qué producto o servicio estás buscando y nosotros lo
+          conseguimos por ti.
         </p>
 
       </div>
