@@ -363,7 +363,7 @@ onMounted(async () => {
   try {
     const [sectoresRes, destacadosRes, serviciosRes] = await Promise.allSettled([
       fetchWithRetry(() => publicApi.getSectores()),
-      fetchWithRetry(() => publicApi.getDestacados('destacados')),
+      fetchWithRetry(() => publicApi.getProductosMasClickeados(15)),
       fetchWithRetry(() => publicApi.getDestacados('servicios')),
     ])
     sectores.value = sectoresRes.status === 'fulfilled' ? sectoresRes.value.data : []

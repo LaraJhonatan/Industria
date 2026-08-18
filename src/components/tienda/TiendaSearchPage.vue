@@ -190,6 +190,7 @@ async function fetchResults() {
     productos.value = data?.data || []
     total.value = data?.total || 0
     pages.value = data?.pages || 0
+    if (q.value?.trim()) publicApi.trackBusqueda(q.value.trim())
   } catch {
     productos.value = []
     total.value = 0

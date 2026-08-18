@@ -672,6 +672,7 @@ async function loadProduct() {
     }
     selectedVariante.value = data?.variantes?.length ? data.variantes[0] : null
     cleanUrl()
+    if (data?.id) publicApi.trackClickProducto(data.id)
   } catch {
     product.value = null
   } finally {

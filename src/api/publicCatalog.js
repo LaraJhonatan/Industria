@@ -26,4 +26,13 @@ export const publicApi = {
   getProductosEmpresaPorSlug: (slug, params) =>
     http.get(`/public/empresas/slug/${slug}/productos`, { params }),
   getDestacados: (llave) => http.get(`/destacados/${llave}`),
+
+  getProductosMasClickeados: (limit = 15) =>
+    http.get('/analytics/productos-mas-clickeados', { params: { limit } }),
+  trackClickProducto: (productId) =>
+    http.post('/analytics/click-producto', { productId }).catch(() => {}),
+  trackClickEmpresa: (empresaId) =>
+    http.post('/analytics/click-empresa', { empresaId }).catch(() => {}),
+  trackBusqueda: (termino) =>
+    http.post('/analytics/busqueda', { termino }).catch(() => {}),
 }

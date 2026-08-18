@@ -281,6 +281,7 @@ async function loadEmpresa() {
   try {
     const { data } = await publicApi.getEmpresaPorSlug(empresaSlug.value)
     empresa.value = data
+    if (data?.id) publicApi.trackClickEmpresa(data.id)
   } catch {
     empresa.value = null
   } finally {
