@@ -61,7 +61,7 @@
             </p>
             <p v-else class="product-price-na">Precio por cotización</p>
 
-            <span v-if="!esPagable" class="quote-tag">
+            <span v-if="!esPagable && product.mostrarFormularioCotizacion" class="quote-tag">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               </svg>
@@ -99,7 +99,7 @@
               </div>
             </div>
 
-            <div v-if="!esPagable" class="quote-form-card">
+            <div v-if="!esPagable && product.mostrarFormularioCotizacion" class="quote-form-card">
               <p class="quote-form-title">Solicitar cotización</p>
               <p class="quote-form-sub">Cuéntanos qué necesitas y adjunta archivos si te sirve (diagramas, planos, hojas de cálculo, etc.).</p>
 
