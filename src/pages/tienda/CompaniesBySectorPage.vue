@@ -193,7 +193,7 @@ const ZIFCOR_CARD_BY_SECTOR = {
     desc: 'Equipos, insumos y tecnología para la producción agrícola, pecuaria y alimentaria.',
   },
   servicios: {
-    image: '/servicios.png', title: 'SERVICIOS PROPORCIONADOS POR ZIFCOR', linkLabel: 'Ver todos los servicios',
+    image: '/servicios.png', title: 'Servicios proporcionados por ZIFCOR', linkLabel: 'Ver todos los servicios',
     desc: 'Encuentra empresas especializadas para hacer crecer tu negocio.',
   },
   tecnologia: {
