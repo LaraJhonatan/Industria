@@ -610,7 +610,7 @@ function onCotizar() {
 }
 
 const esPagable = computed(() =>
-  product.value?.pagableEnLinea !== false && product.value?.precioBase != null
+  product.value?.pagableEnLinea === true && product.value?.precioBase != null
 )
 
 const stockDisponible = computed(() => {

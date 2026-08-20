@@ -45,16 +45,25 @@
       <table class="products-table">
         <thead>
           <tr>
-            <th>Producto</th>
+            <th class="sortable" @click="toggleSort('nombre')">
+              Producto <q-icon v-if="sortBy === 'nombre'" :name="sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward'" size="13px" />
+            </th>
             <th>Categoría</th>
-            <th>Precio</th>
+            <th class="sortable" @click="toggleSort('precioBase')">
+              Precio <q-icon v-if="sortBy === 'precioBase'" :name="sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward'" size="13px" />
+            </th>
+            <th class="sortable" @click="toggleSort('stock')">
+              Stock <q-icon v-if="sortBy === 'stock'" :name="sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward'" size="13px" />
+            </th>
             <th>Estado</th>
-            <th>Creado</th>
+            <th class="sortable" @click="toggleSort('createdAt')">
+              Creado <q-icon v-if="sortBy === 'createdAt'" :name="sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward'" size="13px" />
+            </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="p in productStore.products" :key="p.id" class="product-row"
+          <tr v-for="p in sortedProducts" :key="p.id" class="product-row"
             @click="router.push(`/dashboard/productos/${p.id}`)">
             <td>
               <div class="row items-center gap-sm">
@@ -73,6 +82,9 @@
               {{ p.precioBase ? `$${Number(p.precioBase).toLocaleString('es-CO')}` : '—' }}
             </td>
             <td>
+              <span class="stock-badge" :class="stockBadge(p).cls">{{ stockBadge(p).label }}</span>
+            </td>
+            <td>
               <q-chip dense :color="statusColor(p.estado)" text-color="white" style="font-size:11px;height:22px">
                 {{ statusLabel(p.estado) }}
               </q-chip>
@@ -89,6 +101,10 @@
                     <q-item clickable v-close-popup @click="router.push(`/dashboard/productos/${p.id}/editar`)">
                       <q-item-section avatar><q-icon name="edit" size="16px" /></q-item-section>
                       <q-item-section>Editar</q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup @click="onDuplicate(p)">
+                      <q-item-section avatar><q-icon name="content_copy" size="16px" /></q-item-section>
+                      <q-item-section>Duplicar</q-item-section>
                     </q-item>
                     <q-separator />
                     <q-item clickable v-close-popup @click="onChangeStatus(p)">
@@ -141,6 +157,7 @@ import { useRouter } from 'vue-router'
 import { useProductStore } from '../../../stores/product-store'
 import { useCatalogStore } from '../../../stores/catalog-store'
 import { useQuasar } from 'quasar'
+import { statusColor, statusLabel, PRODUCT_STATUS_OPTIONS } from '../../../utils/productStatus'
 
 const router = useRouter()
 const $q = useQuasar()
@@ -154,22 +171,50 @@ const selectedProduct = ref(null)
 const newStatus = ref(null)
 const statusMotivo = ref('')
 const changingStatus = ref(false)
+const sortBy = ref(null)
+const sortDir = ref('asc')
 
-const statusOptions = [
-  { label: 'Borrador', value: 'draft' },
-  { label: 'Publicado', value: 'published' },
-  { label: 'Pausado', value: 'paused' },
-  { label: 'Archivado', value: 'archived' },
-]
+const statusOptions = PRODUCT_STATUS_OPTIONS
 
 const categoryOptions = computed(() => catalogStore.tree)
 
-function statusColor(estado) {
-  return { draft: 'grey-5', published: 'green-6', paused: 'orange-5', archived: 'red-4' }[estado] || 'grey-5'
+const sortedProducts = computed(() => {
+  const list = [...productStore.products]
+  if (!sortBy.value) return list
+  const dir = sortDir.value === 'asc' ? 1 : -1
+  return list.sort((a, b) => {
+    let va = a[sortBy.value]
+    let vb = b[sortBy.value]
+    if (sortBy.value === 'createdAt') {
+      va = va ? new Date(va).getTime() : 0
+      vb = vb ? new Date(vb).getTime() : 0
+    } else if (sortBy.value === 'nombre') {
+      va = va || ''
+      vb = vb || ''
+      return va.localeCompare(vb) * dir
+    } else {
+      va = va == null ? -1 : Number(va)
+      vb = vb == null ? -1 : Number(vb)
+    }
+    return (va - vb) * dir
+  })
+})
+
+function toggleSort(field) {
+  if (sortBy.value === field) {
+    sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortBy.value = field
+    sortDir.value = 'asc'
+  }
 }
 
-function statusLabel(estado) {
-  return { draft: 'Borrador', published: 'Publicado', paused: 'Pausado', archived: 'Archivado' }[estado] || estado
+function stockBadge(p) {
+  const stock = p.stock
+  if (stock == null) return { label: '—', cls: 'stock-na' }
+  if (stock === 0) return { label: 'Agotado', cls: 'stock-out' }
+  if (stock <= 5) return { label: `${stock} · Bajo`, cls: 'stock-low' }
+  return { label: `${stock}`, cls: 'stock-ok' }
 }
 
 function formatDate(date) {
@@ -224,9 +269,53 @@ async function onDelete(product) {
     cancel: true,
     persistent: true,
   }).onOk(async () => {
-    await productStore.remove(product.id)
-    $q.notify({ type: 'positive', message: 'Producto eliminado', position: 'top-right' })
+    try {
+      await productStore.remove(product.id)
+      $q.notify({ type: 'positive', message: 'Producto eliminado', position: 'top-right' })
+    } catch {
+      $q.notify({ type: 'negative', message: 'No se pudo eliminar el producto. Intenta de nuevo.', position: 'top-right' })
+    }
   })
+}
+
+async function onDuplicate(product) {
+  try {
+    const full = await productStore.fetchById(product.id)
+    const dto = {
+      empresaId: full.empresaId,
+      categoryId: full.categoryId,
+      subcategoryId: full.subcategoryId || undefined,
+      nombre: `${full.nombre} (copia)`,
+      descripcion: full.descripcion,
+      sku: full.sku || undefined,
+      marca: full.marca || undefined,
+      precioBase: full.precioBase || undefined,
+      moneda: full.moneda,
+      pagableEnLinea: full.pagableEnLinea,
+      mostrarFormularioCotizacion: full.mostrarFormularioCotizacion,
+      stock: full.stock ?? null,
+      estado: 'draft',
+      sectorIds: (full.sectores || []).map((s) => s.sectorId),
+      atributos: (full.atributos || []).map((a) => ({ atributoId: a.atributoId, valor: a.valor })),
+      imagenes: (full.imagenes || []).map((i, idx) => ({ url: i.url, esPrincipal: i.esPrincipal, orden: idx })),
+      variantes: (full.variantes || []).map((v) => ({
+        sku: v.sku,
+        precio: v.precio,
+        stock: v.stock,
+        atributos: (v.atributos || []).map((a) => ({ atributoId: a.atributoId, valor: a.valor })),
+      })),
+    }
+    const created = await productStore.create(dto)
+    $q.notify({ type: 'positive', message: 'Producto duplicado como borrador. Ábrelo para revisarlo.', position: 'top-right' })
+    router.push(`/dashboard/productos/${created.id}/editar`)
+  } catch (e) {
+    const msg = e.response?.data?.message
+    $q.notify({
+      type: 'negative',
+      message: Array.isArray(msg) ? msg[0] : (msg || 'No se pudo duplicar el producto'),
+      position: 'top-right',
+    })
+  }
 }
 
 onMounted(async () => {
@@ -290,6 +379,43 @@ onMounted(async () => {
   color: rgba(11, 18, 32, .45);
   text-transform: uppercase;
   letter-spacing: .5px;
+  white-space: nowrap;
+}
+
+.products-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.products-table th.sortable:hover {
+  color: rgba(11, 18, 32, .7);
+}
+
+.stock-badge {
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.stock-na {
+  color: rgba(11, 18, 32, .35);
+}
+
+.stock-out {
+  color: #dc2626;
+  background: rgba(220, 38, 38, .08);
+}
+
+.stock-low {
+  color: #c2410c;
+  background: rgba(234, 88, 12, .1);
+}
+
+.stock-ok {
+  color: #16a34a;
+  background: rgba(22, 163, 74, .08);
 }
 
 .product-row {

@@ -14,7 +14,8 @@
         <q-btn flat label="Editar" icon="edit" color="blue-6" class="action-btn"
           @click="router.push(`/dashboard/productos/${product.id}/editar`)" />
         <q-btn unelevated :label="product.estado === 'published' ? 'Pausar' : 'Publicar'"
-          :color="product.estado === 'published' ? 'orange-6' : 'green-6'" class="action-btn" @click="toggleStatus" />
+          :color="product.estado === 'published' ? 'orange-6' : 'green-6'" class="action-btn" :loading="togglingStatus"
+          @click="toggleStatus" />
       </div>
     </div>
 
@@ -160,6 +161,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useProductStore } from '../../../stores/product-store'
+import { statusColor, statusLabel, PRODUCT_STATUS_OPTIONS } from '../../../utils/productStatus'
 
 const router = useRouter()
 const route = useRoute()
@@ -171,21 +173,9 @@ const selectedImage = ref('')
 const newStatus = ref('')
 const statusMotivo = ref('')
 const changingStatus = ref(false)
+const togglingStatus = ref(false)
 
-const statusOptions = [
-  { label: 'Borrador', value: 'draft' },
-  { label: 'Publicado', value: 'published' },
-  { label: 'Pausado', value: 'paused' },
-  { label: 'Archivado', value: 'archived' },
-]
-
-function statusColor(estado) {
-  return { draft: 'grey-5', published: 'green-6', paused: 'orange-5', archived: 'red-4' }[estado] || 'grey-5'
-}
-
-function statusLabel(estado) {
-  return { draft: 'Borrador', published: 'Publicado', paused: 'Pausado', archived: 'Archivado' }[estado] || estado
-}
+const statusOptions = PRODUCT_STATUS_OPTIONS
 
 function formatDate(date) {
   if (!date) return '—'
@@ -194,8 +184,15 @@ function formatDate(date) {
 
 async function toggleStatus() {
   const next = product.value.estado === 'published' ? 'paused' : 'published'
-  await productStore.changeStatus(product.value.id, next)
-  $q.notify({ type: 'positive', message: 'Estado actualizado', position: 'top-right' })
+  togglingStatus.value = true
+  try {
+    await productStore.changeStatus(product.value.id, next)
+    $q.notify({ type: 'positive', message: 'Estado actualizado', position: 'top-right' })
+  } catch {
+    $q.notify({ type: 'negative', message: 'Error al cambiar estado', position: 'top-right' })
+  } finally {
+    togglingStatus.value = false
+  }
 }
 
 async function applyStatus() {

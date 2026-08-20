@@ -37,6 +37,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useQuasar } from 'quasar'
 import { uploadsApi } from '../../api/uploads'
 
 const props = defineProps({
@@ -46,9 +47,16 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+const $q = useQuasar()
 const fileInput = ref(null)
 const dragging = ref(false)
-const images = ref(props.modelValue.map(img => ({ ...img, preview: img.url })))
+const images = ref(props.modelValue.map(img => ({ ...img, preview: img.url, publicId: extractPublicId(img.url) })))
+
+function extractPublicId(url) {
+  if (!url) return null
+  const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z0-9]+$/)
+  return match ? match[1] : null
+}
 
 async function onFileChange(e) {
   await processFiles(Array.from(e.target.files))
@@ -62,20 +70,30 @@ function onDrop(e) {
 
 async function processFiles(files) {
   const validos = files.filter(f => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024)
+  const descartados = files.length - validos.length
+  if (descartados > 0) {
+    $q.notify({
+      type: 'warning',
+      message: `${descartados} archivo${descartados > 1 ? 's' : ''} no se ${descartados > 1 ? 'subieron' : 'subió'}: solo imágenes JPG, PNG, WEBP o GIF de hasta 5 MB`,
+      position: 'top-right',
+    })
+  }
 
   for (const file of validos) {
     const preview = URL.createObjectURL(file)
-    const item = { preview, url: '', esPrincipal: images.value.length === 0, uploading: true }
+    const item = { preview, url: '', publicId: null, esPrincipal: images.value.length === 0, uploading: true }
     images.value.push(item)
     const idx = images.value.length - 1
 
     try {
       const { data } = await uploadsApi.uploadImage(file, props.folder)
       images.value[idx].url = data.url
+      images.value[idx].publicId = data.publicId
       images.value[idx].uploading = false
       emitUpdate()
     } catch {
       images.value.splice(idx, 1)
+      $q.notify({ type: 'negative', message: 'No se pudo subir una imagen. Intenta de nuevo.', position: 'top-right' })
       emitUpdate()
     }
   }
@@ -87,11 +105,14 @@ function setPrincipal(idx) {
 }
 
 function removeImage(idx) {
-  images.value.splice(idx, 1)
+  const [removed] = images.value.splice(idx, 1)
   if (images.value.length && !images.value.some(i => i.esPrincipal)) {
     images.value[0].esPrincipal = true
   }
   emitUpdate()
+  if (removed?.publicId) {
+    uploadsApi.deleteImage(removed.publicId).catch(() => {})
+  }
 }
 
 function emitUpdate() {

@@ -70,7 +70,7 @@ const routes = [
       { path: 'productos', component: () => import('pages/dashboard/store/ProductListPage.vue') },
       {
         path: 'productos/nuevo',
-        component: () => import('pages/dashboard/store/ProductCreatePage.vue'),
+        component: () => import('pages/dashboard/store/ProductFormPage.vue'),
       },
       {
         path: 'productos/:id',
@@ -78,7 +78,7 @@ const routes = [
       },
       {
         path: 'productos/:id/editar',
-        component: () => import('pages/dashboard/store/ProductEditPage.vue'),
+        component: () => import('pages/dashboard/store/ProductFormPage.vue'),
       },
       { path: 'perfil', component: () => import('pages/dashboard/company/CompanyProfilePage.vue') },
       { path: 'pedidos', component: () => import('pages/dashboard/orders/OrdersPage.vue') },
