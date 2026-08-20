@@ -95,12 +95,16 @@
               <q-spinner color="blue-6" size="28px" />
             </div>
             <ProductDynamicAttributes v-else :atributos="atributos" v-model:values="form.atributosValues" />
+            <q-btn v-if="!loadingAttrs" flat dense no-caps icon="add" label="Agregar atributo a esta categoría"
+              color="blue-6" class="q-mt-sm" @click="attrDialog?.show()" />
             <div class="tab-actions row justify-between q-mt-lg">
               <q-btn flat label="Anterior" icon="arrow_back" color="grey-6" class="action-btn"
                 @click="tab = 'general'" />
               <q-btn unelevated label="Siguiente" icon-right="arrow_forward" color="blue-6" class="action-btn"
                 @click="tab = 'imagenes'" />
             </div>
+            <AttributeQuickCreateDialog ref="attrDialog" :category-id="form.subcategoryId || form.categoryId"
+              @created="onAttributeCreated" />
           </q-tab-panel>
 
           <q-tab-panel name="imagenes" class="q-pa-lg">
@@ -258,6 +262,7 @@ import ProductDynamicAttributes from '../../../components/products/ProductDynami
 import ProductImageUploader from '../../../components/products/ProductImageUploader.vue'
 import ProductVariantsEditor from '../../../components/products/ProductVariantsEditor.vue'
 import CategoryPicker from '../../../components/products/CategoryPicker.vue'
+import AttributeQuickCreateDialog from '../../../components/products/AttributeQuickCreateDialog.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -275,6 +280,7 @@ const loadingAttrs = ref(false)
 const atributos = ref([])
 const sectorOptions = ref([])
 const similares = ref([])
+const attrDialog = ref(null)
 
 function blankForm() {
   return {
@@ -345,6 +351,10 @@ function onCategoryClear() {
   form.value.subcategoryId = null
   form.value.atributosValues = {}
   atributos.value = []
+}
+
+function onAttributeCreated(atributo) {
+  atributos.value = [...atributos.value, atributo]
 }
 
 // ── Producto parecido (aviso no bloqueante) ───────────────────────────

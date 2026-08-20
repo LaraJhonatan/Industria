@@ -118,11 +118,23 @@ function onFilter(val, update) {
   })
 }
 
+function guessParentId() {
+  const counts = {}
+  for (const opt of filteredOptions.value) {
+    if (opt.isCreateNew || !opt.parentId) continue
+    counts[opt.parentId] = (counts[opt.parentId] || 0) + 1
+  }
+  const entries = Object.entries(counts)
+  if (!entries.length) return null
+  entries.sort((a, b) => b[1] - a[1])
+  return entries[0][0]
+}
+
 function onSelect(opt) {
   if (!opt) return
   if (opt.isCreateNew) {
     newCategoryName.value = opt.nombre
-    newCategoryParentId.value = null
+    newCategoryParentId.value = guessParentId()
     createDialog.value = true
     selected.value = selectedOption.value
     return
