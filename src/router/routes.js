@@ -73,6 +73,10 @@ const routes = [
         component: () => import('pages/dashboard/store/ProductFormPage.vue'),
       },
       {
+        path: 'productos/importar',
+        component: () => import('pages/dashboard/store/ProductImportPage.vue'),
+      },
+      {
         path: 'productos/:id',
         component: () => import('pages/dashboard/store/ProductDetailPage.vue'),
       },

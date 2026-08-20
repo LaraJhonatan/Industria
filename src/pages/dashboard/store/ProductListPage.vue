@@ -6,8 +6,16 @@
         <h1 class="page-title q-mb-xs">Productos</h1>
         <p class="page-sub">Gestiona el catálogo de tu empresa</p>
       </div>
-      <q-btn unelevated label="Nuevo producto" icon="add" color="blue-6" class="action-btn"
-        @click="router.push('/dashboard/productos/nuevo')" />
+      <div class="row items-center gap-sm">
+        <q-btn outline no-caps label="Importar desde documento" icon="upload_file" color="blue-6" class="action-btn"
+          @click="router.push('/dashboard/productos/importar')">
+          <q-tooltip anchor="bottom middle" self="top middle">
+            Sube un Word o PDF con tu catálogo y lo convertimos en productos
+          </q-tooltip>
+        </q-btn>
+        <q-btn unelevated label="Nuevo producto" icon="add" color="blue-6" class="action-btn"
+          @click="router.push('/dashboard/productos/nuevo')" />
+      </div>
     </div>
 
     <div class="filters-bar q-mb-md row items-center gap-sm">
