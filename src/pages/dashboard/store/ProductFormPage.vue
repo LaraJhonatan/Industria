@@ -21,13 +21,26 @@
     <div v-else class="form-layout">
 
       <q-card flat bordered class="form-card">
-        <q-tabs v-model="tab" align="left" active-color="blue-6" indicator-color="blue-6" class="form-tabs q-px-md">
-          <q-tab name="general" label="General" icon="info_outline" />
-          <q-tab name="atributos" label="Atributos" icon="tune" :disable="!form.categoryId" />
-          <q-tab name="imagenes" label="Imágenes" icon="image" />
-          <q-tab name="precio" label="Precio e inventario" icon="payments" />
-          <q-tab name="variantes" label="Variantes" icon="layers" :disable="!atributosVariante.length" />
-        </q-tabs>
+        <div class="stepper">
+          <button v-for="(step, i) in steps" :key="step.name" type="button" class="step-item"
+            :class="{
+              'step-item--active': tab === step.name,
+              'step-item--done': step.done && tab !== step.name,
+              'step-item--disabled': step.disabled,
+            }" :disabled="step.disabled" @click="tab = step.name">
+            <span class="step-circle">
+              <q-icon v-if="step.done && tab !== step.name" name="check" size="15px" />
+              <template v-else>{{ i + 1 }}</template>
+            </span>
+            <span class="step-text">
+              <span class="step-name">{{ step.label }}</span>
+              <span class="step-hint">{{ step.hint }}</span>
+            </span>
+            <q-tooltip v-if="step.disabled" anchor="bottom middle" self="top middle" class="field-tooltip">
+              {{ step.disabledReason }}
+            </q-tooltip>
+          </button>
+        </div>
 
         <q-separator />
 
@@ -255,33 +268,59 @@
       </q-card>
 
       <div class="form-sidebar">
-        <q-card flat bordered class="summary-card q-pa-md q-mb-md">
-          <div class="summary-title q-mb-md">Resumen</div>
-          <div class="summary-row">
-            <span class="summary-label">Nombre</span>
-            <span class="summary-value">{{ form.nombre || '—' }}</span>
+        <q-card flat bordered class="summary-card q-mb-md">
+          <div class="preview-head">
+            <span class="preview-eyebrow">Vista previa</span>
+            <span class="preview-note">Así se verá en la tienda</span>
           </div>
-          <div class="summary-row">
-            <span class="summary-label">Categoría</span>
-            <span class="summary-value">{{ categoriaLabel }}</span>
+
+          <div class="preview-card">
+            <div class="preview-image">
+              <img v-if="form.imagenes.length" :src="form.imagenes[0].url" alt="" />
+              <q-icon v-else name="image" size="26px" color="grey-4" />
+            </div>
+            <div class="preview-body">
+              <div v-if="form.categoryId" class="preview-cat">{{ categoriaLabel }}</div>
+              <div class="preview-name" :class="{ 'preview-name--empty': !form.nombre }">
+                {{ form.nombre || 'Nombre del producto' }}
+              </div>
+              <div v-if="form.marca" class="preview-brand">{{ form.marca }}</div>
+              <div class="preview-price">
+                <template v-if="form.pagableEnLinea && Number(form.precioBase) > 0">
+                  ${{ Number(form.precioBase).toLocaleString('es-CO') }}
+                  <span class="preview-currency">{{ form.moneda }}</span>
+                </template>
+                <span v-else-if="form.pagableEnLinea" class="preview-price--empty">Sin precio</span>
+                <span v-else class="preview-quote">
+                  <q-icon name="chat" size="13px" /> Cotización
+                </span>
+              </div>
+            </div>
           </div>
-          <div class="summary-row">
-            <span class="summary-label">Estado</span>
-            <q-chip dense :color="statusColor(form.estado)" text-color="white" style="font-size:10px;height:20px">
+
+          <div class="preview-meta">
+            <q-chip dense :color="statusColor(form.estado)" text-color="white" class="preview-chip">
               {{ statusLabel(form.estado) }}
             </q-chip>
+            <span class="preview-meta-item">
+              <q-icon name="image" size="13px" /> {{ form.imagenes.length }}
+            </span>
+            <span v-if="form.variantes.length" class="preview-meta-item">
+              <q-icon name="layers" size="13px" /> {{ form.variantes.length }}
+            </span>
+            <span v-if="form.sectorIds.length" class="preview-meta-item">
+              <q-icon name="category" size="13px" /> {{ form.sectorIds.length }}
+            </span>
           </div>
-          <div class="summary-row">
-            <span class="summary-label">Imágenes</span>
-            <span class="summary-value">{{ form.imagenes.length }}</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Variantes</span>
-            <span class="summary-value">{{ form.variantes.length }}</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">Sectores</span>
-            <span class="summary-value">{{ form.sectorIds.length || '—' }}</span>
+
+          <div class="progress-block">
+            <div class="progress-top">
+              <span class="progress-label">Progreso</span>
+              <span class="progress-count">{{ pasosListos }} de {{ pasosTotales }}</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" :style="{ width: `${(pasosListos / pasosTotales) * 100}%` }"></div>
+            </div>
           </div>
         </q-card>
 
@@ -365,6 +404,60 @@ const categoriaLabel = computed(() => {
 })
 
 const required = (v) => (v !== null && v !== undefined && String(v).trim() !== '') || 'Campo obligatorio'
+
+// ── Pasos del formulario ───────────────────────────────────────────────
+const atributosCompletos = computed(() => {
+  if (!form.value.categoryId) return false
+  return atributos.value
+    .filter((a) => a.requerido)
+    .every((a) => {
+      const v = form.value.atributosValues[a.clave]
+      return v !== undefined && v !== null && String(v).trim() !== ''
+    })
+})
+
+const steps = computed(() => [
+  {
+    name: 'general',
+    label: 'Lo básico',
+    hint: 'Nombre y categoría',
+    done: !!form.value.nombre && !!form.value.categoryId,
+    disabled: false,
+  },
+  {
+    name: 'atributos',
+    label: 'Características',
+    hint: 'Ficha técnica',
+    done: atributosCompletos.value,
+    disabled: !form.value.categoryId,
+    disabledReason: 'Primero elige una categoría en "Lo básico"',
+  },
+  {
+    name: 'imagenes',
+    label: 'Fotos',
+    hint: form.value.imagenes.length ? `${form.value.imagenes.length} cargada${form.value.imagenes.length > 1 ? 's' : ''}` : 'Sin fotos aún',
+    done: form.value.imagenes.length > 0,
+    disabled: false,
+  },
+  {
+    name: 'precio',
+    label: 'Precio',
+    hint: form.value.pagableEnLinea ? 'Pago en línea' : 'Por cotización',
+    done: form.value.pagableEnLinea ? Number(form.value.precioBase) > 0 : true,
+    disabled: false,
+  },
+  {
+    name: 'variantes',
+    label: 'Variantes',
+    hint: form.value.variantes.length ? `${form.value.variantes.length} definida${form.value.variantes.length > 1 ? 's' : ''}` : 'Opcional',
+    done: form.value.variantes.length > 0,
+    disabled: !atributosVariante.value.length,
+    disabledReason: 'Solo se activa si la categoría tiene características marcadas como variante (talla, color...)',
+  },
+])
+
+const pasosListos = computed(() => steps.value.filter((s) => s.done && !s.disabled).length)
+const pasosTotales = computed(() => steps.value.filter((s) => !s.disabled).length)
 
 // ── Categoría ──────────────────────────────────────────────────────────
 async function refreshAtributos() {
@@ -631,9 +724,94 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
-.form-tabs {
+.stepper {
+  display: flex;
   background: #f7f8fb;
-  border-bottom: 1.5px solid rgba(11, 18, 32, .08);
+  padding: 4px;
+  gap: 2px;
+  overflow-x: auto;
+}
+
+.step-item {
+  flex: 1;
+  min-width: 132px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 140ms;
+  position: relative;
+}
+
+.step-item:not(.step-item--disabled):hover {
+  background: rgba(11, 18, 32, .04);
+}
+
+.step-item--active {
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(11, 18, 32, .08);
+}
+
+.step-item--disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.step-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  flex-shrink: 0;
+  background: rgba(11, 18, 32, .09);
+  color: rgba(11, 18, 32, .45);
+  transition: all 140ms;
+}
+
+.step-item--active .step-circle {
+  background: #0071e3;
+  color: #fff;
+}
+
+.step-item--done .step-circle {
+  background: #16a34a;
+  color: #fff;
+}
+
+.step-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.step-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .55);
+  line-height: 1.3;
+}
+
+.step-item--active .step-name {
+  color: #0b1220;
+}
+
+.step-hint {
+  font-size: 10.5px;
+  color: rgba(11, 18, 32, .4);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .panel-grid {
@@ -838,41 +1016,176 @@ onBeforeUnmount(() => {
 .summary-card {
   border-radius: 14px;
   border: 1.5px solid rgba(11, 18, 32, .08);
+  overflow: hidden;
 }
 
-.summary-title {
-  font-size: 14px;
+.preview-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 13px 14px 10px;
+}
+
+.preview-eyebrow {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: rgba(11, 18, 32, .42);
+}
+
+.preview-note {
+  font-size: 10.5px;
+  color: rgba(11, 18, 32, .35);
+}
+
+.preview-card {
+  margin: 0 12px;
+  border: 1.5px solid rgba(11, 18, 32, .08);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.preview-image {
+  height: 128px;
+  background: #f7f8fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(11, 18, 32, .06);
+}
+
+.preview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-body {
+  padding: 10px 12px 12px;
+}
+
+.preview-cat {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: #0071e3;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-name {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0b1220;
+  line-height: 1.35;
+  margin-bottom: 3px;
+}
+
+.preview-name--empty {
+  color: rgba(11, 18, 32, .3);
+  font-weight: 600;
+}
+
+.preview-brand {
+  font-size: 11px;
+  color: rgba(11, 18, 32, .45);
+  margin-bottom: 6px;
+}
+
+.preview-price {
+  font-size: 15px;
+  font-weight: 900;
+  color: #0b1220;
+  margin-top: 6px;
+}
+
+.preview-currency {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .4);
+  margin-left: 2px;
+}
+
+.preview-price--empty {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(11, 18, 32, .3);
+}
+
+.preview-quote {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #0071e3;
+  background: rgba(0, 113, 227, .08);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.preview-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.preview-chip {
+  font-size: 10px;
+  height: 20px;
+}
+
+.preview-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .45);
+}
+
+.progress-block {
+  padding: 0 14px 14px;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.progress-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(11, 18, 32, .45);
+}
+
+.progress-count {
+  font-size: 11px;
   font-weight: 800;
   color: #0b1220;
 }
 
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(11, 18, 32, .06);
-}
-
-.summary-row:last-child {
-  border-bottom: none;
-}
-
-.summary-label {
-  font-size: 12px;
-  color: rgba(11, 18, 32, .45);
-  font-weight: 600;
-}
-
-.summary-value {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #0b1220;
-  text-align: right;
-  max-width: 140px;
+.progress-track {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(11, 18, 32, .08);
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0071e3, #16a34a);
+  transition: width 300ms ease;
 }
 
 @media (max-width: 900px) {
