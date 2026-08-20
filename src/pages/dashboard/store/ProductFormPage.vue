@@ -36,7 +36,8 @@
           <q-tab-panel name="general" class="q-pa-lg">
             <div class="panel-grid">
               <div class="field-full">
-                <label class="field-label">Nombre del producto <span class="req">*</span></label>
+                <FieldLabel label="Nombre del producto" required
+                  help="Es lo primero que ve el comprador y con lo que te encuentra en el buscador. Sé específico: incluye medida, material o modelo." />
                 <q-input v-model="form.nombre" outlined dense placeholder="Ej: Varilla de acero 3/8"
                   :rules="[required]" />
                 <div v-if="similares.length" class="similar-warning q-mt-sm">
@@ -55,29 +56,34 @@
               </div>
 
               <div class="field-full">
-                <label class="field-label">Categoría <span class="req">*</span></label>
+                <FieldLabel label="Categoría" required
+                  help="Define en qué parte de la tienda aparece tu producto y qué características podrás llenar después. Busca escribiendo; si no existe, podrás crearla." />
                 <CategoryPicker :category-id="form.categoryId" :subcategory-id="form.subcategoryId" required
                   @select="onCategorySelect" @clear="onCategoryClear" />
               </div>
 
               <div>
-                <label class="field-label">SKU</label>
-                <q-input v-model="form.sku" outlined dense placeholder="Código interno" />
+                <FieldLabel label="SKU" optional
+                  help="Es tu código interno de inventario, solo para ti. El comprador no lo usa para buscar. Si no manejas códigos, déjalo vacío." />
+                <q-input v-model="form.sku" outlined dense placeholder="Ej: AC-3-8-VAR" />
               </div>
 
               <div>
-                <label class="field-label">Marca</label>
-                <q-input v-model="form.marca" outlined dense placeholder="Marca o fabricante" />
+                <FieldLabel label="Marca" optional
+                  help="El fabricante del producto. Ayuda al comprador a reconocerlo y filtra mejor en la tienda." />
+                <q-input v-model="form.marca" outlined dense placeholder="Ej: Acesco, Bosch, Genérico..." />
               </div>
 
               <div class="field-full">
-                <label class="field-label">Descripción</label>
+                <FieldLabel label="Descripción" optional
+                  help="Explica de qué está hecho, para qué sirve y qué incluye. Los productos con buena descripción reciben más contactos." />
                 <q-input v-model="form.descripcion" outlined type="textarea" autogrow
-                  placeholder="Describe tu producto en detalle..." />
+                  placeholder="Describe el producto: material, usos, qué incluye, garantía..." />
               </div>
 
               <div class="field-full">
-                <label class="field-label">Sectores donde se debe encontrar tu producto</label>
+                <FieldLabel label="Sectores donde se debe encontrar tu producto" optional
+                  help="Los sectores son las industrias del portal (Manufacturero, Construcción, etc.). Al marcarlos, tu producto aparece cuando alguien explora ese sector." />
                 <q-select v-model="form.sectorIds" :options="sectorOptions" option-value="id" option-label="nombre"
                   emit-value map-options outlined dense multiple use-chips clearable
                   placeholder="Ej: Manufacturero, Tecnología..." />
@@ -94,9 +100,35 @@
             <div v-if="loadingAttrs" class="column items-center q-py-lg">
               <q-spinner color="blue-6" size="28px" />
             </div>
-            <ProductDynamicAttributes v-else :atributos="atributos" v-model:values="form.atributosValues" />
-            <q-btn v-if="!loadingAttrs" flat dense no-caps icon="add" label="Agregar atributo a esta categoría"
-              color="blue-6" class="q-mt-sm" @click="attrDialog?.show()" />
+
+            <template v-else>
+              <div class="panel-intro">
+                <q-icon name="lightbulb" size="17px" color="blue-6" />
+                <span>
+                  Las características son las fichas técnicas de tu producto (voltaje, material, medida...).
+                  El comprador las usa para filtrar y comparar, así que entre más completes, más fácil te encuentran.
+                </span>
+              </div>
+
+              <div v-if="!atributos.length" class="attrs-empty">
+                <div class="attrs-empty-icon">
+                  <q-icon name="tune" size="26px" color="blue-6" />
+                </div>
+                <div class="attrs-empty-title">Esta categoría todavía no tiene características</div>
+                <p class="attrs-empty-text">
+                  Créalas una sola vez y quedarán disponibles para todos los productos de
+                  <b>{{ categoriaLabel }}</b>, incluidos los que subas después.
+                </p>
+                <q-btn unelevated no-caps icon="add" label="Crear la primera característica" color="blue-6"
+                  class="action-btn" @click="attrDialog?.show()" />
+              </div>
+
+              <template v-else>
+                <ProductDynamicAttributes :atributos="atributos" v-model:values="form.atributosValues" />
+                <q-btn flat dense no-caps icon="add" label="Falta una característica: agregarla"
+                  color="blue-6" class="q-mt-md" @click="attrDialog?.show()" />
+              </template>
+            </template>
             <div class="tab-actions row justify-between q-mt-lg">
               <q-btn flat label="Anterior" icon="arrow_back" color="grey-6" class="action-btn"
                 @click="tab = 'general'" />
@@ -108,6 +140,13 @@
           </q-tab-panel>
 
           <q-tab-panel name="imagenes" class="q-pa-lg">
+            <div class="panel-intro">
+              <q-icon name="lightbulb" size="17px" color="blue-6" />
+              <span>
+                La primera imagen es la que se ve en los resultados de búsqueda. Usa fotos claras, con buena luz
+                y fondo limpio — son lo que más influye en que le den clic a tu producto.
+              </span>
+            </div>
             <ProductImageUploader v-model="form.imagenes" folder="productos" />
             <div class="tab-actions row justify-between q-mt-lg">
               <q-btn flat label="Anterior" icon="arrow_back" color="grey-6" class="action-btn"
@@ -120,7 +159,8 @@
           <q-tab-panel name="precio" class="q-pa-lg">
             <div class="panel-grid">
               <div class="field-full">
-                <label class="field-label">Modalidad de venta</label>
+                <FieldLabel label="Modalidad de venta"
+                  help="Define cómo te compran: con pago inmediato desde el carrito, o contactándote primero para acordar el precio." />
                 <div class="pago-toggle">
                   <button type="button" class="pago-opt" :class="{ 'pago-opt--active': form.pagableEnLinea }"
                     @click="form.pagableEnLinea = true">
@@ -142,29 +182,35 @@
               </div>
 
               <div>
-                <label class="field-label">Precio base</label>
+                <FieldLabel label="Precio base" :optional="!form.pagableEnLinea"
+                  :help="form.pagableEnLinea
+                    ? 'El precio que paga el comprador en el carrito. Si tienes variantes (tallas, colores), cada una puede tener su propio precio.'
+                    : 'Como este producto requiere cotización, el precio es solo una referencia. Déjalo vacío si prefieres no mostrarlo.'" />
                 <q-input v-model.number="form.precioBase" outlined dense type="number" prefix="$" placeholder="0.00" />
               </div>
               <div>
-                <label class="field-label">Moneda</label>
+                <FieldLabel label="Moneda" help="La moneda en la que está expresado el precio base." />
                 <q-select v-model="form.moneda" :options="monedas" outlined dense />
               </div>
 
               <template v-if="form.pagableEnLinea">
                 <div>
-                  <label class="field-label">Stock disponible</label>
+                  <FieldLabel label="Stock disponible" optional
+                    help="Cuántas unidades tienes. Al llegar a 0 el producto se muestra como agotado. Déjalo vacío si no llevas control de inventario." />
                   <q-input v-model.number="form.stock" outlined dense type="number" min="0"
-                    placeholder="Déjalo vacío si no controlas inventario" />
+                    placeholder="Vacío = sin control de inventario" />
                 </div>
                 <div>
-                  <label class="field-label">Estado</label>
+                  <FieldLabel label="Estado"
+                    help="Borrador: solo tú lo ves. Publicado: visible en la tienda. Pausado: oculto temporalmente sin borrarlo." />
                   <q-select v-model="form.estado" :options="statusOptions" emit-value map-options outlined dense />
                 </div>
               </template>
 
               <template v-else>
                 <div>
-                  <label class="field-label">Estado</label>
+                  <FieldLabel label="Estado"
+                    help="Borrador: solo tú lo ves. Publicado: visible en la tienda. Pausado: oculto temporalmente sin borrarlo." />
                   <q-select v-model="form.estado" :options="statusOptions" emit-value map-options outlined dense />
                 </div>
 
@@ -180,10 +226,11 @@
 
                 <q-expansion-item class="field-full advanced-stock" dense-toggle icon="tune"
                   label="Avanzado: aún puedes definir inventario">
-                  <div class="q-pt-md" style="max-width:320px">
-                    <label class="field-label">Stock disponible</label>
+                  <div class="q-pt-md q-px-md q-pb-md" style="max-width:340px">
+                    <FieldLabel label="Stock disponible" optional
+                      help="Aunque el producto se venda por cotización, puedes llevar control de cuántas unidades tienes." />
                     <q-input v-model.number="form.stock" outlined dense type="number" min="0"
-                      placeholder="Déjalo vacío si no controlas inventario" />
+                      placeholder="Vacío = sin control de inventario" />
                   </div>
                 </q-expansion-item>
               </template>
@@ -263,6 +310,7 @@ import ProductImageUploader from '../../../components/products/ProductImageUploa
 import ProductVariantsEditor from '../../../components/products/ProductVariantsEditor.vue'
 import CategoryPicker from '../../../components/products/CategoryPicker.vue'
 import AttributeQuickCreateDialog from '../../../components/products/AttributeQuickCreateDialog.vue'
+import FieldLabel from '../../../components/products/FieldLabel.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -610,6 +658,13 @@ onBeforeUnmount(() => {
   color: #dc2626;
 }
 
+.field-optional {
+  color: rgba(11, 18, 32, .4);
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: none;
+}
+
 .similar-warning {
   display: flex;
   align-items: flex-start;
@@ -620,6 +675,54 @@ onBeforeUnmount(() => {
   padding: 10px 12px;
   font-size: 12.5px;
   color: rgba(11, 18, 32, .7);
+}
+
+.panel-intro {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  background: rgba(0, 113, 227, .04);
+  border: 1px solid rgba(0, 113, 227, .13);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(11, 18, 32, .68);
+  margin-bottom: 20px;
+}
+
+.attrs-empty {
+  text-align: center;
+  padding: 26px 20px 30px;
+  border: 1.5px dashed rgba(11, 18, 32, .13);
+  border-radius: 14px;
+  background: #fbfcfe;
+}
+
+.attrs-empty-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(0, 113, 227, .08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.attrs-empty-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0b1220;
+  margin-bottom: 6px;
+}
+
+.attrs-empty-text {
+  font-size: 13px;
+  color: rgba(11, 18, 32, .55);
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto 18px;
 }
 
 .similar-list {

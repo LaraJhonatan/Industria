@@ -35,37 +35,79 @@
     </p>
 
     <q-dialog v-model="createDialog" persistent>
-      <q-card style="width:400px;border-radius:16px">
-        <q-card-section>
-          <div class="text-h6 text-weight-bold">Nueva categoría</div>
-          <p class="text-caption text-grey-6 q-mb-none">
-            Solo créala si de verdad no existe algo parecido — puedes revisar arriba antes de confirmar.
+      <q-card class="create-dialog">
+        <q-card-section class="dialog-head">
+          <div class="dialog-title">
+            <q-icon name="create_new_folder" size="22px" color="blue-6" />
+            Crear una categoría nueva
+          </div>
+          <p class="dialog-sub">
+            Solo créala si de verdad no existe algo parecido. Si dudas, cancela y busca de nuevo.
           </p>
         </q-card-section>
-        <q-card-section class="q-gutter-sm">
-          <q-input v-model="newCategoryName" outlined dense label="Nombre de la categoría" autofocus />
-          <q-select v-model="newCategoryParentId" :options="topLevelOptions" option-value="id" option-label="nombre"
-            emit-value map-options outlined dense clearable
-            label="Categoría padre (déjalo vacío para que sea una categoría principal)" />
 
-          <div class="create-preview">
-            <q-icon :name="newCategoryParentId ? 'account_tree' : 'folder'" size="18px" color="blue-6" />
+        <q-card-section class="dialog-body">
+
+          <div class="step">
+            <div class="step-label">
+              <span class="step-num">1</span>
+              ¿Cómo se va a llamar?
+            </div>
+            <q-input v-model="newCategoryName" outlined dense autofocus placeholder="Ej: Periféricos de Computo" />
+          </div>
+
+          <div class="step">
+            <div class="step-label">
+              <span class="step-num">2</span>
+              ¿Dónde va a vivir?
+            </div>
+            <div class="type-toggle">
+              <button type="button" class="type-opt" :class="{ 'type-opt--active': !isSubcategory }"
+                @click="isSubcategory = false">
+                <q-icon name="folder" size="20px" />
+                <div>
+                  <div class="type-opt-title">Categoría principal</div>
+                  <div class="type-opt-sub">Aparece por sí sola, al mismo nivel que "Electrónica" o "Drones".</div>
+                </div>
+              </button>
+              <button type="button" class="type-opt" :class="{ 'type-opt--active': isSubcategory }"
+                @click="isSubcategory = true">
+                <q-icon name="account_tree" size="20px" />
+                <div>
+                  <div class="type-opt-title">Subcategoría</div>
+                  <div class="type-opt-sub">Va dentro de otra categoría que ya existe.</div>
+                </div>
+              </button>
+            </div>
+
+            <q-select v-if="isSubcategory" v-model="newCategoryParentId" :options="topLevelOptions" option-value="id"
+              option-label="nombre" emit-value map-options outlined dense class="q-mt-sm"
+              label="Dentro de cuál categoría" />
+          </div>
+
+          <div class="create-preview" :class="{ 'create-preview--warn': isSubcategory && !newCategoryParentId }">
+            <q-icon :name="previewIcon" size="18px" :color="isSubcategory && !newCategoryParentId ? 'orange-8' : 'blue-6'" />
             <div class="create-preview-text">
-              <template v-if="newCategoryParentId">
-                Se creará como <b>subcategoría</b> de <b>{{ parentPreviewName }}</b>:<br />
-                {{ parentPreviewName }} › <b>{{ newCategoryName.trim() || '(nombre de la categoría)' }}</b>
+              <template v-if="isSubcategory && !newCategoryParentId">
+                Elige arriba dentro de cuál categoría quieres que vaya.
+              </template>
+              <template v-else-if="isSubcategory">
+                <span class="preview-eyebrow">Así va a quedar</span>
+                {{ parentPreviewName }} › <b>{{ newCategoryName.trim() || 'Nombre de la categoría' }}</b>
               </template>
               <template v-else>
-                Se creará como <b>categoría principal</b> (no dentro de ninguna otra):<br />
-                <b>{{ newCategoryName.trim() || '(nombre de la categoría)' }}</b>
+                <span class="preview-eyebrow">Así va a quedar</span>
+                <b>{{ newCategoryName.trim() || 'Nombre de la categoría' }}</b>
+                <span class="preview-note">&nbsp;— como categoría principal</span>
               </template>
             </div>
           </div>
         </q-card-section>
-        <q-card-actions align="right" class="q-px-md q-pb-md">
-          <q-btn flat label="Cancelar" v-close-popup :disable="creating" />
-          <q-btn unelevated label="Crear categoría" color="blue-6" class="action-btn" :loading="creating"
-            :disable="!newCategoryName.trim()" @click="confirmCreate" />
+
+        <q-card-actions align="right" class="dialog-actions">
+          <q-btn flat no-caps label="Cancelar" color="grey-7" v-close-popup :disable="creating" />
+          <q-btn unelevated no-caps label="Crear categoría" color="blue-6" class="action-btn" :loading="creating"
+            :disable="!canCreate" @click="confirmCreate" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -94,6 +136,7 @@ const creating = ref(false)
 const createDialog = ref(false)
 const newCategoryName = ref('')
 const newCategoryParentId = ref(null)
+const isSubcategory = ref(false)
 
 const rule = () => (props.categoryId ? true : 'Selecciona una categoría')
 
@@ -112,6 +155,17 @@ const topLevelOptions = computed(() => catalogStore.tree.map((c) => ({ id: c.id,
 
 const parentPreviewName = computed(() => {
   return topLevelOptions.value.find((o) => o.id === newCategoryParentId.value)?.nombre || ''
+})
+
+const canCreate = computed(() => {
+  if (!newCategoryName.value.trim()) return false
+  if (isSubcategory.value && !newCategoryParentId.value) return false
+  return true
+})
+
+const previewIcon = computed(() => {
+  if (isSubcategory.value) return newCategoryParentId.value ? 'account_tree' : 'help_outline'
+  return 'folder'
 })
 
 const selectedOption = computed(() => {
@@ -152,8 +206,10 @@ function guessParentId() {
 function onSelect(opt) {
   if (!opt) return
   if (opt.isCreateNew) {
+    const guessed = guessParentId()
     newCategoryName.value = opt.nombre
-    newCategoryParentId.value = guessParentId()
+    newCategoryParentId.value = guessed
+    isSubcategory.value = !!guessed
     createDialog.value = true
     selected.value = selectedOption.value
     return
@@ -171,12 +227,12 @@ function onClear() {
 
 async function confirmCreate() {
   const nombre = newCategoryName.value.trim()
-  if (!nombre) return
+  if (!canCreate.value) return
   creating.value = true
   try {
     const { data } = await categoriesApi.create({
       nombre,
-      parentId: newCategoryParentId.value || undefined,
+      parentId: isSubcategory.value ? newCategoryParentId.value : undefined,
     })
     await catalogStore.fetchTree()
     createDialog.value = false
@@ -212,29 +268,160 @@ async function confirmCreate() {
   font-weight: 700;
 }
 
+.create-dialog {
+  width: 460px;
+  max-width: 92vw;
+  border-radius: 18px;
+}
+
+.dialog-head {
+  padding: 20px 22px 8px;
+}
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0b1220;
+  letter-spacing: -.2px;
+}
+
+.dialog-sub {
+  font-size: 12.5px;
+  color: rgba(11, 18, 32, .5);
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+
+.dialog-body {
+  padding: 8px 22px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.step-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b1220;
+  margin-bottom: 8px;
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #0071e3;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.type-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  text-align: left;
+  padding: 12px 13px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(11, 18, 32, .12);
+  background: #fff;
+  color: rgba(11, 18, 32, .5);
+  cursor: pointer;
+  transition: all 150ms;
+  font-family: inherit;
+}
+
+.type-opt:hover {
+  border-color: rgba(0, 113, 227, .3);
+}
+
+.type-opt--active {
+  border-color: #0071e3;
+  background: rgba(0, 113, 227, .05);
+  color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, .1);
+}
+
+.type-opt-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #0b1220;
+}
+
+.type-opt-sub {
+  font-size: 10.5px;
+  color: rgba(11, 18, 32, .5);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
 .create-preview {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 9px;
   background: #f0f6ff;
   border: 1px solid rgba(0, 113, 227, .15);
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-top: 4px;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.create-preview--warn {
+  background: rgba(234, 158, 25, .07);
+  border-color: rgba(234, 158, 25, .25);
 }
 
 .create-preview-text {
-  font-size: 12.5px;
+  font-size: 13px;
   line-height: 1.5;
-  color: rgba(11, 18, 32, .75);
+  color: rgba(11, 18, 32, .8);
+}
+
+.preview-eyebrow {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: rgba(11, 18, 32, .4);
+  margin-bottom: 3px;
+}
+
+.preview-note {
+  color: rgba(11, 18, 32, .45);
+  font-size: 12px;
+}
+
+.dialog-actions {
+  padding: 8px 18px 18px;
 }
 
 .action-btn {
   border-radius: 10px;
   font-weight: 700;
-  text-transform: none;
   letter-spacing: 0;
   height: 40px;
   padding: 0 18px;
+}
+
+@media (max-width: 480px) {
+  .type-toggle {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
