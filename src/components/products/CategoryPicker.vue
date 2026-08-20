@@ -45,7 +45,22 @@
         <q-card-section class="q-gutter-sm">
           <q-input v-model="newCategoryName" outlined dense label="Nombre de la categoría" autofocus />
           <q-select v-model="newCategoryParentId" :options="topLevelOptions" option-value="id" option-label="nombre"
-            emit-value map-options outlined dense clearable label="Es subcategoría de (opcional)" />
+            emit-value map-options outlined dense clearable
+            label="Categoría padre (déjalo vacío para que sea una categoría principal)" />
+
+          <div class="create-preview">
+            <q-icon :name="newCategoryParentId ? 'account_tree' : 'folder'" size="18px" color="blue-6" />
+            <div class="create-preview-text">
+              <template v-if="newCategoryParentId">
+                Se creará como <b>subcategoría</b> de <b>{{ parentPreviewName }}</b>:<br />
+                {{ parentPreviewName }} › <b>{{ newCategoryName.trim() || '(nombre de la categoría)' }}</b>
+              </template>
+              <template v-else>
+                Se creará como <b>categoría principal</b> (no dentro de ninguna otra):<br />
+                <b>{{ newCategoryName.trim() || '(nombre de la categoría)' }}</b>
+              </template>
+            </div>
+          </div>
         </q-card-section>
         <q-card-actions align="right" class="q-px-md q-pb-md">
           <q-btn flat label="Cancelar" v-close-popup :disable="creating" />
@@ -94,6 +109,10 @@ const flatList = computed(() => {
 })
 
 const topLevelOptions = computed(() => catalogStore.tree.map((c) => ({ id: c.id, nombre: c.nombre })))
+
+const parentPreviewName = computed(() => {
+  return topLevelOptions.value.find((o) => o.id === newCategoryParentId.value)?.nombre || ''
+})
 
 const selectedOption = computed(() => {
   if (props.subcategoryId) return flatList.value.find((c) => c.id === props.subcategoryId) || null
@@ -191,6 +210,23 @@ async function confirmCreate() {
 .create-new-label {
   color: #0071e3;
   font-weight: 700;
+}
+
+.create-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #f0f6ff;
+  border: 1px solid rgba(0, 113, 227, .15);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 4px;
+}
+
+.create-preview-text {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(11, 18, 32, .75);
 }
 
 .action-btn {
