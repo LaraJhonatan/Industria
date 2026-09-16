@@ -63,6 +63,16 @@
           <q-btn flat no-caps dense icon="refresh" label="Subir otro documento" color="grey-7" @click="reiniciar" />
         </div>
 
+        <div v-if="categoriasNuevas.length" class="alerta-cat alerta-cat--info">
+          <q-icon name="create_new_folder" size="18px" color="blue-6" />
+          <span>
+            No existía una categoría para {{ categoriasNuevas.length === 1 ? 'un producto' : 'algunos productos' }}, así
+            que se {{ categoriasNuevas.length === 1 ? 'creará' : 'crearán' }} al confirmar:
+            <b>{{ categoriasNuevas.join(', ') }}</b>.
+            Puedes cambiarla por una existente abriendo el producto.
+          </span>
+        </div>
+
         <div v-if="faltanCategoria" class="alerta-cat">
           <q-icon name="warning" size="18px" color="orange-8" />
           <span>
@@ -88,6 +98,9 @@
               <div class="fila-meta">
                 <span v-if="p.categoryId" class="cat-ok">
                   <q-icon name="folder" size="12px" /> {{ nombreCategoria(p) }}
+                </span>
+                <span v-else-if="p.categoriaSugerida" class="cat-nueva">
+                  <q-icon name="create_new_folder" size="12px" /> Creará "{{ p.categoriaSugerida }}"
                 </span>
                 <span v-else class="cat-falta">
                   <q-icon name="warning" size="12px" /> Falta categoría
@@ -170,6 +183,16 @@
           listos.
         </p>
 
+        <div v-if="resultado.categoriasCreadas?.length" class="cats-creadas">
+          <div class="cats-creadas-title">
+            <q-icon name="create_new_folder" size="15px" color="blue-6" />
+            También se {{ resultado.categoriasCreadas.length === 1 ? 'creó una categoría nueva' : 'crearon categorías nuevas' }}:
+          </div>
+          <div class="cats-chips">
+            <span v-for="(c, i) in resultado.categoriasCreadas" :key="i" class="cat-chip">{{ c }}</span>
+          </div>
+        </div>
+
         <div v-if="resultado.totalErrores" class="errores">
           <div class="errores-title">
             <q-icon name="error_outline" size="16px" color="negative" />
@@ -217,7 +240,20 @@ const modalidades = [
 ]
 
 const seleccionados = computed(() => productos.value.filter((p) => p.incluir))
-const faltanCategoria = computed(() => seleccionados.value.filter((p) => !p.categoryId).length)
+
+// Solo bloquea si no hay categoría NI sugerencia: esas sí las tiene que resolver el usuario.
+const faltanCategoria = computed(
+  () => seleccionados.value.filter((p) => !p.categoryId && !p.categoriaSugerida).length,
+)
+
+const categoriasNuevas = computed(() => [
+  ...new Set(
+    seleccionados.value
+      .filter((p) => !p.categoryId && p.categoriaSugerida)
+      .map((p) => p.categoriaSugerida),
+  ),
+])
+
 const puedeCrear = computed(() => seleccionados.value.length > 0 && faltanCategoria.value === 0)
 
 const todosSeleccionados = computed({
@@ -285,8 +321,10 @@ async function confirmar() {
     const payload = seleccionados.value.map((p) => ({
       nombre: p.nombre,
       descripcion: p.descripcion || undefined,
-      categoryId: p.categoryId,
+      categoryId: p.categoryId || undefined,
       subcategoryId: p.subcategoryId || undefined,
+      categoriaSugerida: p.categoryId ? undefined : (p.categoriaSugerida || undefined),
+      categoriaPadreSugerida: p.categoryId ? undefined : (p.categoriaPadreSugerida || undefined),
       precioBase: p.precioBase || undefined,
       moneda: p.moneda || 'COP',
       sku: p.sku || undefined,
@@ -509,6 +547,49 @@ onMounted(() => {
 
 .cat-falta {
   color: #b45309;
+}
+
+.cat-nueva {
+  color: #0071e3;
+}
+
+.alerta-cat--info {
+  background: rgba(0, 113, 227, .05);
+  border-top-color: rgba(0, 113, 227, .18);
+}
+
+.cats-creadas {
+  margin-top: 18px;
+  background: rgba(0, 113, 227, .04);
+  border: 1px solid rgba(0, 113, 227, .15);
+  border-radius: 12px;
+  padding: 12px 14px;
+  max-width: 460px;
+}
+
+.cats-creadas-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0b1220;
+  margin-bottom: 8px;
+}
+
+.cats-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cat-chip {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0071e3;
+  background: rgba(0, 113, 227, .09);
+  border-radius: 999px;
+  padding: 3px 10px;
 }
 
 .fila-precio {

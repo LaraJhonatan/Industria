@@ -138,7 +138,8 @@
             </div>
 
             <div class="cta-card">
-              <button class="btn-cart" :disabled="adding || agotado || !puedeAgregar" @click="onAddToCart">
+              <button v-if="esPagable" class="btn-cart" :disabled="adding || agotado || !puedeAgregar"
+                @click="onAddToCart">
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="9" cy="21" r="1" />
                   <circle cx="20" cy="21" r="1" />
@@ -634,7 +635,7 @@ const puedeAgregar = computed(() =>
 )
 
 async function onAddToCart() {
-  if (!product.value || adding.value || agotado.value || !puedeAgregar.value) return
+  if (!product.value || !esPagable.value || adding.value || agotado.value || !puedeAgregar.value) return
   adding.value = true
   try {
     await cart.addItem(product.value.id, 1)
