@@ -158,7 +158,7 @@
           <div class="la-cards">
             <div v-for="v in datos.vehiculos" :key="v.id" class="la-card" :class="{ inactive: !v.activo }">
               <div class="la-foto">
-                <img v-if="v.imagenUrl" :src="v.imagenUrl" :alt="v.nombre" />
+                <img v-if="v.imagenUrl" :src="imagenCloudinary(v.imagenUrl, TAMANOS.vehiculo)" :alt="v.nombre" />
                 <div v-else class="la-foto-vacia"><q-icon name="local_shipping" size="32px" />Sin foto</div>
               </div>
               <div class="la-card-head">
@@ -482,6 +482,7 @@ import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { logisticaApi } from '../../../api/logistica'
 import SubirImagen from '../../../components/logistica/SubirImagen.vue'
+import { imagenCloudinary, TAMANOS } from '../../../utils/imagenCloudinary'
 import {
   descargarPlantilla, leerPlantilla, rangoPeso, rangoVolumen, medidasInternas,
 } from '../../../utils/tarifasExcel'

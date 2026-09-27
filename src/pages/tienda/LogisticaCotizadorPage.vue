@@ -477,6 +477,7 @@ import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { logisticaApi } from '../../api/logistica'
 import { guardarCotizacion } from '../../utils/cotizacionesGuardadas'
+import { imagenCloudinary, TAMANOS } from '../../utils/imagenCloudinary'
 import MisCotizacionesLogistica from '../../components/logistica/MisCotizacionesLogistica.vue'
 
 const WHATSAPP = '573114799224'
@@ -712,7 +713,9 @@ const puedeConfirmar = computed(
 )
 
 // Se administra por vehículo desde el dashboard; sin foto se muestra un ícono.
-const fotoVehiculo = computed(() => resultado.value?.vehiculo?.imagenUrl || null)
+const fotoVehiculo = computed(() =>
+  imagenCloudinary(resultado.value?.vehiculo?.imagenUrl || null, TAMANOS.vehiculo),
+)
 
 const medidasVehiculo = computed(() => {
   const v = resultado.value?.vehiculo
@@ -872,7 +875,8 @@ async function cargarCatalogo() {
     if (!form.origen) {
       form.origen = [...ciudades.value.values()].sort((a, b) => b.rutas - a.rutas)[0]?.clave || null
     }
-    fotoEncabezado.value = data.imagenes?.encabezado || '/logistica/encabezado-cotizador.jpg'
+    fotoEncabezado.value =
+      imagenCloudinary(data.imagenes?.encabezado, TAMANOS.encabezado) || '/logistica/encabezado-cotizador.jpg'
   } catch (e) {
     fotoEncabezado.value = '/logistica/encabezado-cotizador.jpg'
     errorCatalogo.value = mensajeError(e, 'Revisa tu conexión e intenta de nuevo.')

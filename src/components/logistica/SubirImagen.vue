@@ -1,7 +1,7 @@
 <template>
   <div class="si">
     <div class="si-preview" :class="{ vacio: !modelValue }" :style="{ aspectRatio: proporcion }">
-      <img v-if="modelValue" :src="modelValue" alt="" />
+      <img v-if="modelValue" :src="imagenCloudinary(modelValue, TAMANOS.vistaPrevia)" alt="" />
       <div v-else class="si-vacio">
         <q-icon name="image" size="30px" />
         <span>Sin imagen</span>
@@ -31,6 +31,7 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { uploadsApi } from '../../api/uploads'
+import { imagenCloudinary, TAMANOS } from '../../utils/imagenCloudinary'
 
 defineProps({
   modelValue: { type: String, default: '' },

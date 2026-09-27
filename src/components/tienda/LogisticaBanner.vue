@@ -45,6 +45,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { logisticaApi } from '../../api/logistica'
+import { imagenCloudinary, TAMANOS } from '../../utils/imagenCloudinary'
 
 // La foto se administra desde el dashboard (Logística → Imágenes); esta es la de respaldo.
 const FOTO_POR_DEFECTO = '/logistica/banner-inicio.jpg'
@@ -53,7 +54,7 @@ const foto = ref(null)
 onMounted(async () => {
   try {
     const { data } = await logisticaApi.getImagenes()
-    foto.value = data.banner || FOTO_POR_DEFECTO
+    foto.value = imagenCloudinary(data.banner, TAMANOS.banner) || FOTO_POR_DEFECTO
   } catch {
     foto.value = FOTO_POR_DEFECTO
   }
