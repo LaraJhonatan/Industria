@@ -279,14 +279,11 @@ onMounted(async () => {
   if (!cot.value) return
 
   // Wompi redirige con ?id=<transacción> al terminar (p. ej. al volver del banco en PSE).
+  // El pago nunca se abre solo: el cliente revisa la cotización y decide cuándo pagar.
   const txId = route.query.id
-  const querer = route.query.pagar === '1'
-  if (txId || querer) router.replace({ query: {} })
-
   if (txId) {
+    router.replace({ query: {} })
     await verificar(String(txId))
-  } else if (querer && puedePagar.value) {
-    pagar()
   }
 })
 

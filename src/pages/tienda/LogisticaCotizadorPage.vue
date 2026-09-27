@@ -64,21 +64,26 @@
             </div>
           </header>
 
-          <div class="lq-row">
+          <div class="lq-row lq-row-ruta">
             <div class="lq-field">
-              <label>Ciudad de origen</label>
-              <div class="lq-static">
-                <q-icon name="trip_origin" color="primary" size="18px" />
-                {{ origen }}
-                <span class="lq-static-hint">Por ahora todos los envíos salen de {{ origen }}</span>
-              </div>
+              <label for="lq-origen">Ciudad de origen <span class="req">*</span></label>
+              <q-select for="lq-origen" v-model="form.origen" :options="opcionesOrigen" emit-value map-options
+                outlined dense options-dense class="lq-input" :class="{ 'lq-ph': !form.origen }"
+                :display-value="form.origen ? undefined : 'Selecciona la ciudad de origen'">
+                <template #prepend><q-icon name="trip_origin" color="primary" /></template>
+              </q-select>
             </div>
+            <q-btn flat round dense icon="swap_horiz" color="primary" class="lq-swap" :disable="!tramo"
+              aria-label="Invertir origen y destino" @click="invertirRuta">
+              <q-tooltip>Invertir: mismo precio en ambos sentidos</q-tooltip>
+            </q-btn>
             <div class="lq-field">
               <label for="lq-destino">Destino <span class="req">*</span></label>
-              <q-select for="lq-destino" v-model="form.rutaId" :options="opcionesDestino" emit-value map-options
-                outlined dense options-dense class="lq-input" :class="{ 'lq-ph': !form.rutaId }"
-                :display-value="form.rutaId ? undefined : 'Selecciona la ciudad de destino'"
-                :error="!!errores.rutaId" :error-message="errores.rutaId" hide-bottom-space>
+              <q-select for="lq-destino" v-model="form.destino" :options="opcionesDestino" emit-value map-options
+                outlined dense options-dense class="lq-input" :class="{ 'lq-ph': !form.destino }"
+                :disable="!form.origen"
+                :display-value="form.destino ? undefined : form.origen ? 'Selecciona la ciudad de destino' : 'Primero elige el origen'"
+                :error="!!errores.ruta" :error-message="errores.ruta" hide-bottom-space>
                 <template #prepend><q-icon name="place" color="primary" /></template>
                 <template #option="scope">
                   <q-item v-bind="scope.itemProps">
@@ -108,9 +113,9 @@
               </q-input>
             </div>
           </div>
-          <p v-if="rutaSeleccionada?.tipo === 'urbano'" class="lq-note">
+          <p v-if="tramo?.ruta.tipo === 'urbano'" class="lq-note">
             <q-icon name="info" size="16px" />
-            Servicio urbano dentro de {{ origen }}: incluye hasta {{ rutaSeleccionada.entregasIncluidas }} entregas.
+            Servicio urbano dentro de {{ tramo.origen }}: incluye hasta {{ tramo.ruta.entregasIncluidas }} entregas.
             Detállalas en los comentarios.
           </p>
         </section>
@@ -316,7 +321,7 @@
           </header>
 
           <dl class="lq-dl">
-            <div><dt>Ruta</dt><dd>{{ rutaSeleccionada ? `${origen} → ${rutaSeleccionada.destino}` : '—' }}</dd></div>
+            <div><dt>Ruta</dt><dd>{{ tramo ? `${tramo.origen} → ${tramo.destino}` : '—' }}</dd></div>
             <div><dt>Producto</dt><dd>{{ form.producto || '—' }}</dd></div>
             <div><dt>Medidas por unidad (L × A × H)</dt><dd>{{ medidasCarga || '—' }}</dd></div>
             <div><dt>Cantidad</dt><dd>{{ form.cantidad > 0 ? form.cantidad : '—' }}</dd></div>
@@ -440,7 +445,7 @@
 
           <div class="lq-dialog-total">
             <div>
-              <span>{{ rutaSeleccionada ? `${origen} → ${rutaSeleccionada.destino}` : '' }} · {{ resultado?.vehiculo?.nombre }}</span>
+              <span>{{ tramo ? `${tramo.origen} → ${tramo.destino}` : '' }} · {{ resultado?.vehiculo?.nombre }}</span>
               <strong>Total: {{ formatMoney(total) }}</strong>
             </div>
           </div>
@@ -453,7 +458,7 @@
 
         <q-card-actions class="lq-dialog-actions">
           <q-btn flat no-caps color="grey-8" label="Volver" v-close-popup />
-          <q-btn unelevated no-caps color="primary" icon="lock" label="Generar cotización y pagar"
+          <q-btn unelevated no-caps color="primary" icon="description" label="Generar cotización"
             :loading="confirmando" @click="confirmar" />
         </q-card-actions>
       </q-card>
@@ -479,7 +484,8 @@ const cargandoCatalogo = ref(true)
 const errorCatalogo = ref('')
 
 const form = reactive({
-  rutaId: null,
+  origen: null,
+  destino: null,
   puntoRecogida: '',
   puntoEntrega: '',
   producto: '',
@@ -514,17 +520,77 @@ const tiposDocumento = [
 
 // ── Derivados ──
 
-const origen = computed(() => catalogo.rutas[0]?.origen || 'Bogotá')
+// Una ruta sirve en ambos sentidos con el mismo precio (Bogotá ↔ Barranquilla). Las ciudades se
+// identifican por su nombre normalizado para que "Bogotá" y "bogota" sean la misma.
+const claveCiudad = (t) =>
+  String(t ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim()
 
-const opcionesDestino = computed(() =>
-  catalogo.rutas.map((r) => ({
-    value: r.id,
-    label: r.destino,
-    caption: r.tipo === 'urbano' ? `Dentro de ${r.origen} · hasta ${r.entregasIncluidas} entregas` : null,
-  })),
+const ciudades = computed(() => {
+  const m = new Map()
+  for (const r of catalogo.rutas) {
+    for (const nombre of [r.origen, r.destino]) {
+      const k = claveCiudad(nombre)
+      const c = m.get(k) || { clave: k, nombre, rutas: 0 }
+      c.rutas++
+      m.set(k, c)
+    }
+  }
+  return m
+})
+
+const nombreCiudad = (k) => ciudades.value.get(k)?.nombre || ''
+
+/** Destinos posibles desde una ciudad, con la ruta y si se recorre al revés. */
+function conexiones(k) {
+  const lista = []
+  for (const ruta of catalogo.rutas) {
+    const [o, d] = [claveCiudad(ruta.origen), claveCiudad(ruta.destino)]
+    if (o === k) lista.push({ clave: d, ruta, invertida: false })
+    else if (d === k) lista.push({ clave: o, ruta, invertida: true })
+  }
+  return lista
+}
+
+const opcionesOrigen = computed(() =>
+  [...ciudades.value.values()]
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
+    .map((c) => ({ value: c.clave, label: c.nombre })),
 )
 
-const rutaSeleccionada = computed(() => catalogo.rutas.find((r) => r.id === form.rutaId) || null)
+const opcionesDestino = computed(() => {
+  if (!form.origen) return []
+  return conexiones(form.origen)
+    .map(({ clave, ruta }) =>
+      ruta.tipo === 'urbano'
+        ? {
+            value: clave, orden: '0',
+            label: `${nombreCiudad(clave)} (dentro de la ciudad)`,
+            caption: `Servicio urbano · hasta ${ruta.entregasIncluidas} entregas`,
+          }
+        : { value: clave, orden: `1${nombreCiudad(clave)}`, label: nombreCiudad(clave), caption: null },
+    )
+    .sort((a, b) => a.orden.localeCompare(b.orden, 'es'))
+})
+
+/** Ruta elegida, en el sentido del cliente. */
+const tramo = computed(() => {
+  if (!form.origen || !form.destino) return null
+  const c = conexiones(form.origen).find((x) => x.clave === form.destino)
+  return c ? { ruta: c.ruta, invertida: c.invertida, origen: nombreCiudad(form.origen), destino: nombreCiudad(form.destino) } : null
+})
+
+// Si el destino elegido no sale desde el nuevo origen, se limpia.
+watch(
+  () => form.origen,
+  () => {
+    if (form.destino && !conexiones(form.origen).some((x) => x.clave === form.destino)) form.destino = null
+  },
+)
+
+function invertirRuta() {
+  if (!tramo.value) return
+  ;[form.origen, form.destino] = [form.destino, form.origen]
+}
 
 const positivo = (v) => typeof v === 'number' && Number.isFinite(v) && v > 0
 
@@ -554,18 +620,18 @@ const errores = computed(() => {
     if (form[k] != null && form[k] !== '' && !positivo(form[k])) e[k] = 'Debe ser mayor que cero.'
   }
   if (intentoConfirmar.value) {
-    if (!form.rutaId) e.rutaId = 'Selecciona el destino.'
+    if (!tramo.value) e.ruta = form.origen ? 'Selecciona el destino.' : 'Selecciona el origen y el destino.'
     if (!form.producto.trim()) e.producto = 'Indica qué vas a transportar.'
   }
   return e
 })
 
 const listoParaCotizar = computed(
-  () => !!form.rutaId && pesoKg.value > 0 && volumen.value > 0 && cantidadValida.value,
+  () => !!tramo.value && pesoKg.value > 0 && volumen.value > 0 && cantidadValida.value,
 )
 
 const pasos = computed(() => [
-  { id: 'paso-ruta', label: 'Ruta', completo: !!form.rutaId },
+  { id: 'paso-ruta', label: 'Ruta', completo: !!tramo.value },
   { id: 'paso-mercancia', label: 'Producto', completo: !!form.producto.trim() },
   { id: 'paso-carga', label: 'Peso y dimensiones', completo: pesoKg.value > 0 && volumen.value > 0 },
   { id: 'paso-resumen', label: 'Resumen y pago', completo: !!resultado.value?.ok && !!form.producto.trim() },
@@ -585,7 +651,8 @@ let temporizador = null
 let secuencia = 0
 
 const payloadCarga = computed(() => ({
-  rutaId: form.rutaId,
+  rutaId: tramo.value?.ruta.id,
+  invertida: !!tramo.value?.invertida,
   producto: form.producto.trim() || 'Mercancía',
   pesoKg: pesoKg.value,
   largoM: form.largo,
@@ -672,10 +739,9 @@ const especial = computed(() => {
 })
 
 const whatsappEspecial = computed(() => {
-  const r = rutaSeleccionada.value
   const lineas = [
     'Hola ZIFCOR, necesito una cotización especial de transporte.',
-    `Ruta: ${origen.value} → ${r?.destino || 'N/A'}`,
+    `Ruta: ${tramo.value ? `${tramo.value.origen} → ${tramo.value.destino}` : 'N/A'}`,
     form.puntoRecogida.trim() && `Recogida: ${form.puntoRecogida.trim()}`,
     form.puntoEntrega.trim() && `Entrega: ${form.puntoEntrega.trim()}`,
     `Producto: ${form.producto.trim() || 'N/A'}${form.tipoMercancia ? ` (${form.tipoMercancia})` : ''}`,
@@ -753,7 +819,7 @@ async function confirmar() {
       },
     })
     dialogoFacturacion.value = false
-    router.push({ path: `/tienda/logistica/cotizacion/${data.token}`, query: { pagar: '1' } })
+    router.push(`/tienda/logistica/cotizacion/${data.token}`)
   } catch (e) {
     errorConfirmar.value = mensajeError(e, 'No pudimos generar la cotización. Intenta de nuevo.')
   } finally {
@@ -793,6 +859,10 @@ async function cargarCatalogo() {
     catalogo.rutas = data.rutas
     catalogo.vehiculos = data.vehiculos
     catalogo.servicios = data.servicios
+    // Origen sugerido: la ciudad con más rutas (hoy Bogotá); el cliente lo puede cambiar.
+    if (!form.origen) {
+      form.origen = [...ciudades.value.values()].sort((a, b) => b.rutas - a.rutas)[0]?.clave || null
+    }
     fotoEncabezado.value = data.imagenes?.encabezado || '/logistica/encabezado-cotizador.jpg'
   } catch (e) {
     fotoEncabezado.value = '/logistica/encabezado-cotizador.jpg'
@@ -1061,6 +1131,16 @@ onBeforeUnmount(() => clearTimeout(temporizador))
 
 .lq-row-3 {
   grid-template-columns: repeat(3, 1fr);
+}
+
+.lq-row-ruta {
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+}
+
+.lq-swap {
+  margin-top: 26px;
+  background: #eff6ff;
 }
 
 .lq-field {
@@ -1652,8 +1732,14 @@ onBeforeUnmount(() => clearTimeout(temporizador))
   }
 
   .lq-row,
-  .lq-row-3 {
+  .lq-row-3,
+  .lq-row-ruta {
     grid-template-columns: 1fr;
+  }
+
+  .lq-swap {
+    margin: -4px auto;
+    transform: rotate(90deg);
   }
 
   .lq-vehiculo-box {

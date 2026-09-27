@@ -43,11 +43,12 @@
           <div class="la-toolbar">
             <p class="la-help">
               <q-icon name="info" size="16px" /> Escribe el <strong>valor base</strong> (costo del transportador) por
-              destino y vehículo. Debajo ves el precio que verá el cliente. Deja la celda vacía si ese vehículo no se
-              presta en esa ruta.
+              ruta y vehículo. Debajo ves el precio que verá el cliente. Deja la celda vacía si ese vehículo no se
+              presta en esa ruta. <strong>Cada ruta vale lo mismo en ambos sentidos</strong> (Bogotá → Barranquilla =
+              Barranquilla → Bogotá).
             </p>
             <div class="row q-gutter-sm no-wrap">
-              <q-btn flat no-caps icon="add_road" label="Agregar destino" color="blue-6" @click="abrirRuta()" />
+              <q-btn flat no-caps icon="add_road" label="Agregar ruta" color="blue-6" @click="abrirRuta()" />
               <q-btn v-if="cambiosTarifas" flat no-caps icon="undo" label="Descartar" color="grey-7"
                 @click="cambios = {}" />
               <q-btn unelevated no-caps icon="save" color="blue-6" class="action-btn"
@@ -97,7 +98,7 @@
             </table>
           </div>
 
-          <p class="la-subtitle">Tarifas por destino (valor base por viaje)</p>
+          <p class="la-subtitle">Tarifas por ruta (valor base por viaje, igual en ambos sentidos)</p>
           <div class="la-table-wrap">
             <table class="la-matrix">
               <thead>
@@ -122,7 +123,7 @@
                         <span v-if="!r.activo" class="la-tag la-tag-off">Oculto</span>
                       </div>
                       <q-btn flat round dense size="sm" icon="edit" color="grey-7" @click="abrirRuta(r)">
-                        <q-tooltip>Editar destino</q-tooltip>
+                        <q-tooltip>Editar ruta</q-tooltip>
                       </q-btn>
                     </div>
                   </td>
@@ -341,13 +342,14 @@
     <q-dialog v-model="dlgRuta.abierto">
       <q-card class="la-dialog">
         <q-card-section class="la-dialog-head">
-          <strong>{{ dlgRuta.id ? 'Editar destino' : 'Nuevo destino' }}</strong>
+          <strong>{{ dlgRuta.id ? 'Editar ruta' : 'Nueva ruta' }}</strong>
           <q-btn flat round dense icon="close" v-close-popup />
         </q-card-section>
         <q-card-section class="la-form">
           <div class="la-grid-2">
-            <q-input v-model="dlgRuta.f.origen" label="Origen" outlined dense maxlength="100" />
-            <q-input v-model="dlgRuta.f.destino" label="Destino" outlined dense maxlength="100" />
+            <q-input v-model="dlgRuta.f.origen" label="Ciudad A (origen)" outlined dense maxlength="100" />
+            <q-input v-model="dlgRuta.f.destino" label="Ciudad B (destino)" outlined dense maxlength="100"
+              :hint="dlgRuta.f.tipo === 'urbano' ? 'En urbano, la misma ciudad del origen' : ''" />
             <q-select v-model="dlgRuta.f.tipo" :options="[{ label: 'Nacional', value: 'nacional' }, { label: 'Urbano', value: 'urbano' }]"
               emit-value map-options label="Tipo" outlined dense />
             <q-input v-model.number="dlgRuta.f.entregasIncluidas" type="number" min="1" label="Entregas incluidas"
@@ -355,7 +357,10 @@
             <q-input v-model.number="dlgRuta.f.orden" type="number" label="Orden" outlined dense />
           </div>
           <q-toggle v-model="dlgRuta.f.activo" label="Visible en el cotizador" color="blue-6" />
-          <p v-if="!dlgRuta.id" class="la-form-sub">Después de crearlo, llena sus tarifas en la tabla.</p>
+          <p class="la-form-sub">
+            La ruta sirve en ambos sentidos con el mismo precio: no hace falta crear la de regreso.
+            <template v-if="!dlgRuta.id">Después de crearla, llena sus tarifas en la tabla.</template>
+          </p>
         </q-card-section>
         <q-card-actions align="right" class="q-pa-md">
           <q-btn flat no-caps label="Cancelar" color="grey-8" v-close-popup />
@@ -769,7 +774,7 @@ async function guardarRuta() {
   await guardarCon(
     () => (dlgRuta.id ? logisticaApi.actualizarRuta(dlgRuta.id, payload) : logisticaApi.crearRuta(payload)),
     () => (dlgRuta.abierto = false),
-    'Destino guardado.',
+    'Ruta guardada.',
   )
 }
 

@@ -234,6 +234,7 @@ export async function leerPlantilla(archivo, { vehiculos, rutas, tarifas }) {
   // Encabezado: la fila que tenga una celda "Destino".
   let filaEnc = null
   let colDestino = null
+  let colOrigen = null
   for (let f = 1; f <= Math.min(ws.rowCount, 30) && !filaEnc; f++) {
     ws.getRow(f).eachCell((c, col) => {
       if (!filaEnc && normalizar(valorCelda(c)) === 'destino') {
@@ -243,11 +244,17 @@ export async function leerPlantilla(archivo, { vehiculos, rutas, tarifas }) {
     })
   }
   if (!filaEnc) throw new Error('No encontramos la columna "Destino". Usa la plantilla descargada desde este panel.')
+  ws.getRow(filaEnc).eachCell((c, col) => {
+    if (normalizar(valorCelda(c)) === 'origen') colOrigen = col
+  })
+  const origenDe = (fila) => (colOrigen ? String(valorCelda(fila.getCell(colOrigen)) ?? '').trim() : '')
 
   const vehiculoPorId = new Map(vehiculos.map((v) => [v.id.toUpperCase(), v]))
   const vehiculoPorCodigo = new Map(vehiculos.map((v) => [normalizar(v.codigo), v]))
   const rutaPorId = new Map(rutas.map((r) => [r.id.toUpperCase(), r]))
-  const rutaPorDestino = new Map(rutas.map((r) => [normalizar(r.destino), r]))
+  // Sin id, la ruta se busca por el par origen–destino en cualquier orden (sirve en ambos sentidos).
+  const par = (a, b) => [normalizar(a), normalizar(b)].sort().join('|')
+  const rutaPorPar = new Map(rutas.map((r) => [par(r.origen, r.destino), r]))
   const actual = new Map(tarifas.map((t) => [`${t.rutaId}|${t.vehiculoId}`.toUpperCase(), t.valorBase]))
 
   const avisos = []
@@ -275,11 +282,12 @@ export async function leerPlantilla(archivo, { vehiculos, rutas, tarifas }) {
     const destino = String(valorCelda(fila.getCell(colDestino)) ?? '').trim()
     if (!destino) continue
     const idCelda = String(valorCelda(fila.getCell(COL_ID)) ?? '')
-    const r = (GUID.test(idCelda) && rutaPorId.get(idCelda.toUpperCase())) || rutaPorDestino.get(normalizar(destino))
+    const r = (GUID.test(idCelda) && rutaPorId.get(idCelda.toUpperCase())) || rutaPorPar.get(par(origenDe(fila), destino))
     if (!r) {
       // Notas al pie (celdas combinadas con texto) u otras filas: solo se avisa si la fila trae precios.
       if (columnas.some(({ col }) => typeof leerPrecio(fila.getCell(col)) === 'number')) {
-        avisos.push(`El destino "${destino}" (fila ${f}) no existe en el panel; créalo primero con "Agregar destino". Se ignoró.`)
+        const ruta = origenDe(fila) ? `${origenDe(fila)} ↔ ${destino}` : destino
+        avisos.push(`La ruta "${ruta}" (fila ${f}) no existe en el panel; créala primero con "Agregar ruta". Se ignoró.`)
       }
       continue
     }
@@ -300,13 +308,13 @@ export async function leerPlantilla(archivo, { vehiculos, rutas, tarifas }) {
     const fila = ws.getRow(f)
     const id = String(valorCelda(fila.getCell(COL_ID)) ?? '').toUpperCase()
     if (GUID.test(id)) leidas.add(id)
-    const d = normalizar(valorCelda(fila.getCell(colDestino)))
-    const r = d && rutaPorDestino.get(d)
+    const d = String(valorCelda(fila.getCell(colDestino)) ?? '').trim()
+    const r = d && rutaPorPar.get(par(origenDe(fila), d))
     if (r) leidas.add(r.id.toUpperCase())
   }
   const faltantes = rutas.filter((r) => !leidas.has(r.id.toUpperCase()))
   if (faltantes.length) {
-    avisos.push(`No vienen en el archivo (se dejan como están): ${faltantes.map((r) => r.destino).join(', ')}.`)
+    avisos.push(`No vienen en el archivo (se dejan como están): ${faltantes.map((r) => `${r.origen} ↔ ${r.destino}`).join(', ')}.`)
   }
 
   return { cambios, errores, avisos, filasLeidas, vehiculosLeidos: columnas.length }
