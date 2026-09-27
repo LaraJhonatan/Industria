@@ -102,10 +102,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth-store'
 import { useCompanyStore } from '../stores/company-store'
+import { logisticaApi } from '../api/logistica'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -124,7 +125,16 @@ const empresaLogoUrl = computed(() =>
   authStore.empresa?.logoUrl || companyStore.perfil?.profile?.logoUrl || null
 )
 
-const navItems = [
+// Solo las empresas registradas en logistica_editores ven el módulo de logística.
+const esEditorLogistica = ref(false)
+onMounted(async () => {
+  try {
+    const { data } = await logisticaApi.getPermiso()
+    esEditorLogistica.value = !!data.editor
+  } catch { void 0 }
+})
+
+const navItems = computed(() => [
   { path: '/dashboard', label: 'Inicio', icon: 'space_dashboard' },
   { path: '/dashboard/tienda', label: 'Mi Tienda', icon: 'storefront' },
   { path: '/dashboard/productos', label: 'Productos', icon: 'inventory_2' },
@@ -135,8 +145,9 @@ const navItems = [
   { path: '/dashboard/alianzas', label: 'Alianzas B2B', icon: 'handshake' },
   { path: '/dashboard/oportunidades', label: 'Oportunidades', icon: 'trending_up' },
   { path: '/dashboard/analiticas', label: 'Analíticas', icon: 'bar_chart' },
+  ...(esEditorLogistica.value ? [{ path: '/dashboard/logistica', label: 'Logística', icon: 'local_shipping' }] : []),
   { path: '/dashboard/perfil', label: 'Mi Perfil', icon: 'manage_accounts' },
-]
+])
 
 function logout() {
   authStore.logout()

@@ -56,6 +56,12 @@ const routes = [
 
       { path: 'mis-compras', component: () => import('pages/tienda/MyOrdersPage.vue') },
 
+      { path: 'logistica', component: () => import('pages/tienda/LogisticaCotizadorPage.vue') },
+      {
+        path: 'logistica/cotizacion/:token',
+        component: () => import('pages/tienda/LogisticaCotizacionPage.vue'),
+      },
+
       { path: ':sectorSlug', component: () => import('pages/tienda/CompaniesBySectorPage.vue') },
     ],
   },
@@ -97,6 +103,10 @@ const routes = [
       {
         path: 'analiticas',
         component: () => import('pages/dashboard/analytics/AnalyticsPage.vue'),
+      },
+      {
+        path: 'logistica',
+        component: () => import('pages/dashboard/logistica/LogisticaAdminPage.vue'),
       },
     ],
   },

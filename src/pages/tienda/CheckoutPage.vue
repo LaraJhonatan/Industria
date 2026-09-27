@@ -114,6 +114,7 @@ import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useCartStore } from '../../stores/cart'
 import { ordersApi } from '../../api/orders'
+import { loadWompiScript } from '../../utils/wompi'
 
 const router = useRouter()
 const $q = useQuasar()
@@ -144,20 +145,6 @@ function validar() {
   if (!form.ciudad.trim()) return 'Ingresa la ciudad.'
   if (!form.departamento.trim()) return 'Ingresa el departamento.'
   return ''
-}
-
-let wompiScriptPromise = null
-function loadWompiScript() {
-  if (window.WidgetCheckout) return Promise.resolve()
-  if (wompiScriptPromise) return wompiScriptPromise
-  wompiScriptPromise = new Promise((resolve, reject) => {
-    const script = document.createElement('script')
-    script.src = 'https://checkout.wompi.co/widget.js'
-    script.onload = resolve
-    script.onerror = () => reject(new Error('No se pudo cargar la pasarela de pago.'))
-    document.head.appendChild(script)
-  })
-  return wompiScriptPromise
 }
 
 async function onPagar() {

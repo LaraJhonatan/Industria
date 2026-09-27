@@ -41,6 +41,8 @@
       </div>
     </section>
 
+    <LogisticaBanner />
+
     <section class="trust-section">
       <div class="bs-wrap trust-grid">
         <div class="trust-item">
@@ -287,6 +289,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { publicApi } from '../../api/publicCatalog'
+import LogisticaBanner from '../../components/tienda/LogisticaBanner.vue'
 
 const router = useRouter()
 const sectores = ref([])
