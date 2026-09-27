@@ -12,6 +12,7 @@
 import { onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth-store'
+import { tomarVolver } from '../utils/volverTrasLogin'
 
 const router = useRouter()
 const route = useRoute()
@@ -27,7 +28,7 @@ onMounted(async () => {
 
   authStore.setTokenUsuario(token)
 
-  router.replace('/')
+  router.replace(tomarVolver() || '/')
 })
 </script>
 

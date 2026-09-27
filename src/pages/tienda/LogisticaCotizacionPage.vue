@@ -4,6 +4,20 @@
       <q-spinner-dots color="primary" size="40px" />
     </div>
 
+    <div v-else-if="bloqueo" class="lc-center">
+      <div class="lc-error">
+        <q-icon name="lock" size="34px" color="primary" />
+        <h2>Esta cotización es privada</h2>
+        <p>{{ bloqueo.message }}</p>
+        <div class="lc-error-actions">
+          <q-btn unelevated no-caps color="primary" icon="login"
+            :label="bloqueo.code === 'OTRA_CUENTA' ? 'Entrar con otra cuenta' : 'Iniciar sesión'"
+            @click="irALogin" />
+          <q-btn outline no-caps color="primary" label="Hacer una nueva cotización" to="/tienda/logistica" />
+        </div>
+      </div>
+    </div>
+
     <div v-else-if="error" class="lc-center">
       <div class="lc-error">
         <q-icon name="search_off" size="34px" />
@@ -27,6 +41,11 @@
           <q-btn v-if="verificando" flat no-caps color="primary" label="Verificando pago..." loading disable />
         </div>
       </div>
+      <p v-if="cot.esDueno === false" class="lc-admin-note">
+        <q-icon name="admin_panel_settings" size="16px" />
+        Estás viendo esta cotización como empresa administradora de logística. Solo la cuenta del cliente puede
+        pagarla.
+      </p>
 
       <div class="lc-grid">
         <!-- Documento -->
@@ -130,9 +149,11 @@
             <q-btn v-if="puedePagar" unelevated no-caps color="primary" icon="account_balance"
               label="Pagar con PSE" class="full-width lc-btn-big" :loading="pagando" @click="pagar" />
             <q-btn outline no-caps color="primary" icon="picture_as_pdf" label="Descargar PDF"
-              class="full-width q-mt-sm" :href="pdfUrl" target="_blank" />
+              class="full-width q-mt-sm" :loading="descargandoPdf" @click="descargarPdf" />
             <q-btn flat no-caps color="grey-8" icon="add" label="Nueva cotización" class="full-width q-mt-xs"
               to="/tienda/logistica" />
+            <q-btn flat no-caps color="grey-8" icon="receipt_long" label="Mis cotizaciones" class="full-width"
+              to="/tienda/logistica/mis-cotizaciones" />
           </div>
           <div class="lc-card lc-help">
             <q-icon name="support_agent" size="22px" color="primary" />
@@ -154,6 +175,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { logisticaApi } from '../../api/logistica'
 import { abrirWompi } from '../../utils/wompi'
+import { guardarCotizacion } from '../../utils/cotizacionesGuardadas'
 
 const WHATSAPP = '573114799224'
 
@@ -169,11 +191,34 @@ const pagando = ref(false)
 const verificando = ref(false)
 let reintentos = null
 
-const pdfUrl = computed(() => logisticaApi.pdfUrl(token))
+/** 403 del API: la cotización pertenece a una cuenta y la sesión actual no es esa (o no hay sesión). */
+const bloqueo = ref(null)
+const descargandoPdf = ref(false)
 
+// Solo el dueño paga; una empresa editora puede verla desde su panel, pero no pagarla.
 const puedePagar = computed(
-  () => cot.value && ['pending', 'declined', 'voided', 'error'].includes(cot.value.pago.estado) && !cot.value.vencida,
+  () =>
+    cot.value &&
+    cot.value.esDueno !== false &&
+    ['pending', 'declined', 'voided', 'error'].includes(cot.value.pago.estado) &&
+    !cot.value.vencida,
 )
+
+function irALogin() {
+  router.push({ path: '/auth', query: { volver: route.fullPath } })
+}
+
+async function descargarPdf() {
+  if (descargandoPdf.value) return
+  descargandoPdf.value = true
+  try {
+    await logisticaApi.abrirPdf(token)
+  } catch (e) {
+    $q.notify({ message: e?.response?.data?.message || 'No se pudo abrir el PDF.', color: 'red-5', position: 'top' })
+  } finally {
+    descargandoPdf.value = false
+  }
+}
 
 const estadoUi = computed(() => {
   const c = cot.value
@@ -210,7 +255,16 @@ async function cargar() {
   try {
     const { data } = await logisticaApi.getCotizacion(token)
     cot.value = data
+    // Si se abrió desde el correo u otro enlace, este navegador también la recuerda (solo si es del cliente).
+    if (data.esDueno !== false) guardarCotizacion(token)
   } catch (e) {
+    if (e?.response?.status === 403) {
+      bloqueo.value = {
+        code: e.response.data?.code,
+        message: e.response.data?.message || 'Inicia sesión con la cuenta que generó esta cotización.',
+      }
+      return
+    }
     error.value = e?.response?.status === 404 || e?.response?.status === 400
       ? 'Revisa que el enlace esté completo.'
       : 'No pudimos cargar la cotización. Intenta de nuevo.'
@@ -307,6 +361,26 @@ onBeforeUnmount(() => clearTimeout(reintentos))
   max-width: 420px;
   text-align: center;
   color: rgba(11, 18, 32, .55);
+}
+
+.lc-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.lc-admin-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -8px 0 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12.5px;
 }
 
 .lc-error h2 {

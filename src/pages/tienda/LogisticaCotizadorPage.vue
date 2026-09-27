@@ -38,6 +38,11 @@
       </div>
     </nav>
 
+    <!-- Cotizaciones ya generadas (este navegador o la cuenta): para volver a ellas y pagar -->
+    <div class="lq-mis">
+      <MisCotizacionesLogistica compacto :limite="3" />
+    </div>
+
     <div v-if="cargandoCatalogo" class="lq-loading">
       <q-spinner-dots color="primary" size="40px" />
     </div>
@@ -471,6 +476,8 @@ import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { logisticaApi } from '../../api/logistica'
+import { guardarCotizacion } from '../../utils/cotizacionesGuardadas'
+import MisCotizacionesLogistica from '../../components/logistica/MisCotizacionesLogistica.vue'
 
 const WHATSAPP = '573114799224'
 
@@ -819,6 +826,8 @@ async function confirmar() {
       },
     })
     dialogoFacturacion.value = false
+    // Este navegador la recuerda para volver a ella (y pagarla) aunque se recargue o se cierre la página.
+    guardarCotizacion(data.token)
     router.push(`/tienda/logistica/cotizacion/${data.token}`)
   } catch (e) {
     errorConfirmar.value = mensajeError(e, 'No pudimos generar la cotización. Intenta de nuevo.')
@@ -1052,6 +1061,23 @@ onBeforeUnmount(() => clearTimeout(temporizador))
 .lq-error-box p {
   margin: 4px 0 12px;
   color: rgba(11, 18, 32, .6);
+}
+
+.lq-mis {
+  max-width: 1400px;
+  margin: 24px auto 0;
+  padding: 0 48px;
+}
+
+.lq-mis:empty {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .lq-mis {
+    padding: 0 16px;
+    margin-top: 16px;
+  }
 }
 
 .lq-grid {

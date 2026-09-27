@@ -58,6 +58,10 @@ const routes = [
 
       { path: 'logistica', component: () => import('pages/tienda/LogisticaCotizadorPage.vue') },
       {
+        path: 'logistica/mis-cotizaciones',
+        component: () => import('pages/tienda/LogisticaMisCotizacionesPage.vue'),
+      },
+      {
         path: 'logistica/cotizacion/:token',
         component: () => import('pages/tienda/LogisticaCotizacionPage.vue'),
       },

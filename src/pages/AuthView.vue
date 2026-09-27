@@ -811,11 +811,16 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth-store'
+import { recordarVolver, tomarVolver } from '../utils/volverTrasLogin'
 import axios from 'axios'
 
 const router = useRouter()
+const route = useRoute()
+
+// ?volver=/tienda/... → después de iniciar sesión se regresa ahí (p. ej. a una cotización privada).
+recordarVolver(route.query.volver)
 const authStore = useAuthStore()
 
 const api = axios.create({
@@ -900,7 +905,7 @@ async function doLogin() {
   loginLoading.value = true
   try {
     await authStore.login(login.id, login.pw)
-    await router.push('/dashboard')
+    await router.push(tomarVolver() || '/dashboard')
   } catch (err) {
     loginErr.value = getError(err)
   } finally {

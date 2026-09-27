@@ -95,6 +95,17 @@
                     </button>
                   </template>
 
+                  <button class="avatar-drop-item"
+                    @click="avatarMenu = false; router.push('/tienda/logistica/mis-cotizaciones')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="1" y="6" width="14" height="11" rx="1.5" />
+                      <path d="M15 10h4l3 3v4h-7z" />
+                      <circle cx="6" cy="19" r="1.6" />
+                      <circle cx="17.5" cy="19" r="1.6" />
+                    </svg>
+                    Mis cotizaciones de transporte
+                  </button>
+
                   <div class="avatar-drop-hr" />
                   <button class="avatar-drop-item avatar-drop-item--danger" @click="doLogout">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -178,6 +189,10 @@
             <template v-else>
               <button class="drawer-btn-fill" @click="goToDashboard()">Mi dashboard</button>
             </template>
+            <button class="drawer-btn-fill"
+              @click="router.push('/tienda/logistica/mis-cotizaciones'); drawer = false">
+              Mis cotizaciones de transporte
+            </button>
 
             <button class="drawer-btn-outline" @click="doLogout">Cerrar sesión</button>
           </template>

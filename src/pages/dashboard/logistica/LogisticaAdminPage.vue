@@ -283,8 +283,7 @@
                       :to="`/tienda/logistica/cotizacion/${c.token}`" target="_blank">
                       <q-tooltip>Ver cotización</q-tooltip>
                     </q-btn>
-                    <q-btn flat round dense icon="picture_as_pdf" color="grey-7" :href="pdfUrl(c.token)"
-                      target="_blank">
+                    <q-btn flat round dense icon="picture_as_pdf" color="grey-7" @click="abrirPdf(c.token)">
                       <q-tooltip>PDF</q-tooltip>
                     </q-btn>
                   </td>
@@ -856,7 +855,14 @@ function estadoPago(c) {
   return { label: 'Pendiente', color: 'orange-6' }
 }
 
-const pdfUrl = (token) => logisticaApi.pdfUrl(token)
+// El PDF se pide con la sesión (las cotizaciones de clientes con cuenta la exigen).
+async function abrirPdf(token) {
+  try {
+    await logisticaApi.abrirPdf(token)
+  } catch (e) {
+    $q.notify({ message: mensajeError(e, 'No se pudo abrir el PDF.'), color: 'red-5', position: 'top' })
+  }
+}
 
 // ── Formato ──
 
