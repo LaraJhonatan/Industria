@@ -11,7 +11,6 @@
           <span class="sh-title-blue">productos y servicios</span><br />
           para tu empresa
         </h1>
-        <p class="sh-sub">Busca entre miles de empresas y encuentra exactamente lo que necesitas.</p>
 
         <div class="search-block">
           <div class="search-bar" :class="{ focused: searchFocused }">
@@ -28,7 +27,6 @@
         </div>
 
         <div class="sh-examples">
-          <span class="sh-examples-label">Búsquedas populares</span>
           <div class="sh-chips-outer">
             <div class="sh-chips">
               <button v-for="(ex, idx) in loopedExamples" :key="idx" class="sh-chip" @click="quickSearch(ex.label)">
@@ -43,67 +41,11 @@
 
     <LogisticaBanner />
 
-    <section class="trust-section">
-      <div class="bs-wrap trust-grid">
-        <div class="trust-item">
-          <div class="trust-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2l8 4v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6z" />
-              <polyline points="9 12 11 14 15 10" />
-            </svg>
-          </div>
-          <div>
-            <p class="trust-title">Proveedores verificados</p>
-            <p class="trust-sub">Empresas confiables</p>
-          </div>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 11l3 3 8-8" />
-              <path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11" />
-            </svg>
-          </div>
-          <div>
-            <p class="trust-title">Cotiza por WhatsApp</p>
-            <p class="trust-sub">Rápido, fácil y sin vueltas</p>
-          </div>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="1" y="6" width="14" height="11" rx="1.5" />
-              <path d="M15 10h4l3 3v4h-7z" />
-              <circle cx="6" cy="19" r="1.6" />
-              <circle cx="17.5" cy="19" r="1.6" />
-            </svg>
-          </div>
-          <div>
-            <p class="trust-title">Envíos a todo el país</p>
-            <p class="trust-sub">Logística segura</p>
-          </div>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="4" y="10" width="16" height="10" rx="2" />
-              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-            </svg>
-          </div>
-          <div>
-            <p class="trust-title">Pasarela de pagos 100% segura</p>
-            <p class="trust-sub">Transacciones débito o crédito con facturación electrónica</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section v-if="destacados.length > 0" class="destacados-section">
       <div class="bs-wrap">
         <div class="section-head">
           <div>
-            <h2 class="section-title">Productos destacados</h2>
-            <p class="section-sub">Selección de productos y servicios empresariales</p>
+            <h2 class="section-title">Servicios y productos destacados</h2>
           </div>
           <router-link to="/tienda/buscar" class="ver-todos-link">
             Ver todos los productos
@@ -198,7 +140,6 @@
       <div class="bs-wrap">
         <div class="section-head section-head--sectors">
           <h2 class="section-title">Explora empresas por sector</h2>
-          <p class="section-sub">Descubre proveedores agrupados por su industria</p>
         </div>
 
         <div v-if="loading" class="column items-center q-py-xl">
@@ -209,7 +150,8 @@
           <div v-for="sector in sectores" :key="sector.id" class="cat-card"
             @click="router.push(`/tienda/${sector.slug}`)">
             <div class="cat-img-wrap">
-              <img :src="sector.imagenUrl || '/placeholder-sector.jpg'" :alt="sector.nombre" class="cat-img" />
+              <img :src="sector.imagenUrl || imagenSectorLocal(sector)" :alt="sector.nombre" class="cat-img"
+                loading="lazy" @error="usarImagenLocal($event, sector)" />
               <div class="cat-overlay" />
             </div>
             <div class="cat-body">
@@ -329,6 +271,24 @@ function goToProducto(item) {
   router.push(`/tienda/producto/${item.producto.slug}`)
 }
 
+// Las fotos de sector vienen de sitios externos y a veces fallan (se caen o bloquean el enlace):
+// en ese caso se muestra una imagen propia del sector.
+const IMAGENES_SECTOR = {
+  agroindustria: '/sectores/agroindustria.jpg',
+  manufacturero: '/sectores/manufacturero.jpg',
+  servicios: '/sectores/servicios.jpg',
+  tecnologia: '/sectores/tecnologia.jpg',
+}
+
+function imagenSectorLocal(sector) {
+  return IMAGENES_SECTOR[sector.slug] || '/sectores/servicios.jpg'
+}
+
+function usarImagenLocal(event, sector) {
+  const local = imagenSectorLocal(sector)
+  if (!event.target.src.endsWith(local)) event.target.src = local
+}
+
 function formatPrecio(valor) {
   if (!valor) return ''
   return Number(valor).toLocaleString('es-CO')
@@ -432,12 +392,6 @@ onMounted(async () => {
   color: #60a5fa;
 }
 
-.sh-sub {
-  margin: 0;
-  font-size: 15px;
-  color: rgba(255, 255, 255, .65);
-}
-
 .search-block {
   width: 100%;
   max-width: 760px;
@@ -504,14 +458,6 @@ onMounted(async () => {
   width: 100%;
 }
 
-.sh-examples-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, .45);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
 .sh-chips-outer {
   width: 100%;
   max-width: 900px;
@@ -566,62 +512,6 @@ onMounted(async () => {
 
 .sh-chip-icon {
   font-size: 14px;
-}
-
-.trust-section {
-  background: #fff;
-  border-bottom: 1px solid rgba(15, 23, 42, .07);
-  padding: 22px 0;
-}
-
-.trust-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.trust-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.trust-icon {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(0, 113, 227, .08);
-  color: #0071e3;
-  display: grid;
-  place-items: center;
-}
-
-.trust-title {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 800;
-  color: #0b1220;
-  line-height: 1.3;
-}
-
-.trust-sub {
-  margin: 2px 0 0;
-  font-size: 11.5px;
-  color: rgba(11, 18, 32, .45);
-  font-weight: 600;
-}
-
-@media (max-width: 900px) {
-  .trust-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .trust-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .destacados-section {

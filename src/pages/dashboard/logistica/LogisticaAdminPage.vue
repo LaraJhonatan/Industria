@@ -221,14 +221,14 @@
               <strong class="la-img-title">Banner de la página de inicio</strong>
               <p class="la-desc">Franja «Logística Empresarial» debajo del buscador. Se muestra recortada a la
                 derecha del banner.</p>
-              <SubirImagen v-model="imagenes.banner" proporcion="2 / 1" :permitir-quitar="false"
-                hint="Horizontal, idealmente 1200 × 600 px o más." />
+              <SubirImagen v-model="imagenes.banner" recorte="banner" :permitir-quitar="false"
+                hint="Ideal: foto horizontal de 1500 px de ancho o más. La franja diagonal tapa un poco el borde izquierdo: deja el camión hacia el centro-derecha." />
             </div>
             <div class="la-card">
               <strong class="la-img-title">Encabezado del cotizador</strong>
               <p class="la-desc">Foto grande a la derecha del título «Cotiza tu transporte».</p>
-              <SubirImagen v-model="imagenes.encabezado" proporcion="20 / 9" :permitir-quitar="false"
-                hint="Muy horizontal, idealmente 1600 × 700 px o más." />
+              <SubirImagen v-model="imagenes.encabezado" recorte="encabezado" :permitir-quitar="false"
+                hint="Ideal: foto muy horizontal de 2000 px de ancho o más. La franja diagonal tapa un poco el borde izquierdo: deja los camiones hacia el centro-derecha." />
             </div>
           </div>
         </q-tab-panel>
@@ -326,8 +326,8 @@
             <q-input v-model.number="dlgVehiculo.f.orden" type="number" label="Orden" outlined dense />
           </div>
           <p class="la-form-sub">Foto del vehículo</p>
-          <SubirImagen v-model="dlgVehiculo.f.imagenUrl" proporcion="4 / 3"
-            hint="Se muestra en la tarjeta «Vehículo recomendado» del cotizador. Mejor horizontal." />
+          <SubirImagen v-model="dlgVehiculo.f.imagenUrl" recorte="vehiculo"
+            hint="Se muestra en la tarjeta «Vehículo recomendado» del cotizador." />
           <q-toggle v-model="dlgVehiculo.f.activo" label="Activo (se ofrece en el cotizador)" color="blue-6" />
         </q-card-section>
         <q-card-actions align="right" class="q-pa-md">

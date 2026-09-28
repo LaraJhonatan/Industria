@@ -361,6 +361,11 @@
             <strong>{{ resultado?.ok ? formatMoney(total) : '—' }}</strong>
           </div>
 
+          <ul class="lq-avisos">
+            <li><q-icon name="info_outline" size="16px" /> {{ AVISO_CAMBIOS }}</li>
+            <li><q-icon name="shield" size="16px" /> {{ AVISO_SEGURO }}</li>
+          </ul>
+
           <q-btn unelevated color="primary" no-caps class="lq-cta" icon="check" label="Confirmar y continuar"
             :disable="!puedeConfirmar" @click="abrirFacturacion" />
           <p v-if="!puedeConfirmar && listoParaCotizar && !form.producto.trim()" class="lq-cta-hint">
@@ -478,6 +483,7 @@ import { useQuasar } from 'quasar'
 import { logisticaApi } from '../../api/logistica'
 import { guardarCotizacion } from '../../utils/cotizacionesGuardadas'
 import { imagenCloudinary, TAMANOS } from '../../utils/imagenCloudinary'
+import { AVISO_CAMBIOS, AVISO_SEGURO } from '../../utils/logisticaAvisos'
 import MisCotizacionesLogistica from '../../components/logistica/MisCotizacionesLogistica.vue'
 
 const WHATSAPP = '573114799224'
@@ -1564,6 +1570,31 @@ onBeforeUnmount(() => clearTimeout(temporizador))
   text-align: center;
   font-size: 12px;
   color: #b45309;
+}
+
+.lq-avisos {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid rgba(11, 18, 32, .06);
+}
+
+.lq-avisos li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.lq-avisos .q-icon {
+  color: #0071e3;
 }
 
 .lq-secure {

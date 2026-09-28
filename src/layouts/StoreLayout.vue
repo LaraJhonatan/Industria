@@ -224,7 +224,7 @@
             <img src="/IconoZ.png" alt="ZIFCOR" class="foot-logo-img" />
             <div class="bs-foot-brand-text">
               <div class="bs-foot-name">ZIFCOR</div>
-              <div class="bs-foot-tag">Marketplace B2B — conecta empresas, servicios y productos industriales.</div>
+              <div class="bs-foot-tag">Zona de influencia corporativa</div>
             </div>
           </div>
           <div class="bs-foot-right">

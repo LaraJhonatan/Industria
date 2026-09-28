@@ -133,6 +133,11 @@
             </tfoot>
           </table>
 
+          <ul class="lc-avisos">
+            <li><q-icon name="info_outline" size="16px" /> {{ AVISO_CAMBIOS }}</li>
+            <li><q-icon name="shield" size="16px" /> {{ AVISO_SEGURO }}</li>
+          </ul>
+
           <p class="lc-legal">
             <template v-if="cot.pago.estado !== 'approved'">
               Cotización válida hasta el {{ formatFecha(cot.vigenteHasta, false) }}.
@@ -176,6 +181,7 @@ import { useQuasar } from 'quasar'
 import { logisticaApi } from '../../api/logistica'
 import { abrirWompi } from '../../utils/wompi'
 import { guardarCotizacion } from '../../utils/cotizacionesGuardadas'
+import { AVISO_CAMBIOS, AVISO_SEGURO } from '../../utils/logisticaAvisos'
 
 const WHATSAPP = '573114799224'
 
@@ -635,6 +641,31 @@ onBeforeUnmount(() => clearTimeout(reintentos))
   font-weight: 900;
   color: #0b1220;
   padding-top: 14px;
+}
+
+.lc-avisos {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid rgba(11, 18, 32, .06);
+}
+
+.lc-avisos li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.lc-avisos .q-icon {
+  color: #0071e3;
 }
 
 .lc-legal {

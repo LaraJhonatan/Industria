@@ -5,12 +5,23 @@
 // devuelven tal cual.
 
 /**
- * Tamaños de uso en el módulo de logística. g_auto recorta centrado en lo importante; para las fotos
- * de vehículo se ancla abajo (g_south): el vehículo está en el piso y lo que sobra suele ser cielo o
- * edificios, así no se cortan llantas ni parachoques en fotos verticales.
+ * Forma de cada espacio de imagen del módulo de logística. `aspecto` es ancho/alto y se usa igual
+ * en el recorte al subir (el usuario elige el encuadre) y al mostrar, para que lo que se recorta sea
+ * exactamente lo que se ve. `ancho` es el máximo en píxeles con que se guarda el recorte.
+ */
+export const RECORTES = {
+  banner: { aspecto: 3 / 2, ancho: 1500, etiqueta: 'Banner de inicio' },
+  encabezado: { aspecto: 40 / 11, ancho: 2400, etiqueta: 'Encabezado del cotizador' },
+  vehiculo: { aspecto: 4 / 3, ancho: 1200, etiqueta: 'Foto del vehículo' },
+}
+
+/**
+ * Transformaciones de Cloudinary para mostrar cada espacio. Con fotos recortadas al subir, la forma
+ * ya coincide y c_fill solo reduce; para fotos antiguas sin recortar, g_auto centra en lo importante
+ * y en vehículos se ancla abajo (g_south) para no cortar llantas ni parachoques.
  */
 export const TAMANOS = {
-  banner: 'c_fill,g_auto,w_700,h_470',
+  banner: 'c_fill,g_auto,w_720,h_480',
   encabezado: 'c_fill,g_auto,w_1600,h_440',
   vehiculo: 'c_fill,g_south,w_480,h_360',
   vistaPrevia: 'c_limit,w_900',
