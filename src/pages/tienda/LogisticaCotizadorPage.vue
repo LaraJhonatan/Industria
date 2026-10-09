@@ -118,6 +118,19 @@
               </q-input>
             </div>
           </div>
+          <div class="lq-row">
+            <div class="lq-field">
+              <label for="lq-fecha">¿Cuándo necesitas el servicio? <span class="req">*</span></label>
+              <q-input for="lq-fecha" v-model="form.fechaServicio" type="date" :min="hoy" :max="fechaMaxima"
+                outlined dense class="lq-input" :error="!!errores.fechaServicio"
+                :error-message="errores.fechaServicio" hide-bottom-space>
+                <template #prepend><q-icon name="event" color="primary" /></template>
+              </q-input>
+              <span v-if="form.fechaServicio && !errores.fechaServicio" class="lq-hint">
+                {{ fechaLarga(form.fechaServicio) }}
+              </span>
+            </div>
+          </div>
           <p v-if="tramo?.ruta.tipo === 'urbano'" class="lq-note">
             <q-icon name="info" size="16px" />
             Servicio urbano dentro de {{ tramo.origen }}: incluye hasta {{ tramo.ruta.entregasIncluidas }} entregas.
@@ -157,6 +170,20 @@
             <label for="lq-desc">Descripción <span class="opt">(opcional)</span></label>
             <q-input for="lq-desc" v-model="form.descripcion" outlined dense autogrow maxlength="1000"
               placeholder="Ej: Barra metálica curva de acero, empacada en atados" class="lq-input" />
+          </div>
+          <div class="lq-row lq-row-top">
+            <div class="lq-field">
+              <label for="lq-valor">¿Cuánto cuesta tu mercancía? <span class="req">*</span></label>
+              <q-input for="lq-valor" v-model="valorMercanciaTexto" inputmode="numeric" outlined dense
+                placeholder="Ej: 25.000.000" prefix="$" suffix="COP" maxlength="20" class="lq-input"
+                :error="!!errores.valorMercancia" :error-message="errores.valorMercancia" hide-bottom-space>
+                <template #prepend><q-icon name="payments" color="primary" /></template>
+              </q-input>
+              <span class="lq-hint">Valor total de lo que vas a enviar. Lo usamos para el seguro de la carga.</span>
+              <span v-if="form.valorMercancia > TOPE_SEGURO" class="lq-hint lq-hint-warn">
+                Supera la cobertura del seguro ({{ formatMoney(TOPE_SEGURO) }}): te contactaremos para revisarlo.
+              </span>
+            </div>
           </div>
         </section>
 
@@ -333,6 +360,8 @@
             <div><dt>Volumen total</dt><dd>{{ volumen > 0 ? `${formatNum(volumen)} m³` : '—' }}</dd></div>
             <div><dt>Peso total</dt><dd>{{ pesoKg > 0 ? formatPeso(pesoKg) : '—' }}</dd></div>
             <div><dt>Vehículo</dt><dd>{{ resultado?.ok ? resultado.vehiculo.nombre : '—' }}</dd></div>
+            <div><dt>Fecha del servicio</dt><dd>{{ fechaValida ? fechaLarga(form.fechaServicio) : '—' }}</dd></div>
+            <div><dt>Valor de la mercancía</dt><dd>{{ form.valorMercancia > 0 ? formatMoney(form.valorMercancia) : '—' }}</dd></div>
           </dl>
 
           <div class="lq-precio">
@@ -368,8 +397,8 @@
 
           <q-btn unelevated color="primary" no-caps class="lq-cta" icon="check" label="Confirmar y continuar"
             :disable="!puedeConfirmar" @click="abrirFacturacion" />
-          <p v-if="!puedeConfirmar && listoParaCotizar && !form.producto.trim()" class="lq-cta-hint">
-            Falta indicar el producto a transportar.
+          <p v-if="!puedeConfirmar && resultado?.ok && faltantes.length" class="lq-cta-hint">
+            Para continuar falta indicar {{ faltantes.join(', ').replace(/, ([^,]*)$/, ' y $1') }}.
           </p>
           <p class="lq-secure">
             <q-icon name="lock" size="14px" /> Pago seguro por PSE con Wompi.
@@ -513,7 +542,35 @@ const form = reactive({
   alto: null,
   comentarios: '',
   servicioIds: [],
+  fechaServicio: '',
+  valorMercancia: null,
 })
+
+// ── Fecha del servicio y valor de la mercancía (solo se exigen al confirmar) ──
+
+const TOPE_SEGURO = 1_300_000_000
+const hoy = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD, hora local
+const fechaMaxima = (() => {
+  const d = new Date()
+  d.setFullYear(d.getFullYear() + 1)
+  return d.toLocaleDateString('en-CA')
+})()
+
+const fechaValida = computed(() => !!form.fechaServicio && form.fechaServicio >= hoy && form.fechaServicio <= fechaMaxima)
+
+/** El valor se escribe con separador de miles ("25.000.000"); se guarda como número. */
+const valorMercanciaTexto = computed({
+  get: () => (form.valorMercancia ? form.valorMercancia.toLocaleString('es-CO') : ''),
+  set: (texto) => {
+    const digitos = String(texto || '').replace(/\D/g, '').slice(0, 15)
+    form.valorMercancia = digitos ? Number(digitos) : null
+  },
+})
+
+function fechaLarga(fecha) {
+  const [y, m, d] = fecha.split('-').map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+}
 
 const tiposMercancia = [
   'Carga general',
@@ -633,9 +690,14 @@ const errores = computed(() => {
   for (const k of ['largo', 'ancho', 'alto']) {
     if (form[k] != null && form[k] !== '' && !positivo(form[k])) e[k] = 'Debe ser mayor que cero.'
   }
+  if (form.fechaServicio && !fechaValida.value) {
+    e.fechaServicio = form.fechaServicio < hoy ? 'No puede ser anterior a hoy.' : 'Elige una fecha dentro del próximo año.'
+  }
   if (intentoConfirmar.value) {
     if (!tramo.value) e.ruta = form.origen ? 'Selecciona el destino.' : 'Selecciona el origen y el destino.'
     if (!form.producto.trim()) e.producto = 'Indica qué vas a transportar.'
+    if (!form.fechaServicio) e.fechaServicio = 'Indica cuándo necesitas el servicio.'
+    if (!(form.valorMercancia > 0)) e.valorMercancia = 'Indica cuánto cuesta tu mercancía.'
   }
   return e
 })
@@ -645,10 +707,10 @@ const listoParaCotizar = computed(
 )
 
 const pasos = computed(() => [
-  { id: 'paso-ruta', label: 'Ruta', completo: !!tramo.value },
-  { id: 'paso-mercancia', label: 'Producto', completo: !!form.producto.trim() },
+  { id: 'paso-ruta', label: 'Ruta', completo: !!tramo.value && fechaValida.value },
+  { id: 'paso-mercancia', label: 'Producto', completo: !!form.producto.trim() && form.valorMercancia > 0 },
   { id: 'paso-carga', label: 'Peso y dimensiones', completo: pesoKg.value > 0 && volumen.value > 0 },
-  { id: 'paso-resumen', label: 'Resumen y pago', completo: !!resultado.value?.ok && !!form.producto.trim() },
+  { id: 'paso-resumen', label: 'Resumen y pago', completo: puedeConfirmar.value },
 ])
 
 const pasoActual = computed(() => {
@@ -715,8 +777,23 @@ const total = computed(() => {
 })
 
 const puedeConfirmar = computed(
-  () => !!resultado.value?.ok && !cotizando.value && !!form.producto.trim() && listoParaCotizar.value,
+  () =>
+    !!resultado.value?.ok &&
+    !cotizando.value &&
+    !!form.producto.trim() &&
+    listoParaCotizar.value &&
+    fechaValida.value &&
+    form.valorMercancia > 0,
 )
+
+/** Qué falta para poder confirmar (se muestra bajo el botón cuando el precio ya está listo). */
+const faltantes = computed(() => {
+  const f = []
+  if (!form.producto.trim()) f.push('el producto')
+  if (!fechaValida.value) f.push('la fecha del servicio')
+  if (!(form.valorMercancia > 0)) f.push('el valor de la mercancía')
+  return f
+})
 
 // Se administra por vehículo desde el dashboard; sin foto se muestra un ícono.
 const fotoVehiculo = computed(() =>
@@ -824,6 +901,8 @@ async function confirmar() {
       puntoEntrega: form.puntoEntrega.trim() || undefined,
       comentarios: form.comentarios.trim() || undefined,
       servicioIds: form.servicioIds,
+      fechaServicio: form.fechaServicio,
+      valorMercancia: form.valorMercancia,
       comprador: {
         tipoDocumento: comprador.tipoDocumento,
         documento: comprador.documento.trim(),
@@ -1205,6 +1284,16 @@ onBeforeUnmount(() => clearTimeout(temporizador))
 .lq-hint {
   font-size: 11.5px;
   color: rgba(11, 18, 32, .45);
+}
+
+.lq-hint-warn {
+  color: #b45309;
+  font-weight: 700;
+}
+
+.lq-row-top {
+  margin-top: 12px;
+  margin-bottom: 0;
 }
 
 .lq-subtitle {

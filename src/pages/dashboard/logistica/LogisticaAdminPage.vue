@@ -269,6 +269,12 @@
                   <td>
                     <div class="la-strong">{{ c.origen }} → {{ c.destino }}</div>
                     <div class="la-muted">{{ c.vehiculo }} · {{ formatPeso(c.pesoKg) }} · {{ c.producto }}</div>
+                    <div v-if="c.fechaServicio || c.valorMercancia != null" class="la-servicio">
+                      <span v-if="c.fechaServicio"><q-icon name="event" size="14px" /> {{ fechaCorta(c.fechaServicio) }}</span>
+                      <span v-if="c.valorMercancia != null">
+                        <q-icon name="payments" size="14px" /> Mercancía {{ formatMoney(c.valorMercancia) }}
+                      </span>
+                    </div>
                   </td>
                   <td class="num">{{ formatMoney(c.valorBase) }}</td>
                   <td class="num la-green">{{ formatMoney(c.ganancia) }}</td>
@@ -879,6 +885,12 @@ function formatMoney(n) {
   return `$ ${Number(n || 0).toLocaleString('es-CO', { maximumFractionDigits: 0 })}`
 }
 
+/** '2026-10-15' → '15 oct 2026' sin corrimiento de zona horaria. */
+function fechaCorta(fecha) {
+  const [y, m, d] = fecha.split('-').map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
 function formatFecha(v) {
   return new Date(v).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })
 }
@@ -1220,6 +1232,22 @@ td.dirty .la-cell {
 .la-strong {
   font-weight: 700;
   color: #0b1220;
+}
+
+.la-servicio {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 3px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0071e3;
+}
+
+.la-servicio span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .la-muted {

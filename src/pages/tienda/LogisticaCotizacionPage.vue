@@ -103,6 +103,8 @@
               <div><dt>Medidas por unidad</dt><dd>{{ formatNum(cot.largoM) }} × {{ formatNum(cot.anchoM) }} × {{ formatNum(cot.altoM) }} m</dd></div>
               <div><dt>Cantidad</dt><dd>{{ cot.cantidad }} unidad(es)</dd></div>
               <div><dt>Volumen total</dt><dd>{{ formatNum(cot.volumenM3) }} m³</dd></div>
+              <div v-if="cot.fechaServicio"><dt>Fecha del servicio</dt><dd>{{ fechaLarga(cot.fechaServicio) }}</dd></div>
+              <div v-if="cot.valorMercancia != null"><dt>Valor de la mercancía</dt><dd>{{ formatMoney(cot.valorMercancia) }}</dd></div>
             </dl>
             <p v-if="cot.descripcion" class="lc-text"><strong>Descripción:</strong> {{ cot.descripcion }}</p>
             <p v-if="cot.comentarios" class="lc-text"><strong>Comentarios:</strong> {{ cot.comentarios }}</p>
@@ -324,6 +326,12 @@ function formatPeso(kg) {
 
 function formatMoney(n) {
   return `$ ${Number(n || 0).toLocaleString('es-CO', { maximumFractionDigits: 0 })}`
+}
+
+/** '2026-10-15' → 'jueves, 15 de octubre de 2026' sin corrimiento de zona horaria. */
+function fechaLarga(fecha) {
+  const [y, m, d] = fecha.split('-').map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 function formatFecha(v, conHora = true) {
